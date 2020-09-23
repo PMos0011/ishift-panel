@@ -1,0 +1,15 @@
+.header-container{
+    min-height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.header-text-style{
+    color: white;
+    padding-right: 5vw;
+}
+
+.font-italic{
+    font-style: italic;
+}

@@ -1,0 +1,52 @@
+form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: x-large;
+  margin-top: -5vh;
+}
+
+label {
+  margin-top: 3vh;
+  display: flex;
+  flex-direction: column;
+}
+
+input[type="text"],
+input[type="password"] {
+  margin-top: 1vh;
+  font-size: x-large;
+  border-radius: 5px;
+  border-width: 1px;
+  background-color: #e6e6e6;
+  transition: all 0.5s;
+}
+
+input[type="text"]:hover,
+input[type="password"]:hover {
+  background-color: #fff;
+  transition: all 0.5s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+  background-color: #fff;
+  transition: all 0.5s;
+}
+
+input[type="submit"] {
+  font-size: x-large;
+  margin-top: 5vh;
+  border-radius: 5px;
+  border-width: 1px;
+  width: 100%;
+  background-color: #1f2940;
+  color: #fff;
+  padding: 5px;
+  transition: all 0.5s;
+}
+
+input[type="submit"]:hover {
+    background-color: #656D80;
+    transition: all 0.5s;
+}
