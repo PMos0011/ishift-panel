@@ -1,4 +1,5 @@
-import * as actionTypes from './actions';
+import * as actionTypes from '../actions';
+import * as errorHandling from '../errosHandling/errorActions';
 
 import axios from 'axios';
 
@@ -15,12 +16,13 @@ export const authorizeUser = (userName, password) => {
                     setToken(response.headers.authorization, response.headers.expires)
                 );
             }).catch((err) => {
-                if (err.response !== undefined)
-                    //TODO
-                    console.log(err.response.status)
-                else
-                    //TODO
-                    console.log("undef")
+                if (err.response !== undefined) {
+                    if (err.response.status === 403)
+                        dispatch(errorHandling.setErrorMessage("Nieprawidłowa nazwa użytkownika bądź hasło."));
+                }
+                else {
+                    dispatch(errorHandling.setErrorMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później."));
+                }
             })
     }
 }

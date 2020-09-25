@@ -1,4 +1,4 @@
-import * as actionTypes from './actions';
+import * as actionTypes from '../actions';
 
 const initialState = {
     token: '',
@@ -32,8 +32,6 @@ const reducer = (state = initialState, action) => {
         default:
             return state;
     }
-
-
 }
 
 export default reducer;

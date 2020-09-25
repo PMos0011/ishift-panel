@@ -8,9 +8,11 @@ import {createStore, combineReducers, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
 import thunk from "redux-thunk";
 
-import authReducer from './store/authReducer';
+import authReducer from './store/authorization/authReducer';
+import errorReducer from './store/errosHandling/errorReducer';
 
 const rootReducer = combineReducers({
+  errorReducer,
   authReducer
 })
 

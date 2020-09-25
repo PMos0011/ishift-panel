@@ -5,15 +5,13 @@ import { connect } from "react-redux";
 import Header from './component/header/header';
 import Content from './component/content/content';
 
-import { firstLoad } from './store/authAction';
+import { firstLoad } from './store/authorization/authAction';
 
 import './App.css'
 
 const App = (props) => {
 
   props.onLoad();
-
-    
 
   return (
     <BrowserRouter>

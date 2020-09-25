@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import LoginForm from '../loginForm/loginForm';
 import BasicsInfo from '../basicsInfo/basicsInfo';
 
-import {checkUserAuthentication, logoutUser} from '../../store/authAction';
+import {checkUserAuthentication, logoutUser} from '../../store/authorization/authAction';
 
 import '../style.css';
 

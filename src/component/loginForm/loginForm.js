@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { connect } from "react-redux";
-import * as actions from '../../store/authAction';
+import * as actions from '../../store/authorization/authAction';
 
 import './form-style.css';
 import '../style.css';
@@ -10,9 +10,9 @@ import '../style.css';
 const LoginForm = (props) => {
 
     let redirectToBasicsInfo = null;
-    
-    if(props.isAuth)
-        redirectToBasicsInfo = <Redirect to="/basicsInfo"/>
+
+    if (props.isAuth)
+        redirectToBasicsInfo = <Redirect to="/basicsInfo" />
 
     const [formComponents, setComponents] = useState({
         userName: {
@@ -73,31 +73,35 @@ const LoginForm = (props) => {
     }
 
     return (
-        <div className="gray-card flex-center">
-            {redirectToBasicsInfo}
-            <form onSubmit={submitForm}>
-                <div>
-                    {formArray.map((component) => {
-                        return (
-                            <label key={component.id}>{component.formConfig.labelDesc}
-                                <input {...component.formConfig.elemConf}
-                                    value={component.formConfig.value}
-                                    onChange={(event) => inputChangeHandler(event, component.id)} />
-                            </label>
-                        )
-                    })
-                    }
-                </div>
-            </form>
-        </div>
+        <>
+            <div className="gray-card flex-center">
+                {redirectToBasicsInfo}
+                <form onSubmit={submitForm}>
+                    <div>
+                        {formArray.map((component) => {
+                            return (
+                                <label key={component.id}>{component.formConfig.labelDesc}
+                                    <input {...component.formConfig.elemConf}
+                                        value={component.formConfig.value}
+                                        onChange={(event) => inputChangeHandler(event, component.id)} />
+                                </label>
+                            )
+                        })
+                        }
+                    </div>
+                </form>
+            </div>
+                    <p>{props.errorMessage}</p>
+        </>
     )
 }
 
 const mapStateToProps = (state) => {
     return {
-      isAuth: state.authReducer.isAuthenticated,
+        isAuth: state.authReducer.isAuthenticated,
+        errorMessage: state.errorReducer.errorMessage
     };
-  };
+};
 
 const mapDispatchToProps = (dispatch) => {
     return {
