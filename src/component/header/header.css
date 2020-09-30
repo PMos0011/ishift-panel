@@ -1,5 +1,4 @@
-.header-container{
-    min-height: 10vh;
+.logo-container{
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -10,6 +9,24 @@
     padding-right: 5vw;
 }
 
+.color-gray-on-hover-white{
+    color: gray;
+    padding-left: 2vw;
+    padding-top: 2vh;
+    transition: all 0.5s;
+}
+
+.color-gray-on-hover-white:hover{
+    color: white;
+    transition: all 0.5s;
+}
+
 .font-italic{
     font-style: italic;
+}
+
+.header-container{
+    min-height: 10vh;
+    display: flex;
+    justify-content: space-between;
 }

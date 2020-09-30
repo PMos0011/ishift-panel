@@ -5,8 +5,6 @@ import axios from 'axios';
 
 export const authorizeUser = (userName, password) => {
     return (dispatch) => {
-        console.log(userName);
-        console.log(password);
         axios.post("http://localhost:8080/login", {
             userName: userName,
             password: password
@@ -69,5 +67,8 @@ export const firstLoad = () => {
         }
 
     return { type: null }
+}
 
+export const getToken = () => {
+    return localStorage.getItem("token")
 }

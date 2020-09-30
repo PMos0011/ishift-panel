@@ -1,15 +1,15 @@
 import * as actionTypes from '../actions';
 
 const initialState = {
-    errorMessage: ''
+    customersList: []
 }
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case actionTypes.SET_ERROR_MESSAGE:
+        case actionTypes.GET_ALL_CUSTOMERS:
             return {
                 ...state,
-                errorMessage: action.error
+                customersList: action.names
             }
         default:
             return state

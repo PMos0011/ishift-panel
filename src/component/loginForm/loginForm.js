@@ -12,7 +12,7 @@ const LoginForm = (props) => {
     let redirectToBasicsInfo = null;
 
     if (props.isAuth)
-        redirectToBasicsInfo = <Redirect to="/basicsInfo" />
+        redirectToBasicsInfo = <Redirect to="/auth" />
 
     const [formComponents, setComponents] = useState({
         userName: {
@@ -74,7 +74,7 @@ const LoginForm = (props) => {
 
     return (
         <>
-            <div className="gray-card flex-center">
+            <div className="gray-card flex-center app-border-shadow">
                 {redirectToBasicsInfo}
                 <form onSubmit={submitForm}>
                     <div>

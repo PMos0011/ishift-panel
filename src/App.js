@@ -1,8 +1,9 @@
 import React from 'react';
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Route } from "react-router-dom";
 import { connect } from "react-redux";
 
 import Header from './component/header/header';
+import LoginForm from "./component/loginForm/loginForm";
 import Content from './component/content/content';
 
 import { firstLoad } from './store/authorization/authAction';
@@ -17,7 +18,13 @@ const App = (props) => {
     <BrowserRouter>
       <div className="App">
         <Header />
-        <Content />
+        <Route
+          path="/auth"
+          component={Content} />
+        <Route
+          path="/"
+          component={LoginForm}
+          exact />
       </div>
     </BrowserRouter>)
 }

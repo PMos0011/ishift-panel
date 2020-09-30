@@ -1,0 +1,30 @@
+table{
+    border-spacing: 0;
+    width: 90%;
+    background-color: white;
+    border-radius: 10px;
+}
+
+th{
+    background-color: black;
+    color: white;
+    padding: 10px;
+    text-align: left;
+}
+
+td{
+    border-top: solid 1px black;
+    padding-left: 10px;
+}
+
+.th-left{
+    border-top-left-radius: 10px;
+}
+
+.th-right{
+    border-top-right-radius: 10px;
+}
+
+.width-max{
+    width: 90%;
+}

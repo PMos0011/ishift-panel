@@ -2,10 +2,11 @@ import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 
-import LoginForm from '../loginForm/loginForm';
-import BasicsInfo from '../basicsInfo/basicsInfo';
+import Sidebar from '../sidebar/sidebar';
+import Customers from "../customers/customers";
+import Documents from "../documents/allDocuments";
 
-import {checkUserAuthentication, logoutUser} from '../../store/authorization/authAction';
+import { checkUserAuthentication } from '../../store/authorization/authAction';
 
 import '../style.css';
 
@@ -21,13 +22,20 @@ const Content = (props) => {
     return (
         <>
             {AuthorizationRedirect}
-            <Route
-                path="/basicsInfo"
-                component={BasicsInfo} />
-            <Route
-                path="/"
-                component={LoginForm}
-                exact />
+            <div className="flex">
+                <Sidebar />
+                <div className="width-85">
+                    <h2>MB Biuro Usług Księgowych</h2>
+                    <Route
+                        path="/auth/documents/:id"
+                        component={Documents}
+                        />
+                    <Route
+                        path="/auth/customers"
+                        component={Customers}
+                        />
+                </div>
+            </div>
         </>
     )
 }
@@ -41,8 +49,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onLoad: () => dispatch(checkUserAuthentication()),
-        buttonLogout: () => dispatch(logoutUser())
     };
 };
 
-export default connect(mapStateToProps,mapDispatchToProps)(Content);
+export default connect(mapStateToProps, mapDispatchToProps)(Content);

@@ -1,15 +1,15 @@
 import * as actionTypes from '../actions';
 
 const initialState = {
-    errorMessage: ''
+    documents: []
 }
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case actionTypes.SET_ERROR_MESSAGE:
+        case actionTypes.GET_ALL_DOCUMENTS:
             return {
                 ...state,
-                errorMessage: action.error
+                documents: action.documents
             }
         default:
             return state

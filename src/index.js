@@ -10,10 +10,14 @@ import thunk from "redux-thunk";
 
 import authReducer from './store/authorization/authReducer';
 import errorReducer from './store/errosHandling/errorReducer';
+import customerReducer from './store/customers/customersReducer';
+import documentReducer from './store/documents/documentsReducer';
 
 const rootReducer = combineReducers({
   errorReducer,
-  authReducer
+  authReducer,
+  customerReducer,
+  documentReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
