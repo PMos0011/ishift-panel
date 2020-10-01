@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
-
+import Aux from '../../hoc/auxiliary';
 import Sidebar from '../sidebar/sidebar';
 import Customers from "../customers/customers";
 import Documents from "../documents/allDocuments";
@@ -20,7 +20,7 @@ const Content = (props) => {
     }
 
     return (
-        <>
+        <Aux>
             {AuthorizationRedirect}
             <div className="flex">
                 <Sidebar />
@@ -36,7 +36,7 @@ const Content = (props) => {
                         />
                 </div>
             </div>
-        </>
+        </Aux>
     )
 }
 

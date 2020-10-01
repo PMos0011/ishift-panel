@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { connect } from "react-redux";
+import Aux from '../../hoc/auxiliary';
 import * as actions from '../../store/authorization/authAction';
 
 import './form-style.css';
@@ -73,7 +74,7 @@ const LoginForm = (props) => {
     }
 
     return (
-        <>
+        <Aux>
             <div className="gray-card flex-center app-border-shadow">
                 {redirectToBasicsInfo}
                 <form onSubmit={submitForm}>
@@ -92,7 +93,7 @@ const LoginForm = (props) => {
                 </form>
             </div>
                     <p>{props.errorMessage}</p>
-        </>
+        </Aux>
     )
 }
 

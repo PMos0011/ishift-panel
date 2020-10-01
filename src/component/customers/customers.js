@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import * as customerActions from '../../store/customers/customersActions';
 
-import './customers-style.css';
+import '../table-style.css';
 
 
 
@@ -13,8 +13,6 @@ const Customers = (props) => {
         props.onLoad();
     }, []);
     let counter = 0;
-
-    console.log(props.customers);
 
     return (
         <table className="app-border-shadow">

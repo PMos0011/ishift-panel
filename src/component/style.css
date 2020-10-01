@@ -49,6 +49,10 @@
     width: 80vw;
 }
 
+.width-max{
+  width: 90%;
+}
+
 .app-border-shadow{
     border: 1px solid rgba(100,100,100,0.4);
     box-shadow: 0px 0px 5px 3px rgba(70,70,70,0.2);;

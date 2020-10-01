@@ -12,7 +12,7 @@ export const getAllDocuments = (id) => {
                 }
             })
             .then((response) => {
-                console.log(response);
+                dispatch(setDocuments(response.data))
             }).catch((err) => {
                 //TODO
                 console.log(err);
@@ -23,6 +23,6 @@ export const getAllDocuments = (id) => {
 const setDocuments = (documents) => {
     return {
         type: actionTypes.GET_ALL_DOCUMENTS,
-        names: documents
+        documents: documents
     }
 }
