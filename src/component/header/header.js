@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from "react-redux";
 import { logoutUser } from '../../store/authorization/authAction';
 
-import './header.css';
-import '../style.css';
+import '../../style/header.css';
+import '../../style/style.css';
 
 const Header = (props) => {
 

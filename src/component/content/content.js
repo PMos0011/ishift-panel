@@ -8,7 +8,7 @@ import Documents from "../documents/allDocuments";
 
 import { checkUserAuthentication } from '../../store/authorization/authAction';
 
-import '../style.css';
+import '../../style/style.css';
 
 const Content = (props) => {
 
