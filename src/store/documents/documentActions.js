@@ -5,7 +5,7 @@ import { getToken } from '../authorization/authAction';
 
 export const getAllDocuments = (id) => {
     return (dispatch) => {
-        axios.get("http://localhost:8080/documents/" + id,
+        axios.get(actionTypes.SERVER_ADDRESS + "/documents/" + id,
             {
                 headers: {
                     'Authorization': getToken()

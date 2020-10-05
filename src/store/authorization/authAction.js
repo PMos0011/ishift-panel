@@ -1,11 +1,13 @@
 import * as actionTypes from '../actions';
 import * as errorHandling from '../errosHandling/errorActions';
+import jwt_decode from "jwt-decode";
+
 
 import axios from 'axios';
 
 export const authorizeUser = (userName, password) => {
     return (dispatch) => {
-        axios.post("http://localhost:8080/login", {
+        axios.post(actionTypes.SERVER_ADDRESS + "/login", {
             userName: userName,
             password: password
         })
@@ -26,10 +28,35 @@ export const authorizeUser = (userName, password) => {
 }
 
 const setToken = (token, expireDate) => {
+
+    localStorage.setItem("token", token);
+    localStorage.setItem("expireDate", expireDate);
+    localStorage.setItem("isAuthenticated", true);
+
+
+    let decodedToken = jwt_decode(token);
+    let isAdmin = false;
+    let access = "";
+
+    decodedToken.authority.map((auth) => {
+        if (auth.authority === "ROLE_ADMIN")
+            isAdmin = true;
+        else
+            access = auth.authority;
+    })
+
+    const newAuthData =
+    {
+        token: token,
+        expireDate: expireDate,
+        isAuthenticated: true,
+        dataAccess: access,
+        isAdmin: isAdmin
+    }
+
     return {
         type: actionTypes.AUTHORIZE_USER,
-        token: token,
-        expireDate: expireDate
+        data: newAuthData,
     }
 }
 

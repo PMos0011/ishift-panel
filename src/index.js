@@ -12,12 +12,14 @@ import authReducer from './store/authorization/authReducer';
 import errorReducer from './store/errosHandling/errorReducer';
 import customerReducer from './store/customers/customersReducer';
 import documentReducer from './store/documents/documentsReducer';
+import accOfficeReducer from './store/accountingOffice/accOfficeReducer';
 
 const rootReducer = combineReducers({
   errorReducer,
   authReducer,
   customerReducer,
-  documentReducer
+  documentReducer,
+  accOfficeReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

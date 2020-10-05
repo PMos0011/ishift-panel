@@ -3,16 +3,16 @@ import axios from 'axios'
 
 import { getToken } from '../authorization/authAction';
 
-export const getAllCustomers = (id) => {
+export const getAccOfficeData = (id) => {
     return (dispatch) => {
-        axios.get(actionTypes.SERVER_ADDRESS + "/customers/" + id,
+        axios.get(actionTypes.SERVER_ADDRESS + "/accOffice/" + id,
             {
                 headers: {
-                'Authorization':getToken()
+                    'Authorization': getToken()
                 }
             })
             .then((response) => {
-                dispatch(setCompanyNames(response.data)
+                dispatch(setAccOfficeData(response.data)
                 )
             }).catch((err) => {
                 //TODO
@@ -21,9 +21,9 @@ export const getAllCustomers = (id) => {
     }
 }
 
-const setCompanyNames = (comapnyNames) =>{
-    return{
-        type: actionTypes.GET_ALL_CUSTOMERS,
-        names:comapnyNames
+const setAccOfficeData = (accOfficeData) => {
+    return {
+        type: actionTypes.GET_ACCOUNTING_OFFICE_DATA,
+        data: accOfficeData
     }
 }

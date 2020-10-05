@@ -12,7 +12,7 @@ import '../../style/doc-style.css';
 
 const Customers = (props) => {
     useEffect(() => {
-        props.onLoad();
+        props.onLoad(props.match.params.id);
     }, []);
     let counter = 0;
 
@@ -47,7 +47,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onLoad: () => dispatch(customerActions.getAllCustomers()),
+        onLoad: (id) => dispatch(customerActions.getAllCustomers(id)),
     };
 };
 

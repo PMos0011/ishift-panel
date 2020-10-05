@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import { getAllDocuments } from '../../store/documents/documentActions';
 import Aux from "../../hoc/auxiliary";
+import typeFilter from "./documentTypeFilter";
 
 import Document from "./documentDetails";
 
@@ -12,8 +13,6 @@ const AllDocuments = (props) => {
     useEffect(() => {
         props.onLoad(props.match.params.id);
     }, []);
-
-    let counter = 0;
 
     const converDate = (date) => {
         return date.toString().slice(4, 6) + "." + date.toString().slice(0, 4)
@@ -44,6 +43,7 @@ const AllDocuments = (props) => {
         return minus + stringAmount;
     }
 
+    let counter = 0;
     return (
         <div className="doc-grid-4-container app-border-shadow">
             <div className="table-header-item table-header-item-top-left">Lp</div>
@@ -57,7 +57,7 @@ const AllDocuments = (props) => {
                         <Aux key={doc.id}>
                             <div className="doc-item">{counter}</div>
                             <div className="doc-item">{convertAmount(doc.kwota)} zł</div>
-                            <div className="doc-item">nie wiem</div>
+                    <div className="doc-item">{typeFilter(doc.typDeklaracji)}</div>
                             <div className="doc-item">{converDate(doc.rokMiesiac)}</div>
                             <div className="item-grid-2 doc-margin-right"><Document details={doc.declarationDetails} /></div>
                             <hr className="item-grid-4-full" />
