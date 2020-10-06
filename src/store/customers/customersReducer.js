@@ -1,7 +1,12 @@
 import * as actionTypes from '../actions';
 
 const initialState = {
-    customersList: []
+    customersList: [],
+    customer: {
+        companyData: [],
+        companyName: "",
+        companyId:""
+    }
 }
 
 const reducer = (state = initialState, action) => {
@@ -10,6 +15,11 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 customersList: action.names
+            }
+        case actionTypes.GET_CUSTOMER_DATA:
+            return {
+                ...state,
+                customer: action.data
             }
         default:
             return state

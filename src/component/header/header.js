@@ -2,9 +2,6 @@ import React from 'react';
 import { connect } from "react-redux";
 import { logoutUser } from '../../store/authorization/authAction';
 
-import '../../style/header.css';
-import '../../style/style.css';
-
 const Header = (props) => {
 
     let logoutHeading = null;
@@ -19,7 +16,7 @@ const Header = (props) => {
             <div className="logo-container">
                 <div>
                     <h1 className="header-text-style margin-block-0">IShift</h1>
-                    <h4 className="header-text-style margin-block-0 font-italic">beta v0.0.1</h4>
+                    <h4 className="header-text-style margin-block-0 font-italic">v 0.0.1</h4>
                 </div>
             </div>
         </div>

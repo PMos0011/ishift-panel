@@ -49,6 +49,12 @@
   width: 80vw;
 }
 
+.width-80-white{
+  width: 80%;
+  padding: 2vh;
+  background-color: white;
+}
+
 .width-max {
   width: 90%;
 }
@@ -63,4 +69,14 @@ hr {
   margin-block-start: 0;
   margin-block-end: 0;
   width: 98%;
+}
+
+a{
+  color: black;
+  margin-right: 1vh;
+  text-decoration: none;
+}
+
+a:visited{
+  color: black;
 }

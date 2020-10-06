@@ -5,9 +5,6 @@ import { connect } from "react-redux";
 import Aux from '../../hoc/auxiliary';
 import * as actions from '../../store/authorization/authAction';
 
-import '../../style/form-style.css';
-import '../../style/style.css';
-
 const LoginForm = (props) => {
 
     let redirectToBasicsInfo = null;

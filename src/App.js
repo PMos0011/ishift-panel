@@ -8,7 +8,13 @@ import Content from './component/content/content';
 
 import { firstLoad } from './store/authorization/authAction';
 
-import './App.css'
+import './App.css';
+import './style/doc-style.css';
+import './style/form-style.css';
+import './style/header.css';
+import './style/sidebar-style.css';
+import './style/style.css';
+import './style/table-style.css';
 
 const App = (props) => {
 

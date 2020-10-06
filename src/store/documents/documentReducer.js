@@ -1,7 +1,12 @@
 import * as actionTypes from '../actions';
 
 const initialState = {
-    documents: []
+    documents: [],
+    documentDetails:{
+        typDeklaracji:"",
+        rokMiesiac:"",
+        declarationDetails:[]
+    }
 }
 
 const reducer = (state = initialState, action) => {
@@ -11,6 +16,11 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 documents: action.documents
             }
+            case actionTypes.GET_DOCUMENT_FULL_DETAILS:
+                return {
+                    ...state,
+                    documentDetails: action.data
+                }
         default:
             return state
     }

@@ -1,4 +1,4 @@
-const translateDocumentType = (docType) => {
+export const translateDocumentType = (docType) => {
     switch (docType) {
         case 1:
             return "deklaracja VAT 7";
@@ -19,4 +19,31 @@ const translateDocumentType = (docType) => {
     }
 }
 
-export default translateDocumentType;
+export const converDate = (date) => {
+    return date.toString().slice(4, 6) + "." + date.toString().slice(0, 4)
+}
+
+export const convertAmount = (amount) => {
+
+
+    let stringAmount = amount.toString();
+    let minus = "";
+
+    if (amount < 0) {
+        stringAmount = stringAmount.slice(1);
+        minus = "- ";
+    }
+    let length = stringAmount.length;
+    let i = parseInt(length / 3);
+    let counter = 0;
+
+    while (i > 0) {
+        let point = length - (i * 3) + counter;
+        if (point > 0) {
+            stringAmount = stringAmount.slice(0, point) + " " + stringAmount.slice(point);
+            counter++;
+        }
+        i--;
+    }
+    return minus + stringAmount;
+}

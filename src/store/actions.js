@@ -14,6 +14,8 @@ export const GET_ACCOUNTING_OFFICE_DATA = "GET_ACCOUNTING_OFFICE_DATA";
 
 //customers actions
 export const GET_ALL_CUSTOMERS = "GET_ALL_CUSTOMERS";
+export const GET_CUSTOMER_DATA = "GET_CUSTOMER_DATA";
 
 //documents actions
 export const GET_ALL_DOCUMENTS = "GET_ALL_DOCUMENTS";
+export const GET_DOCUMENT_FULL_DETAILS = "GET_DOCUMENT_FULL_DETAILS";

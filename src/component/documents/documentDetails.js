@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Aux from '../../hoc/auxiliary';
+import { Link } from "react-router-dom";
 
-import '../../style/doc-style.css';
+import Aux from '../../hoc/auxiliary';
 
 const Document = (props) => {
     const [isHide, setState] = useState(true)
@@ -10,6 +10,8 @@ const Document = (props) => {
         const newState = !isHide;
         setState(newState);
     }
+
+    const fullDocLink = "/auth/documents/" + props.dbId + "/" + props.docId;
 
     const details = () => {
         return (
@@ -26,12 +28,18 @@ const Document = (props) => {
                         )
                     })
                 }
-                <div className="item-end" onClick={toggle}>ukryj</div>
+                <div className="item-end doc-grid-2-auto-container">
+                    <Link to={fullDocLink}>pełny</Link>
+                    <div onClick={toggle}>ukryj</div>
+                </div>
             </Aux>
         )
     }
 
-    const showToggle = <div className="item-end" onClick={toggle}>szczegóły</div>
+    const showToggle = <div className="item-end doc-grid-2-auto-container">
+        <Link to={fullDocLink}>pełny</Link>
+        <div onClick={toggle}>szczegóły</div>
+    </div>
 
     return (
         <div className="doc-grid-2-container">

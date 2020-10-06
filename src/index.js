@@ -11,7 +11,7 @@ import thunk from "redux-thunk";
 import authReducer from './store/authorization/authReducer';
 import errorReducer from './store/errosHandling/errorReducer';
 import customerReducer from './store/customers/customersReducer';
-import documentReducer from './store/documents/documentsReducer';
+import documentReducer from './store/documents/documentReducer';
 import accOfficeReducer from './store/accountingOffice/accOfficeReducer';
 
 const rootReducer = combineReducers({

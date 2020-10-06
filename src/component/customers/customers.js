@@ -5,15 +5,12 @@ import Aux from "../../hoc/auxiliary";
 
 import * as customerActions from '../../store/customers/customersActions';
 
-import '../../style/link-style.css';
-import '../../style/doc-style.css';
-
-
 
 const Customers = (props) => {
     useEffect(() => {
-        props.onLoad(props.match.params.id);
-    }, []);
+        props.onLoad(props.officeId);
+        props.clearCustomerData();
+        }, []);
     let counter = 0;
 
     return (
@@ -28,7 +25,7 @@ const Customers = (props) => {
                     <Aux key={customer.id}>
                         <Link
                             className="doc-grid-2-container link-item item-grid-2-full"
-                            to={'/auth/documents/' + customer.id}>
+                            to={'/auth/customer/' + customer.id}>
                             <div>{counter}</div>
                             <div>{customer.companyName} </div>
 
@@ -42,13 +39,24 @@ const Customers = (props) => {
 const mapStateToProps = (state) => {
     return {
         customers: state.customerReducer.customersList,
+        officeId: state.authReducer.dataAccess,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         onLoad: (id) => dispatch(customerActions.getAllCustomers(id)),
+        clearCustomerData: () => dispatch(customerActions.clearCustomerData())
     };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Customers);
+
+
+{/* <Link
+className="doc-grid-2-container link-item item-grid-2-full"
+to={'/auth/documents/' + customer.id}>
+<div>{counter}</div>
+<div>{customer.companyName} </div>
+
+</Link><hr className="item-grid-2-full" /> */}
