@@ -10,16 +10,18 @@ import thunk from "redux-thunk";
 
 import authReducer from './store/authorization/authReducer';
 import errorReducer from './store/errosHandling/errorReducer';
-import customerReducer from './store/customers/customersReducer';
+import customersReducer from './store/customers/customersReducer';
 import documentReducer from './store/documents/documentReducer';
 import accOfficeReducer from './store/accountingOffice/accOfficeReducer';
+import settingsReducer from './store/settings/settingsReducer';
 
 const rootReducer = combineReducers({
   errorReducer,
   authReducer,
-  customerReducer,
+  customersReducer,
   documentReducer,
-  accOfficeReducer
+  accOfficeReducer,
+  settingsReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

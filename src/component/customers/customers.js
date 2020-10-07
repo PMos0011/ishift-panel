@@ -38,7 +38,7 @@ const Customers = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        customers: state.customerReducer.customersList,
+        customers: state.customersReducer.customersList,
         officeId: state.authReducer.dataAccess,
     };
 };

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
+import { withAlert } from 'react-alert'
 
 import { connect } from "react-redux";
 import Aux from '../../hoc/auxiliary';
@@ -7,11 +8,26 @@ import * as actions from '../../store/authorization/authAction';
 
 const LoginForm = (props) => {
 
+    useEffect(() => {
+        if (props.errorMessage !== "")
+        if (props.isErrorAlert)
+            props.alert.error(props.errorMessage);
+        else
+            props.alert.success(props.errorMessage);
+    });
+
     let redirectToBasicsInfo = null;
 
-    if (props.isAuth)
-        redirectToBasicsInfo = <Redirect to="/auth" />
 
+    if (props.isAuth) {
+        if (props.isAdmin)
+            redirectToBasicsInfo = <Redirect to="/auth/customers" />
+        else {
+            const customerLink = "/auth/customer/" + props.dataAccess;
+            redirectToBasicsInfo = <Redirect to={customerLink} />
+        }
+
+    }
     const [formComponents, setComponents] = useState({
         userName: {
             labelDesc: 'Login',
@@ -66,8 +82,13 @@ const LoginForm = (props) => {
     const submitForm = (event) => {
         event.preventDefault();
 
-        props.onSubmit(formComponents.userName.value,
-            formComponents.password.value);
+        if (formComponents.userName.value === "")
+            props.alert.error("Nazwa użytkownika nie może byc pusta!");
+        else if (formComponents.password.value === "")
+            props.alert.error("Hasło nie może byc puste!");
+        else
+            props.onSubmit(formComponents.userName.value,
+                formComponents.password.value);
     }
 
     return (
@@ -89,7 +110,6 @@ const LoginForm = (props) => {
                     </div>
                 </form>
             </div>
-                    <p>{props.errorMessage}</p>
         </Aux>
     )
 }
@@ -97,7 +117,10 @@ const LoginForm = (props) => {
 const mapStateToProps = (state) => {
     return {
         isAuth: state.authReducer.isAuthenticated,
-        errorMessage: state.errorReducer.errorMessage
+        isAdmin: state.authReducer.isAdmin,
+        dataAccess: state.authReducer.dataAccess,
+        errorMessage: state.errorReducer.errorMessage,
+        isErrorAlert: state.errorReducer.errorAlert,
     };
 };
 
@@ -107,4 +130,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);
+export default connect(mapStateToProps, mapDispatchToProps)(withAlert()(LoginForm));

@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Route } from "react-router-dom";
 import { connect } from "react-redux";
+
+import { transitions, positions, Provider as AlertProvider } from 'react-alert'
+import AlertTemplate from 'react-alert-template-basic'
 
 import Header from './component/header/header';
 import LoginForm from "./component/loginForm/loginForm";
@@ -16,23 +19,33 @@ import './style/sidebar-style.css';
 import './style/style.css';
 import './style/table-style.css';
 
-const App = (props) => {
+const options = {
+  position: positions.MIDDLE,
+  timeout: 5000,
+}
 
-  props.onLoad();
+const App = (props) => {
+  useEffect(() => {
+    props.onLoad();
+  }, []);
+
+
 
   return (
-    <BrowserRouter>
-      <div className="App">
-        <Header />
-        <Route
-          path="/auth"
-          component={Content} />
-        <Route
-          path="/"
-          component={LoginForm}
-          exact />
-      </div>
-    </BrowserRouter>)
+    <AlertProvider template={AlertTemplate} {...options}>
+      <BrowserRouter>
+        <div className="App">
+          <Header />
+          <Route
+            path="/auth"
+            component={Content} />
+          <Route
+            path="/"
+            component={LoginForm}
+            exact />
+        </div>
+      </BrowserRouter>
+    </AlertProvider>)
 }
 
 const mapDispatchToProps = (dispatch) => {

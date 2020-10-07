@@ -3,7 +3,6 @@ form {
   align-items: center;
   justify-content: center;
   font-size: x-large;
-  margin-top: -5vh;
 }
 
 label {
@@ -50,4 +49,23 @@ input[type="submit"]:hover {
     background-color: #EADFC9;
     color:#000;
     transition: all 0.5s;
+}
+
+.sec-label{
+  font-size: medium;
+  margin-top: 1vh;
+}
+
+.form-white-background{
+  background-color: white;
+  width: 80vh;
+}
+
+.red-label{
+  color: red;
+}
+
+.bolt-text{
+  font-weight: 700;
+  font-size: x-large;
 }

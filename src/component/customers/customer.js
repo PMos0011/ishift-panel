@@ -26,7 +26,8 @@ const Customer = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        customer: state.customerReducer.customer
+        customer: state.customersReducer.customer,
+        dataAccess:state.authReducer.dataAccess
     };
 };
 

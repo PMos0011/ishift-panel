@@ -10,7 +10,8 @@ const Sidebar = (props) =>{
     };
 
     const myDataSidebarLink = () => {
-        return (<Link to='/auth/customers'>Klienci</Link>)
+        const myLink = '/auth/customer/' + props.dataAccess;
+        return (<Link to={myLink}>Moje dane</Link>)
     }
 
     const documentsSidebaruLink = () =>{
@@ -23,14 +24,17 @@ const Sidebar = (props) =>{
             {props.isAdmin?customersSidebarLink(): myDataSidebarLink()}
             <br/>
             {props.companyId!==""?documentsSidebaruLink():null}
+            <br/>
+            <Link to="/auth/settings/pass">Ustawienia</Link>
         </div>
     )
 }
 
 const mapStateToProps = (state) => {
     return {
-        companyId: state.customerReducer.customer.companyId,
-        isAdmin: state.authReducer.isAdmin
+        companyId: state.customersReducer.customer.companyId,
+        isAdmin: state.authReducer.isAdmin,
+        dataAccess: state.authReducer.dataAccess,
     };
 };
 

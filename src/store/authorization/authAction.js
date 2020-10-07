@@ -1,5 +1,6 @@
 import * as actionTypes from '../actions';
 import * as errorHandling from '../errosHandling/errorActions';
+import { getCustomerData } from "../customers/customersActions";
 import jwt_decode from "jwt-decode";
 
 
@@ -12,28 +13,21 @@ export const authorizeUser = (userName, password) => {
             password: password
         })
             .then((response) => {
-                dispatch(
-                    setToken(response.headers.authorization, response.headers.expires)
-                );
+                dispatch(setToken(response.headers.authorization, response.headers.expires));
             }).catch((err) => {
                 if (err.response !== undefined) {
-                    if (err.response.status === 403)
-                        dispatch(errorHandling.setErrorMessage("Nieprawidłowa nazwa użytkownika bądź hasło."));
+                    if (err.response.status === 403){
+                        dispatch(errorHandling.setErrorMessage("Nieprawidłowa nazwa użytkownika bądź hasło.", true));
+                    }
                 }
                 else {
-                    dispatch(errorHandling.setErrorMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później."));
+                    dispatch(errorHandling.setErrorMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później.", true));
                 }
             })
     }
 }
 
-const setToken = (token, expireDate) => {
-
-    localStorage.setItem("token", token);
-    localStorage.setItem("expireDate", expireDate);
-    localStorage.setItem("isAuthenticated", true);
-
-
+const newAuthData = (token, expireDate) =>{
     let decodedToken = jwt_decode(token);
     let isAdmin = false;
     let access = "";
@@ -53,10 +47,18 @@ const setToken = (token, expireDate) => {
         dataAccess: access,
         isAdmin: isAdmin
     }
+    return newAuthData
+}
 
+const setToken = (token, expireDate) => {
+
+    localStorage.setItem("token", token);
+    localStorage.setItem("expireDate", expireDate);
+    localStorage.setItem("isAuthenticated", true);
+   
     return {
         type: actionTypes.AUTHORIZE_USER,
-        data: newAuthData,
+        data: newAuthData(token, expireDate),
     }
 }
 
@@ -87,11 +89,24 @@ export const firstLoad = () => {
     const expiratinDate = localStorage.getItem("expireDate");
 
     if (token !== null
-        && expiratinDate !== null)
+        && expiratinDate !== null) {
+
+        const authData = newAuthData(token, expiratinDate);
+
+        const getData = () => {
+            if (!authData.isAdmin)
+                return getCustomerData(authData.dataAccess);
+            else
+                return { type: null }
+
+        }
+
         return (dispatch) => {
             dispatch(setToken(token, expiratinDate),
+            dispatch(getData()),
             );
         }
+    }
 
     return { type: null }
 }

@@ -8,9 +8,11 @@ import Customers from "../customers/customers";
 import Documents from "../documents/allDocuments";
 import Customer from "../customers/customer";
 import FullDocument from "../documents/documentFullDetails";
+import PasswordChange from "../settings/passwordChange";
 
 import { checkUserAuthentication } from '../../store/authorization/authAction';
-import { getAccOfficeData } from '../../store/accountingOffice/accOfficeAction'
+import { getAccOfficeData } from '../../store/accountingOffice/accOfficeAction';
+import * as customerActions from '../../store/customers/customersActions';
 
 
 const Content = (props) => {
@@ -33,7 +35,7 @@ const Content = (props) => {
                 <Sidebar />
                 <div className="width-85">
                     <h2>{props.officeData.companyName}</h2>
-                    {props.customerName !== "" ? <h3>{props.customerName}</h3> : null}
+                    {props.customerName !== "" ? <h3>{props.customer.companyName}</h3> : null}
                     <Route
                         path="/auth/documents/:id"
                         component={Documents}
@@ -51,6 +53,10 @@ const Content = (props) => {
                         path="/auth/documents/:dbId/:id"
                         component={FullDocument}
                     />
+                    <Route
+                        path="/auth/settings/pass"
+                        component={PasswordChange}
+                    />
                 </div>
             </div>
         </Aux>
@@ -62,14 +68,15 @@ const mapStateToProps = (state) => {
         isAuth: state.authReducer.isAuthenticated,
         officeId: state.authReducer.dataAccess,
         officeData: state.accOfficeReducer.officeData,
-        customerName: state.customerReducer.customer.companyName
+        customer: state.customersReducer.customer
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         onLoad: () => dispatch(checkUserAuthentication()),
-        getOfficeData: (id) => dispatch(getAccOfficeData(id))
+        getOfficeData: (id) => dispatch(getAccOfficeData(id)),
+        getCompanyData: (id) => dispatch(customerActions.getCustomerData(id))
     };
 };
 

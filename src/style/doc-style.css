@@ -43,7 +43,6 @@
 .link-item {
   font-size: larger;
   font-weight: 600;
-  color: rgb(100, 100, 100);
   padding: 2vh;
   transition: all 0.5s;
 }

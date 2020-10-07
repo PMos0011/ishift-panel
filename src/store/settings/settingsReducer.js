@@ -1,17 +1,15 @@
 import * as actionTypes from '../actions';
 
 const initialState = {
-    errorMessage: '',
-    errorAlert:false
+    usersList:[]
 }
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case actionTypes.SET_ERROR_MESSAGE:
+        case actionTypes.GET_LOGIN_LIST:
             return {
                 ...state,
-                errorMessage: action.error,
-                errorAlert: action.alert
+                usersList: action.list
             }
         default:
             return state

@@ -21,6 +21,7 @@ export const getAllCustomers = (id) => {
     }
 }
 
+
 export const getCustomerData = (id) => {
     return (dispatch) => {
         axios.get(actionTypes.SERVER_ADDRESS + "/customer/" + id,
