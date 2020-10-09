@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import Aux from '../../hoc/auxiliary';
 
-import * as filters from "./documentTypeFilter";
+import {displayDate} from "./documentConverters";
+import supportedDocuments from "./supportedDocuments";
 import { getDocumentDetails } from '../../store/documents/documentActions';
 
 const FullDocument = (props) => {
@@ -11,10 +12,17 @@ const FullDocument = (props) => {
             props.match.params.id);
     }, []);
 
+    const document = (doc) => {
+        if (doc.rokMiesiac !== "")
+            return <div className="doc-det"><h3>{displayDate(doc.rokMiesiac)}</h3></div>
+        else
+            return <div className="doc-det"></div>
+    }
+
     return (
         <div className="doc-grid-2-auto-container width-80-white app-border-shadow">
-            <div className="doc-det"><h3>{filters.converDate(props.documentDetails.rokMiesiac)}</h3></div>
-            <div className="doc-det"><h3>{filters.translateDocumentType(props.documentDetails.typDeklaracji)}</h3></div>
+            {document(props.documentDetails)}
+            <div className="doc-det"><h3>{supportedDocuments.get(props.documentDetails.typDeklaracji)}</h3></div>
             <div className="doc-detail-header-item">wartość</div>
             <div className="doc-detail-header-item">opis</div>
             {

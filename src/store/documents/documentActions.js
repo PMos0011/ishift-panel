@@ -1,5 +1,7 @@
 import * as actionTypes from '../actions';
 import axios from 'axios'
+import { convertToDate } from '../../component/documents/documentConverters';
+import map from "../../component/documents/supportedDocuments";
 
 import { getToken } from '../authorization/authAction';
 
@@ -12,7 +14,9 @@ export const getAllDocuments = (id) => {
                 }
             })
             .then((response) => {
-                dispatch(setDocuments(response.data))
+                convertResponseToDate(response);
+                let options = createOptions(response);
+                dispatch(setDocuments(response.data, options))
             }).catch((err) => {
                 //TODO
                 console.log(err);
@@ -20,10 +24,36 @@ export const getAllDocuments = (id) => {
     }
 }
 
-const setDocuments = (documents) => {
+const convertResponseToDate = (response) => {
+    response.data.map(doc => {
+        doc.rokMiesiac = convertToDate(doc.rokMiesiac)
+    })
+    response.data.sort((a, b) => b.rokMiesiac - a.rokMiesiac);
+}
+
+const createOptions = (response) => {
+    let newMap = new Map(map);
+    let newObject = [];
+
+    response.data.map(doc => {
+        if (newMap.get(doc.typDeklaracji) !== undefined) {
+            newMap.delete(doc.typDeklaracji);
+            newObject.push({
+                value: doc.typDeklaracji,
+                label: map.get(doc.typDeklaracji)
+            })
+        }
+    })
+
+    return newObject;
+}
+
+
+const setDocuments = (documents, options) => {
     return {
         type: actionTypes.GET_ALL_DOCUMENTS,
-        documents: documents
+        documents: documents,
+        options: options,
     }
 }
 
@@ -36,6 +66,7 @@ export const getDocumentDetails = (dbId, id) => {
                 }
             })
             .then((response) => {
+                response.data.rokMiesiac = convertToDate(response.data.rokMiesiac);
                 dispatch(setDocumentdetails(response.data))
             }).catch((err) => {
                 //TODO
