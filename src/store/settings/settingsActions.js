@@ -34,7 +34,7 @@ const setLoginList = (list) => {
 export const changeAccessData = (newlogin, newPassword, oldPassword) => {
 
     return (dispatch) => {
-        axios.put(actionTypes.SERVER_ADDRESS + "/accessData",
+        axios.put(actionTypes.SERVER_ADDRESS + "/settings/accessData",
             {
                 newLogin: newlogin,
                 newPassword: newPassword,
@@ -47,24 +47,45 @@ export const changeAccessData = (newlogin, newPassword, oldPassword) => {
                 }
             })
             .then(() => {
-                dispatch(setErrorMessage("Udało się! Za chwilę zostaniesz wylogowany",false));
+                dispatch(setErrorMessage("Udało się! Za chwilę zostaniesz wylogowany", false));
                 setTimeout(() => dispatch(logoutUser()), 5000)
 
             }).catch((err) => {
                 if (err.response !== undefined) {
                     if (err.response.status === 400)
-                        dispatch(setErrorMessage("Nieprawidłowe hasło",true));
+                        dispatch(setErrorMessage("Nieprawidłowe hasło", true));
 
                     else if (err.response.status === 404)
-                        dispatch(setErrorMessage("Użytkownik nieznaleziony",true));
+                        dispatch(setErrorMessage("Użytkownik nieznaleziony", true));
 
                     else if (err.response.status === 409)
-                        dispatch(setErrorMessage("Nazwa użytkownika jest już zajęta",true));
+                        dispatch(setErrorMessage("Nazwa użytkownika jest już zajęta", true));
                 }
                 else
-                    dispatch(setErrorMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później",true));
+                    dispatch(setErrorMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));
 
 
+            })
+    }
+}
+
+export const changeMyData = (data, dataAccess) => {
+    return (dispatch) => {
+        axios.put(actionTypes.SERVER_ADDRESS + "/settings/myData/" + dataAccess,
+            data,
+            {
+                headers: {
+                    'Authorization': getToken()
+                }
+            })
+            .then(() => {
+                dispatch(setErrorMessage("dane zostały zmienione", false));
+            }).catch((err) => {
+                if (err.response !== undefined) {
+                        dispatch(setErrorMessage("Coś poszło nie tak", true));
+                }
+                else
+                    dispatch(setErrorMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));
             })
     }
 }

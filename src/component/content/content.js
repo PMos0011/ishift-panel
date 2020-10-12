@@ -9,6 +9,8 @@ import Documents from "../documents/allDocuments";
 import Customer from "../customers/customer";
 import FullDocument from "../documents/documentFullDetails";
 import PasswordChange from "../settings/passwordChange";
+import MyDataChanger from "../settings/myDataEdit";
+import MyBankAccounts from "../bankAccounts/bankAccounts";
 
 import { checkUserAuthentication } from '../../store/authorization/authAction';
 import { getAccOfficeData } from '../../store/accountingOffice/accOfficeAction';
@@ -42,6 +44,11 @@ const Content = (props) => {
                         exact
                     />
                     <Route
+                        path="/auth/bankAccounts/:id"
+                        component={MyBankAccounts}
+                        exact
+                    />
+                    <Route
                         path="/auth/customers"
                         component={Customers}
                     />
@@ -52,6 +59,10 @@ const Content = (props) => {
                     <Route
                         path="/auth/documents/:dbId/:id"
                         component={FullDocument}
+                    />
+                    <Route
+                        path="/auth/settings/data"
+                        component={MyDataChanger}
                     />
                     <Route
                         path="/auth/settings/pass"

@@ -1,31 +1,20 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import links from "./sidebarLinkBuilder";
 
-const Sidebar = (props) =>{
+const Sidebar = (props) => {
 
-
-    const customersSidebarLink = () =>{
-        return (<Link to='/auth/customers'>Klienci</Link>)
-    };
-
-    const myDataSidebarLink = () => {
-        const myLink = '/auth/customer/' + props.dataAccess;
-        return (<Link to={myLink}>Moje dane</Link>)
-    }
-
-    const documentsSidebaruLink = () =>{
-        const documentsLink = '/auth/documents/' + props.companyId;
-        return(<Link to={documentsLink}>Dokumenty</Link>)
-    };
-
-    return (
+   return (
         <div className="sidebar-container app-border-shadow">
-            {props.isAdmin?customersSidebarLink(): myDataSidebarLink()}
-            <br/>
-            {props.companyId!==""?documentsSidebaruLink():null}
-            <br/>
-            <Link to="/auth/settings/pass">Ustawienia</Link>
+            {links(props).map(elem => {
+                return (
+                    <Link key={elem.id}
+                        {...elem.elemconf}>
+                        {elem.label}
+                    </Link>
+                )
+            })}
         </div>
     )
 }
@@ -38,4 +27,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps) (Sidebar);
+export default connect(mapStateToProps)(Sidebar);

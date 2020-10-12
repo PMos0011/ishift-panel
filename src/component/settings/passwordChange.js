@@ -5,6 +5,7 @@ import Aux from "../../hoc/auxiliary";
 import { withAlert } from 'react-alert'
 
 import { changeAccessData } from "../../store/settings/settingsActions";
+import form from "./passwordChangeBaseBuild";
 
 const PassChange = (props) => {
 
@@ -17,58 +18,7 @@ const PassChange = (props) => {
     });
 
 
-    const [formComponents, setComponents] = useState({
-        userName: {
-            labelDesc: 'nowy Login',
-            secLebel: "Puste oznacza login bez zminay",
-            redLabel: false,
-            elemConf: {
-                type: 'text',
-                name: 'newUserName'
-            },
-            value: ''
-        },
-        newPassword: {
-            labelDesc: 'nowe hasło',
-            secLebel: "Puste oznacza hasło bez zminay",
-            redLabel: false,
-            elemConf: {
-                type: 'password',
-                name: 'newPassword'
-            },
-            value: ''
-        },
-        newPasswordConfirm: {
-            labelDesc: 'powtórz hasło',
-            secLebel: " ",
-            redLabel: false,
-            elemConf: {
-                type: 'password',
-                name: 'newPasswordConfirm'
-            },
-            value: ''
-        },
-        password: {
-            labelDesc: 'obecne hasło',
-            secLebel: "Podaj obecne hasło żeby autoryzować zmiany",
-            redLabel: false,
-            elemConf: {
-                type: 'password',
-                name: 'password'
-            },
-            value: ''
-        },
-        submit: {
-            labelDesc: '',
-            secLebel: "",
-            redLabel: false,
-            elemConf: {
-                type: 'submit',
-                name: 'Login'
-            },
-            value: 'Wyślij'
-        }
-    });
+    const [formComponents, setComponents] = useState(form);
 
     const formArray = [];
     for (let key in formComponents) {
@@ -138,12 +88,12 @@ const PassChange = (props) => {
     return (
         <Aux>
             <div className=" form-white-background app-border-shadow">
-                <form onSubmit={submitForm}>
+                <form className="text-x-large-input" onSubmit={submitForm}>
                     <div>
                         {formArray.map((component) => {
                             return (
                                 <label key={component.id}>{component.formConfig.labelDesc}
-                                    <input {...component.formConfig.elemConf}
+                                    <input className="text-x-large-input" {...component.formConfig.elemConf}
                                         value={component.formConfig.value}
                                         onChange={(event) => inputChangeHandler(event, component.id)} />
                                     <label className={component.formConfig.redLabel ? "sec-label red-label" : "sec-label"}>{component.formConfig.secLebel}</label>

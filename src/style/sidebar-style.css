@@ -5,3 +5,17 @@
     margin: 1vh;
     padding: 1vw;;
 }
+
+.main-item{
+    display: block;
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: large;
+  }
+
+  .sub-item{
+    display: block;
+    font-weight: 400;
+    font-size: medium;
+    margin-left: 10px;
+  }

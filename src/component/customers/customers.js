@@ -51,12 +51,3 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Customers);
-
-
-{/* <Link
-className="doc-grid-2-container link-item item-grid-2-full"
-to={'/auth/documents/' + customer.id}>
-<div>{counter}</div>
-<div>{customer.companyName} </div>
-
-</Link><hr className="item-grid-2-full" /> */}

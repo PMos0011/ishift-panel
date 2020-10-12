@@ -6,6 +6,8 @@ import { connect } from "react-redux";
 import Aux from '../../hoc/auxiliary';
 import * as actions from '../../store/authorization/authAction';
 
+import form from './loginFormBaseBuild';
+
 const LoginForm = (props) => {
 
     useEffect(() => {
@@ -28,32 +30,7 @@ const LoginForm = (props) => {
         }
 
     }
-    const [formComponents, setComponents] = useState({
-        userName: {
-            labelDesc: 'Login',
-            elemConf: {
-                type: 'text',
-                name: 'userName'
-            },
-            value: ''
-        },
-        password: {
-            labelDesc: 'Hasło',
-            elemConf: {
-                type: 'password',
-                name: 'password'
-            },
-            value: ''
-        },
-        submit: {
-            labelDesc: '',
-            elemConf: {
-                type: 'submit',
-                name: 'Login'
-            },
-            value: 'Login'
-        }
-    });
+    const [formComponents, setComponents] = useState(form);
 
     const formArray = [];
     for (let key in formComponents) {
@@ -95,12 +72,12 @@ const LoginForm = (props) => {
         <Aux>
             <div className="gray-card flex-center app-border-shadow">
                 {redirectToBasicsInfo}
-                <form onSubmit={submitForm}>
+                <form className="text-x-large-input" onSubmit={submitForm}>
                     <div>
                         {formArray.map((component) => {
                             return (
                                 <label key={component.id}>{component.formConfig.labelDesc}
-                                    <input {...component.formConfig.elemConf}
+                                    <input  className="text-x-large-input" {...component.formConfig.elemConf}
                                         value={component.formConfig.value}
                                         onChange={(event) => inputChangeHandler(event, component.id)} />
                                 </label>

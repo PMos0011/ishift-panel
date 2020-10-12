@@ -80,3 +80,21 @@ a{
 a:visited{
   color: black;
 }
+
+.margin-top-5{
+  margin-top: 5vh;
+}
+
+.icon-size{
+  width: 30px;
+  margin:10px;
+}
+
+.icon-add{
+  width: 50px;
+  margin:10px;
+}
+
+.direction-rtl{
+  direction: rtl;
+}

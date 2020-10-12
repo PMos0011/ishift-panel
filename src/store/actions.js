@@ -22,3 +22,6 @@ export const GET_DOCUMENT_FULL_DETAILS = "GET_DOCUMENT_FULL_DETAILS";
 
 //settings actions
 export const GET_LOGIN_LIST = "GET_LOGIN_LIST";
+
+//bank accounts actions
+export const GET_BANK_ACCOUNTS = " GET_BANK_ACCOUNTS";

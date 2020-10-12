@@ -1,5 +1,6 @@
 export const convertToDate = (date) => {
-    return new Date(date.toString().slice(0, 4) + "." + date.toString().slice(4));
+
+    return new Date(date.toString().slice(0, 4) + "/" + date.toString().slice(4) + "/01");
 };
 
 export const displayDate = (date) => {

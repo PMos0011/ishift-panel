@@ -12,6 +12,7 @@ const Picker = (props) => {
     <Aux>
       <h3>od dnia:</h3>
       <DatePicker
+        className="text-x-large-input"
         dateFormat="MM.yyyy"
         selected={props.startDate}
         onChange={date => props.setStartDate(date)}
@@ -25,6 +26,7 @@ const Picker = (props) => {
       />
       <h3>do dnia:</h3>
       <DatePicker
+        className="text-x-large-input"
         selected={props.endDate}
         dateFormat="MM.yyyy"
         onChange={date => props.setEndDate(date)}

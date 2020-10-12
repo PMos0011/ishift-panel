@@ -2,7 +2,7 @@ form {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: x-large;
+  font-size: medium;
 }
 
 label {
@@ -14,7 +14,6 @@ label {
 input[type="text"],
 input[type="password"] {
   margin-top: 1vh;
-  font-size: x-large;
   border-radius: 5px;
   border-width: 1px;
   background-color: #e6e6e6;
@@ -58,7 +57,7 @@ input[type="submit"]:hover {
 
 .form-white-background{
   background-color: white;
-  width: 80vh;
+  width: 90%;
 }
 
 .red-label{
@@ -69,3 +68,12 @@ input[type="submit"]:hover {
   font-weight: 700;
   font-size: x-large;
 }
+
+.text-medium-input{
+  font-size: medium;
+}
+
+.text-x-large-input{
+  font-size: x-large;
+}
+
