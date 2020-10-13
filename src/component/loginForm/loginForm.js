@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import Aux from '../../hoc/auxiliary';
 import * as actions from '../../store/authorization/authAction';
 
-import form from './loginFormBaseBuild';
+import form from './loginFormBuild';
 
 const LoginForm = (props) => {
 

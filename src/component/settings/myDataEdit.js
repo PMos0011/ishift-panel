@@ -4,7 +4,7 @@ import Aux from "../../hoc/auxiliary";
 import { withAlert } from 'react-alert'
 
 import { changeMyData } from "../../store/settings/settingsActions";
-import form from "./myDataEditBaseBuild";
+import form from "./myDataEditFormBuild";
 
 const MyDataChange = (props) => {
 
@@ -72,7 +72,6 @@ const MyDataChange = (props) => {
     }
 
     return (
-        <Aux>
             <div className=" form-white-background app-border-shadow">
                 <form onSubmit={submitForm}>
                     <div className="doc-grid-2-auto-container doc-grid-fill">
@@ -90,7 +89,6 @@ const MyDataChange = (props) => {
                     </div>
                 </form>
             </div>
-        </Aux>
     )
 };
 

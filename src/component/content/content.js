@@ -11,6 +11,7 @@ import FullDocument from "../documents/documentFullDetails";
 import PasswordChange from "../settings/passwordChange";
 import MyDataChanger from "../settings/myDataEdit";
 import MyBankAccounts from "../bankAccounts/bankAccounts";
+import MyAccountEdit from "../bankAccounts/bankAccountsEdit";
 
 import { checkUserAuthentication } from '../../store/authorization/authAction';
 import { getAccOfficeData } from '../../store/accountingOffice/accOfficeAction';
@@ -68,6 +69,9 @@ const Content = (props) => {
                         path="/auth/settings/pass"
                         component={PasswordChange}
                     />
+                    <Route
+                        path="/auth/bankAccounts/edit/:dbId/:id"
+                        component={MyAccountEdit} />
                 </div>
             </div>
         </Aux>

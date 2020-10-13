@@ -1,11 +1,14 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import Aux from '../../hoc/auxiliary';
+
 import deleteIcon from '../../images/delete_icon.svg';
 import editIcon from '../../images/edit_icon.svg';
 import addIcon from "../../images/add_icon.svg";
 
-import { getBankAccountsData } from "../../store/bankAccounts/bankActions";
+import { getBankAccountsData, deleteBankAccount } from "../../store/bankAccounts/bankActions";
+import deleteAction from "../deleteConfirmation";
 
 import * as converter from './converters';
 
@@ -24,13 +27,20 @@ const Customer = (props) => {
                         <div className="doc-det">{converter.addressConverter(acc)}</div>
                         <div className="doc-det">{acc.zipCode + " " + acc.city}</div>
                         <div className="item-grid-4-full direction-rtl">
-                            <img className="icon-size" src={deleteIcon} alt="delete" />
-                            <img className="icon-size " src={editIcon} alt="delete" />
+                            <img onClick={() =>
+                                deleteAction(props.match.params.id, acc.id, "konta", props.deleteAccoount)}
+                                className="icon-size"
+                                src={deleteIcon} alt="delete" />
+                            <Link to={"/auth/bankAccounts/edit/" + props.match.params.id + "/" + acc.id}>
+                                <img className="icon-size " src={editIcon} alt="delete" />
+                            </Link>
                         </div>
                     </Aux>
                 );
             })}
-            <img className="icon-add" src={addIcon} alt="delete" />
+            <Link to={"/auth/bankAccounts/edit/" + props.match.params.id + "/0"}>
+                <img className="icon-add" src={addIcon} alt="delete" />
+            </Link>
         </div>)
 }
 
@@ -44,6 +54,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onLoad: (id) => dispatch(getBankAccountsData(id)),
+        deleteAccoount: (access, id) => dispatch(deleteBankAccount(access, id))
     };
 };
 
