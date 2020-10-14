@@ -22,19 +22,20 @@ const Customer = (props) => {
             {props.myAccounts.map(acc => {
                 return (
                     <Aux key={acc.id}>
-                        <div className="doc-det">{converter.accountNumberConverter(acc.accountNumber)}</div>
-                        <div className="doc-det">{acc.bankName}</div>
-                        <div className="doc-det">{converter.addressConverter(acc)}</div>
-                        <div className="doc-det">{acc.zipCode + " " + acc.city}</div>
+                        <div className="doc-item-thin">{converter.accountNumberConverter(acc.accountNumber)}</div>
+                        <div className="doc-item-thin">{acc.bankName}</div>
+                        <div className="doc-item-thin">{converter.addressConverter(acc)}</div>
+                        <div className="doc-item-thin">{acc.zipCode + " " + acc.city}</div>
                         <div className="item-grid-4-full direction-rtl">
                             <img onClick={() =>
                                 deleteAction(props.match.params.id, acc.id, "konta", props.deleteAccoount)}
-                                className="icon-size"
+                                className="icon-size pointer-on-hover"
                                 src={deleteIcon} alt="delete" />
                             <Link to={"/auth/bankAccounts/edit/" + props.match.params.id + "/" + acc.id}>
                                 <img className="icon-size " src={editIcon} alt="delete" />
                             </Link>
                         </div>
+                        <hr className="item-grid-4-full" />
                     </Aux>
                 );
             })}

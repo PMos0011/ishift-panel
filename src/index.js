@@ -15,6 +15,8 @@ import documentReducer from './store/documents/documentReducer';
 import accOfficeReducer from './store/accountingOffice/accOfficeReducer';
 import settingsReducer from './store/settings/settingsReducer';
 import bankReducer from "./store/bankAccounts/bankReducer";
+import contractorsReducer from "./store/contractors/contractorsReducer";
+import commodityReducer from "./store/commodity/commodityReducer";
 
 const rootReducer = combineReducers({
   errorReducer,
@@ -23,7 +25,9 @@ const rootReducer = combineReducers({
   documentReducer,
   accOfficeReducer,
   settingsReducer,
-  bankReducer
+  bankReducer,
+  contractorsReducer,
+  commodityReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

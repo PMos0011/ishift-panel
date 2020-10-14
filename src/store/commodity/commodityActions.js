@@ -4,16 +4,16 @@ import axios from 'axios'
 import { setErrorMessage } from '../errosHandling/errorActions';
 import { getToken } from '../authorization/authAction';
 
-export const getBankAccountsData = (id) => {
+export const getCommoditiesData = (id) => {
     return (dispatch) => {
-        axios.get(actionTypes.SERVER_ADDRESS + "/bankAccounts/" + id,
+        axios.get(actionTypes.SERVER_ADDRESS + "/commodity/" + id,
             {
                 headers: {
                     'Authorization': getToken()
                 }
             })
             .then((response) => {
-                dispatch(setBankAccounts(response.data)
+                dispatch(setCommodities(response.data)
                 )
             }).catch((err) => {
                 //TODO
@@ -22,16 +22,17 @@ export const getBankAccountsData = (id) => {
     }
 }
 
-const setBankAccounts = (data) => {
+const setCommodities = (data) => {
+    data =  data.sort((a,b)=>a.name.localeCompare(b.name))
     return {
-        type: actionTypes.GET_BANK_ACCOUNTS,
+        type: actionTypes.GET_COMMODITY,
         data: data
     }
 }
 
-export const saveBankAccount = (data, dataAccess) => {
+export const saveCommodity = (data, dataAccess) => {
     return (dispatch) => {
-        axios.put(actionTypes.SERVER_ADDRESS + "/bankAccounts/" + dataAccess,
+        axios.put(actionTypes.SERVER_ADDRESS + "/commodity/" + dataAccess,
             data,
             {
                 headers: {
@@ -39,7 +40,7 @@ export const saveBankAccount = (data, dataAccess) => {
                 }
             })
             .then((response) => {
-                dispatch(setBankAccounts(response.data))
+                dispatch(setCommodities(response.data))
             }).catch((err) => {
                 if (err.response !== undefined) {
                         dispatch(setErrorMessage("Coś poszło nie tak", true));
@@ -50,16 +51,16 @@ export const saveBankAccount = (data, dataAccess) => {
     }
 }
 
-export const deleteBankAccount = (dataAccess, id) => {
+export const deleteCommodity = (dataAccess, id) => {
     return (dispatch) => {
-        axios.delete(actionTypes.SERVER_ADDRESS + "/bankAccounts/" + dataAccess + "/"+ id,
+        axios.delete(actionTypes.SERVER_ADDRESS + "/commodity/" + dataAccess + "/"+ id,
             {
                 headers: {
                     'Authorization': getToken()
                 }
             })
             .then((response) => {
-                dispatch(setBankAccounts(response.data))
+                dispatch(setCommodities(response.data))
             }).catch((err) => {
                 if (err.response !== undefined) {
                         dispatch(setErrorMessage("Coś poszło nie tak", true));

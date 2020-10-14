@@ -13,7 +13,9 @@ label {
 
 input[type="text"],
 input[type="password"],
-input[type="number"] {
+input[type="number"],
+input[type="email"],
+input[type="tel"] {
   margin-top: 1vh;
   border-radius: 5px;
   border-width: 1px;
@@ -23,14 +25,18 @@ input[type="number"] {
 
 input[type="text"]:hover,
 input[type="password"]:hover,
-input[type="number"]:hover {
+input[type="number"]:hover,
+input[type="email"]:hover,
+input[type="tel"]:hover {
   background-color: #fff;
   transition: all 0.5s;
 }
 
 input[type="text"]:focus,
 input[type="password"]:focus,
-input[type="number"]:focus {
+input[type="number"]:focus,
+input[type="email"]:hover,
+input[type="tel"]:hover {
   background-color: #fff;
   transition: all 0.5s;
 }
@@ -78,5 +84,15 @@ input[type="submit"]:hover {
 
 .text-x-large-input{
   font-size: x-large;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }
 

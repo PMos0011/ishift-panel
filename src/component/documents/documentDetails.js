@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
+import infoIcon from "../../images/info_icon.svg";
+import docIcon from "../../images/fullDoc_icon.svg";
+
 import Aux from '../../hoc/auxiliary';
 
 const Document = (props) => {
@@ -28,22 +31,19 @@ const Document = (props) => {
                         )
                     })
                 }
-                <div className="item-end doc-grid-2-auto-container">
-                    <Link to={fullDocLink}>pełny</Link>
-                    <div onClick={toggle}>ukryj</div>
-                </div>
             </Aux>
         )
     }
 
-    const showToggle = <div className="item-end doc-grid-2-auto-container">
-        <Link to={fullDocLink}>pełny</Link>
-        <div onClick={toggle}>szczegóły</div>
+    const showToggle =  <div className="item-end doc-grid-2-auto-container">
+    <img onClick={toggle} className="icon-size pointer-on-hover" src={infoIcon} alt="info" />
+        <Link to={fullDocLink}><img className="icon-size " src={docIcon} alt="full document" /></Link>          
     </div>
 
     return (
         <div className="doc-grid-2-container">
-            {isHide ? showToggle : details()}
+            {isHide ? null : details()}
+            {showToggle}
         </div>
     )
 }

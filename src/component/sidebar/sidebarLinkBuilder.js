@@ -36,7 +36,24 @@ const form = (props) => {
             }
         );
 
-        if (props.companyId !== "")
+    links.push({
+        id: "invoices",
+        elemconf: {
+            to: "/auth/invoice/" + props.companyId + "/0",
+            className: "main-item"
+        },
+        label: "Faktury"
+    });
+    links.push({
+        id: "newInvoices",
+        elemconf: {
+            to: "/auth/invoice/" + props.companyId + "/0",
+            className: "sub-item"
+        },
+        label: "Nowa faktura"
+    })
+
+    if (props.companyId !== "") {
         links.push(
             {
                 id: "bankAccounts",
@@ -47,6 +64,59 @@ const form = (props) => {
                 label: "Rachunki bankowe"
             }
         );
+        links.push({
+            id: "newBankAccount",
+            elemconf: {
+                to: "/auth/bankAccounts/edit/" + props.companyId + "/0",
+                className: "sub-item"
+            },
+            label: "Dodaj konto bankowe"
+        });
+    };
+
+    if (props.companyId !== "") {
+        links.push(
+            {
+                id: "contractors",
+                elemconf: {
+                    to: "/auth/contractors/" + props.companyId,
+                    className: "main-item"
+                },
+                label: "Kontrahenci"
+            }
+        );
+        links.push({
+            id: "newContractor",
+            elemconf: {
+                to: "/auth/contractors/edit/" + props.companyId + "/0",
+                className: "sub-item"
+            },
+            label: "Dodaj kontrahenta"
+        });
+    };
+
+    if (props.companyId !== "") {
+        links.push(
+            {
+                id: "commodity",
+                elemconf: {
+                    to: "/auth/commodity/" + props.companyId,
+                    className: "main-item"
+                },
+                label: "Towary i usługi"
+            }
+        );
+        links.push({
+            id: "newCommodity",
+            elemconf: {
+                to: "/auth/commodity/edit/" + props.companyId + "/0",
+                className: "sub-item"
+            },
+            label: "Dodaj towar/usługę"
+        });
+        ;
+    }
+
 
     links.push(
         {

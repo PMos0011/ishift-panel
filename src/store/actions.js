@@ -25,3 +25,9 @@ export const GET_LOGIN_LIST = "GET_LOGIN_LIST";
 
 //bank accounts actions
 export const GET_BANK_ACCOUNTS = " GET_BANK_ACCOUNTS";
+
+//contractors actions
+export const GET_CONTRACTORS = "GET_CONTRACTORS";
+
+//commodity actions
+export const GET_COMMODITY = "GET_COMMODITY";

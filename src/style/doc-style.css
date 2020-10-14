@@ -12,6 +12,12 @@
   grid-template-rows: auto;
 }
 
+.doc-grid-4-container-commomdity {
+  display: grid;
+  grid-template-columns: 15% auto 15% 20%;
+  grid-template-rows: auto;
+}
+
 .doc-grid-5-container-auto {
   display: grid;
   width: 80%;
@@ -99,6 +105,14 @@
   color: black;
   padding: 1.5vh;
   transition: all 0.5s;
+}
+
+.doc-item-thin{
+  font-size: medium;
+font-weight: 400;
+color: black;
+padding: 1vh;
+transition: all 0.5s;
 }
 
 .doc-detail-header-item {

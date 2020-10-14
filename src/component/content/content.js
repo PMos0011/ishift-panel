@@ -3,6 +3,7 @@ import { Route, Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 
 import Aux from '../../hoc/auxiliary';
+
 import Sidebar from '../sidebar/sidebar';
 import Customers from "../customers/customers";
 import Documents from "../documents/allDocuments";
@@ -11,11 +12,22 @@ import FullDocument from "../documents/documentFullDetails";
 import PasswordChange from "../settings/passwordChange";
 import MyDataChanger from "../settings/myDataEdit";
 import MyBankAccounts from "../bankAccounts/bankAccounts";
-import MyAccountEdit from "../bankAccounts/bankAccountsEdit";
+import Invoice from "../invoices/invoice";
+import Contractors from "../contractors/contractors";
+import Commodities from "../commodity/commodities";
+
+import SubmitForm from "../submitForm";
+import bankAccountForm, { newObject as newBankAccountObject } from "../bankAccounts/bankAccountFormBuilder";
+import contractorForm, { newObject as newContractorObject } from "../contractors/contractorFormBuilder";
+import commodityForm, { newObject as newCommodityObject, unitsMap } from "../commodity/commodityFormBuilder";
 
 import { checkUserAuthentication } from '../../store/authorization/authAction';
 import { getAccOfficeData } from '../../store/accountingOffice/accOfficeAction';
+import { saveBankAccount } from '../../store/bankAccounts/bankActions';
+import { saveContractor } from "../../store/contractors/contractorsActions";
+import { saveCommodity } from "../../store/commodity/commodityActions";
 import * as customerActions from '../../store/customers/customersActions';
+
 
 
 const Content = (props) => {
@@ -69,9 +81,62 @@ const Content = (props) => {
                         path="/auth/settings/pass"
                         component={PasswordChange}
                     />
+
                     <Route
                         path="/auth/bankAccounts/edit/:dbId/:id"
-                        component={MyAccountEdit} />
+                        component={
+                            (p) => (<SubmitForm {...p}
+                                dataToChange={props.bankAccounts}
+                                form={bankAccountForm}
+                                newObject={newBankAccountObject}
+                                redirectTo="/auth/bankAccounts/"
+                                onSubmit={props.onBankAccountSubmit}
+                            />)
+                        }
+                    />
+
+                    <Route
+                        path="/auth/invoice/:dbId/:id"
+                        component={Invoice} />
+
+                    <Route
+                        path="/auth/contractors/:id"
+                        component={Contractors}
+                        exact />
+                    <Route
+                        path="/auth/contractors/edit/:dbId/:id"
+                        component={
+                            (p) => (<SubmitForm {...p}
+                                dataToChange={props.contractors}
+                                form={contractorForm}
+                                newObject={newContractorObject}
+                                redirectTo="/auth/contractors/"
+                                onSubmit={props.onContractorSubmit}
+                            />)
+                        }
+                    />
+
+
+                    <Route
+                        path="/auth/commodity/:id"
+                        component={Commodities}
+                        exact />
+                         <Route
+                        path="/auth/commodity/edit/:dbId/:id"
+                        component={
+                            (p) => (<SubmitForm {...p}
+                                dataToChange={props.commodities}
+                                form={commodityForm}
+                                newObject={newCommodityObject}
+                                redirectTo="/auth/commodity/"
+                                onSubmit={props.onCommoditySubmit}
+                                selectLabel="Jednostka miary:"
+                                selectOptions={unitsMap}
+                                selectBindValue="measure"
+                            />)
+                        }
+                    />
+
                 </div>
             </div>
         </Aux>
@@ -83,7 +148,10 @@ const mapStateToProps = (state) => {
         isAuth: state.authReducer.isAuthenticated,
         officeId: state.authReducer.dataAccess,
         officeData: state.accOfficeReducer.officeData,
-        customer: state.customersReducer.customer
+        customer: state.customersReducer.customer,
+        bankAccounts: state.bankReducer.bankAccounts,
+        contractors: state.contractorsReducer.contractors,
+        commodities: state.commodityReducer.commodities,
     };
 };
 
@@ -91,7 +159,10 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onLoad: () => dispatch(checkUserAuthentication()),
         getOfficeData: (id) => dispatch(getAccOfficeData(id)),
-        getCompanyData: (id) => dispatch(customerActions.getCustomerData(id))
+        getCompanyData: (id) => dispatch(customerActions.getCustomerData(id)),
+        onBankAccountSubmit: (data, access) => dispatch(saveBankAccount(data, access)),
+        onContractorSubmit: (data, access) => dispatch(saveContractor(data, access)),
+        onCommoditySubmit: (data, access) => dispatch(saveCommodity(data, access)),
     };
 };
 

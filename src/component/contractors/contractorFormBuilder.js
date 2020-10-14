@@ -1,28 +1,37 @@
-let form = (acc) => {
+let form = (contractor) => {
 
     return [
         {
-            id: "accountNumber",
-            label: "Numer konta:",
-            value: acc.accountNumber,
+            id: "name",
+            label: "Kontrahent:",
+            value: contractor.name,
             elemConf: {
-                type: "number",
-                name: "accountNumber"
+                type: "text",
+                name: "name"
             }
         },
         {
-            id: "bankName",
-            label: "Nazwa banku:",
-            value: acc.bankName,
+            id: "nip",
+            label: "NIP:",
+            value: contractor.nip,
             elemConf: {
-                type: "text",
-                name: "bankName"
+                type: "number",
+                name: "nip"
+            }
+        },
+        {
+            id: "regon",
+            label: "REGON: ",
+            value: contractor.regon,
+            elemConf: {
+                type: "number",
+                name: "regon"
             }
         },
         {
             id: "zipCode",
             label: "Kod pocztowy: ",
-            value: acc.zipCode,
+            value: contractor.zipCode,
             elemConf: {
                 type: "text",
                 name: "zipCode"
@@ -31,7 +40,7 @@ let form = (acc) => {
         {
             id: "city",
             label: "Miasto:",
-            value: acc.city,
+            value: contractor.city,
             elemConf: {
                 type: "text",
                 name: "city"
@@ -40,7 +49,7 @@ let form = (acc) => {
         {
             id: "street",
             label: "Ulica: ",
-            value: acc.street,
+            value: contractor.street,
             elemConf: {
                 type: "text",
                 name: "street"
@@ -49,7 +58,7 @@ let form = (acc) => {
         {
             id: "streetNumber",
             label: "Numer domu:",
-            value: acc.streetNumber,
+            value: contractor.streetNumber,
             elemConf: {
                 type: "text",
                 name: "streetNumber"
@@ -58,30 +67,42 @@ let form = (acc) => {
         {
             id: "localNumber",
             label: "Numer lokalu:",
-            value: acc.localNumber,
+            value: contractor.localNumber,
             elemConf: {
                 type: "text",
                 name: "localNumber"
             }
         },
         {
-            id: "submit",
-            label: "",
-            value: "Wyślij",
+            id: "phoneNumber",
+            label: "Numer telefonu:",
+            value: contractor.phoneNumber,
             elemConf: {
-                type: "submit",
-                name: "submit"
+                type: "tel",
+                name: "phoneNumber"
+            }
+        },
+        {
+            id: "email",
+            label: "Adres e-mail:",
+            value: contractor.email,
+            elemConf: {
+                type: "email",
+                name: "email"
             }
         }
     ]
 }
 
-export let newBankAccountObject = {
-    accountNumber: "",
-    bankName: "",
+export let newObject = {
     city: "",
+    email: "",
     id: "",
     localNumber: "",
+    name: "",
+    nip: "",
+    phoneNumber: "",
+    regon: "",
     street: "",
     streetNumber: "",
     zipCode: ""

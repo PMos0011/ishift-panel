@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import Aux from "../../hoc/auxiliary";
+import Aux from "../hoc/auxiliary";
 import { withAlert } from 'react-alert'
-
-import { saveBankAccount } from "../../store/bankAccounts/bankActions";
-import form, { newBankAccountObject } from "./bankAccountEditFormBuilder";
+import Select from 'react-select';
 
 const MyBankAccounts = (props) => {
 
@@ -17,28 +15,28 @@ const MyBankAccounts = (props) => {
                 props.alert.success(props.errorMessage);
     });
 
-    let bankAccountData = props.myAccounts.find(acc => acc.id == props.match.params.id)
+    let object = props.dataToChange.find(obj => obj.id == props.match.params.id)
 
-    if (bankAccountData === undefined)
-        bankAccountData = newBankAccountObject;
+    if (object === undefined)
+        object = props.newObject;
 
-    const [bankaccountData, setComponents] = useState(bankAccountData);
+    const [formObject, setComponents] = useState(object);
     const [redirect, setRedirect] = useState(false);
 
-    let redirectToAccounts = null;
+    let redirectTo = null;
     if (redirect)
-        redirectToAccounts = <Redirect to={"/auth/bankAccounts/" + props.match.params.dbId} />
+        redirectTo = <Redirect to={props.redirectTo + props.match.params.dbId} />
 
 
-    let inputChangeHandler = (event, inputId) => {
+    let inputChangeHandler = (value, inputId) => {
 
         let updatedForm = {
-            ...bankaccountData
+            ...formObject
         };
 
         let updatedElement = updatedForm[inputId];
 
-        updatedElement = event.target.value;
+        updatedElement = value;
         updatedForm[inputId] = updatedElement;
 
         setComponents(updatedForm);
@@ -46,30 +44,49 @@ const MyBankAccounts = (props) => {
 
     const submitForm = (event) => {
         event.preventDefault();
-        
+
         props.onSubmit(
-            bankaccountData,
-            props.dataAccess
+            formObject,
+            props.match.params.dbId
         );
-setRedirect(true);
+        setRedirect(true);
     }
+
+    const setSelectorOptions = (data) => {
+        inputChangeHandler(data.label,props.selectBindValue);
+    }
+
+    const selector =
+        <Aux>
+            <label>{props.selectLabel}</label>
+            <Select
+            className="margin-top-1"
+                placeholder="Wybierz jednostkę"
+                defaultValue={props.selectOptions[0]}
+                options={props.selectOptions}
+                onChange={setSelectorOptions} />
+        </Aux>
+
 
 
     return (
         <div className=" form-white-background app-border-shadow">
-            {redirectToAccounts}
+            {redirectTo}
             <form onSubmit={submitForm}>
                 <div className="doc-grid-2-auto-container doc-grid-fill">
-                    {form(bankaccountData).map(formInput => {
+                    {props.form(formObject).map(formInput => {
                         return (
                             <Aux key={formInput.id}>
                                 <label>{formInput.label}</label>
                                 <input {...formInput.elemConf}
                                     value={formInput.value}
-                                    onChange={(event) => inputChangeHandler(event, formInput.id)}
-                                /></Aux>
+                                    onChange={(event) => inputChangeHandler(event.target.value, formInput.id)}
+                                />
+                            </Aux>
                         )
                     })}
+                    {props.selectLabel !== undefined ? selector : null}
+                    <label /><input type="submit" value="wyślij" />
                 </div>
             </form>
         </div>
@@ -80,15 +97,7 @@ const mapStateToProps = (state) => {
     return {
         errorMessage: state.errorReducer.errorMessage,
         isErrorAlert: state.errorReducer.errorAlert,
-        myAccounts: state.bankReducer.bankAccounts,
-        dataAccess: state.authReducer.dataAccess
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onSubmit: (data, access) => dispatch(saveBankAccount(data, access)),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withAlert()(MyBankAccounts));
+export default connect(mapStateToProps)(withAlert()(MyBankAccounts));
