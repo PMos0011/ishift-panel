@@ -6,7 +6,6 @@ import { withAlert } from 'react-alert'
 import Select from 'react-select';
 
 const MyBankAccounts = (props) => {
-
     useEffect(() => {
         if (props.errorMessage !== "")
             if (props.isErrorAlert)
@@ -53,27 +52,35 @@ const MyBankAccounts = (props) => {
     }
 
     const setSelectorOptions = (data) => {
-        inputChangeHandler(data.label,props.selectBindValue);
+         inputChangeHandler(data.value, props.selectBindValue);
     }
 
-    const selector =
-        <Aux>
-            <label>{props.selectLabel}</label>
-            <Select
-            className="margin-top-1"
-                placeholder="Wybierz jednostkę"
-                defaultValue={props.selectOptions[0]}
-                options={props.selectOptions}
-                onChange={setSelectorOptions} />
-        </Aux>
+    let selector = null;
 
+    if (props.selectLabel !== undefined) {
+
+        let option = props.selectOptions[0];
+        if (object.id !== "")
+            option = props.selectOptions.find(e => e.value === object.measureId)
+
+        selector =
+            <Aux>
+                <label>{props.selectLabel}</label>
+                <Select
+                    className="margin-top-1"
+                    placeholder="Wybierz jednostkę"
+                    defaultValue={option}
+                    options={props.selectOptions}
+                    onChange={setSelectorOptions} />
+            </Aux>
+    }
 
 
     return (
         <div className=" form-white-background app-border-shadow">
             {redirectTo}
             <form onSubmit={submitForm}>
-                <div className="doc-grid-2-auto-container doc-grid-fill">
+                <div className="doc-grid-2-auto-container full-width doc-grid-fill">
                     {props.form(formObject).map(formInput => {
                         return (
                             <Aux key={formInput.id}>
@@ -85,7 +92,7 @@ const MyBankAccounts = (props) => {
                             </Aux>
                         )
                     })}
-                    {props.selectLabel !== undefined ? selector : null}
+                    {selector}
                     <label /><input type="submit" value="wyślij" />
                 </div>
             </form>

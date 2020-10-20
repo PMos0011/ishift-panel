@@ -1,8 +1,8 @@
 import * as actionTypes from '../actions';
 import * as errorHandling from '../errosHandling/errorActions';
-import { getCustomerData } from "../customers/customersActions";
+import {getMeasures} from "../commodity/commodityActions";
+import {getInvoiceTypes} from "../invoice/invoiceAction";
 import jwt_decode from "jwt-decode";
-
 
 import axios from 'axios';
 
@@ -14,6 +14,10 @@ export const authorizeUser = (userName, password) => {
         })
             .then((response) => {
                 dispatch(setToken(response.headers.authorization, response.headers.expires));
+
+                //TODO refactor functions belowe
+                dispatch(getMeasures());
+                dispatch(getInvoiceTypes());
             }).catch((err) => {
                 if (err.response !== undefined) {
                     if (err.response.status === 403){
@@ -27,7 +31,7 @@ export const authorizeUser = (userName, password) => {
     }
 }
 
-const newAuthData = (token, expireDate) =>{
+export const newAuthData = (token, expireDate) =>{
     let decodedToken = jwt_decode(token);
     let isAdmin = false;
     let access = "";
@@ -50,7 +54,7 @@ const newAuthData = (token, expireDate) =>{
     return newAuthData
 }
 
-const setToken = (token, expireDate) => {
+export const setToken = (token, expireDate) => {
 
     localStorage.setItem("token", token);
     localStorage.setItem("expireDate", expireDate);
@@ -83,33 +87,7 @@ export const logoutUser = () => {
     }
 }
 
-export const firstLoad = () => {
 
-    const token = localStorage.getItem("token");
-    const expiratinDate = localStorage.getItem("expireDate");
-
-    if (token !== null
-        && expiratinDate !== null) {
-
-        const authData = newAuthData(token, expiratinDate);
-
-        const getData = () => {
-            if (!authData.isAdmin)
-                return getCustomerData(authData.dataAccess);
-            else
-                return { type: null }
-
-        }
-
-        return (dispatch) => {
-            dispatch(setToken(token, expiratinDate),
-            dispatch(getData()),
-            );
-        }
-    }
-
-    return { type: null }
-}
 
 export const getToken = () => {
     return localStorage.getItem("token")

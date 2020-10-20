@@ -13,13 +13,14 @@ import PasswordChange from "../settings/passwordChange";
 import MyDataChanger from "../settings/myDataEdit";
 import MyBankAccounts from "../bankAccounts/bankAccounts";
 import Invoice from "../invoices/invoice";
+import InvoiceForm from "../invoices/invoiceForm";
 import Contractors from "../contractors/contractors";
 import Commodities from "../commodity/commodities";
 
 import SubmitForm from "../submitForm";
 import bankAccountForm, { newObject as newBankAccountObject } from "../bankAccounts/bankAccountFormBuilder";
 import contractorForm, { newObject as newContractorObject } from "../contractors/contractorFormBuilder";
-import commodityForm, { newObject as newCommodityObject, unitsMap } from "../commodity/commodityFormBuilder";
+import commodityForm, { newObject as newCommodityObject } from "../commodity/commodityFormBuilder";
 
 import { checkUserAuthentication } from '../../store/authorization/authAction';
 import { getAccOfficeData } from '../../store/accountingOffice/accOfficeAction';
@@ -97,7 +98,12 @@ const Content = (props) => {
 
                     <Route
                         path="/auth/invoice/:dbId/:id"
-                        component={Invoice} />
+                        component={Invoice}
+                        exact />
+
+                        <Route
+                        path="/auth/invoice/edit/:dbId/:id"
+                        component={InvoiceForm} />
 
                     <Route
                         path="/auth/contractors/:id"
@@ -121,6 +127,7 @@ const Content = (props) => {
                         path="/auth/commodity/:id"
                         component={Commodities}
                         exact />
+
                          <Route
                         path="/auth/commodity/edit/:dbId/:id"
                         component={
@@ -131,8 +138,8 @@ const Content = (props) => {
                                 redirectTo="/auth/commodity/"
                                 onSubmit={props.onCommoditySubmit}
                                 selectLabel="Jednostka miary:"
-                                selectOptions={unitsMap}
-                                selectBindValue="measure"
+                                selectOptions={props.measures}
+                                selectBindValue="measureId"
                             />)
                         }
                     />
@@ -152,6 +159,7 @@ const mapStateToProps = (state) => {
         bankAccounts: state.bankReducer.bankAccounts,
         contractors: state.contractorsReducer.contractors,
         commodities: state.commodityReducer.commodities,
+        measures: state.commodityReducer.measures
     };
 };
 

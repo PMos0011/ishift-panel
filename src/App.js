@@ -2,14 +2,14 @@ import React, { useEffect } from 'react';
 import { BrowserRouter, Route } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { transitions, positions, Provider as AlertProvider } from 'react-alert'
+import { positions, Provider as AlertProvider } from 'react-alert'
 import AlertTemplate from 'react-alert-template-basic'
 
 import Header from './component/header/header';
 import LoginForm from "./component/loginForm/loginForm";
 import Content from './component/content/content';
 
-import { firstLoad } from './store/authorization/authAction';
+import { firstLoad } from './store/firstLoad';
 
 import './App.css';
 import './style/doc-style.css';
@@ -18,6 +18,7 @@ import './style/header.css';
 import './style/sidebar-style.css';
 import './style/style.css';
 import './style/table-style.css';
+import './style/invoice-commodity-style.css';
 
 const options = {
   position: positions.MIDDLE,
@@ -28,8 +29,6 @@ const App = (props) => {
   useEffect(() => {
     props.onLoad();
   }, []);
-
-
 
   return (
     <AlertProvider template={AlertTemplate} {...options}>

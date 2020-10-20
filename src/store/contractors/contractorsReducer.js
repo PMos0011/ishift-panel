@@ -1,7 +1,10 @@
 import * as actionTypes from '../actions';
 
 const initialState = {
-    contractors:[]
+    contractors: [],
+    contractorsSelectoptions: [
+        { value: 0, label: "błąd ładowania" }
+    ]
 }
 
 const reducer = (state = initialState, action) => {
@@ -9,7 +12,8 @@ const reducer = (state = initialState, action) => {
         case actionTypes.GET_CONTRACTORS:
             return {
                 ...state,
-                contractors:action.data
+                contractors: action.data,
+                contractorsSelectoptions: action.options
             }
         default:
             return state

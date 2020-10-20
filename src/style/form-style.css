@@ -35,8 +35,8 @@ input[type="tel"]:hover {
 input[type="text"]:focus,
 input[type="password"]:focus,
 input[type="number"]:focus,
-input[type="email"]:hover,
-input[type="tel"]:hover {
+input[type="email"]:focus,
+input[type="tel"]:focus {
   background-color: #fff;
   transition: all 0.5s;
 }
@@ -86,13 +86,12 @@ input[type="submit"]:hover {
   font-size: x-large;
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-input[type=number] {
+.input-number-no-arrow{
   -moz-appearance: textfield;
 }
 
+.input-number-no-arrow::-webkit-outer-spin-button,
+.input-number-no-arrow::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

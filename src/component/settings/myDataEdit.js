@@ -74,7 +74,7 @@ const MyDataChange = (props) => {
     return (
             <div className=" form-white-background app-border-shadow">
                 <form onSubmit={submitForm}>
-                    <div className="doc-grid-2-auto-container doc-grid-fill">
+                    <div className="doc-grid-2-auto-container full-width doc-grid-fill">
                         {formArray.map((component) => {
                             return (
                                 <Aux key={component.id}>

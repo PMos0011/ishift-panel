@@ -16,7 +16,8 @@ let form = (contractor) => {
             value: contractor.nip,
             elemConf: {
                 type: "number",
-                name: "nip"
+                name: "nip",
+                className: "input-number-no-arrow"
             }
         },
         {
@@ -25,7 +26,8 @@ let form = (contractor) => {
             value: contractor.regon,
             elemConf: {
                 type: "number",
-                name: "regon"
+                name: "regon",
+                className: "input-number-no-arrow"
             }
         },
         {

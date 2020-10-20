@@ -23,10 +23,20 @@ export const getContractors = (id) => {
 }
 
 const setContractors = (data) => {
-    data =  data.sort((a,b)=>a.name.localeCompare(b.name))
+    data = data.sort((a, b) => a.name.localeCompare(b.name))
+    let options = [];
+    for (let i = 0; i < data.length; i++)
+        options.push(
+            {
+                value: i,
+                label: data[i].name
+            }
+        );
+
     return {
         type: actionTypes.GET_CONTRACTORS,
-        data: data
+        data: data,
+        options: options
     }
 }
 
@@ -43,7 +53,7 @@ export const saveContractor = (data, dataAccess) => {
                 dispatch(setContractors(response.data))
             }).catch((err) => {
                 if (err.response !== undefined) {
-                        dispatch(setErrorMessage("Coś poszło nie tak", true));
+                    dispatch(setErrorMessage("Coś poszło nie tak", true));
                 }
                 else
                     dispatch(setErrorMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));
@@ -53,7 +63,7 @@ export const saveContractor = (data, dataAccess) => {
 
 export const deleteContractor = (dataAccess, id) => {
     return (dispatch) => {
-        axios.delete(actionTypes.SERVER_ADDRESS + "/contractors/" + dataAccess + "/"+ id,
+        axios.delete(actionTypes.SERVER_ADDRESS + "/contractors/" + dataAccess + "/" + id,
             {
                 headers: {
                     'Authorization': getToken()
@@ -63,7 +73,7 @@ export const deleteContractor = (dataAccess, id) => {
                 dispatch(setContractors(response.data))
             }).catch((err) => {
                 if (err.response !== undefined) {
-                        dispatch(setErrorMessage("Coś poszło nie tak", true));
+                    dispatch(setErrorMessage("Coś poszło nie tak", true));
                 }
                 else
                     dispatch(setErrorMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));

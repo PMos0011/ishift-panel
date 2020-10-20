@@ -1,0 +1,11 @@
+.grid-11-invoice{
+    display: grid;
+    grid-template-columns: 3% 3% auto 8% 8% 8% 10% 10% 10% 8% 8%; 
+    grid-template-rows: auto;
+}
+
+.input-invoice{
+    border:none;
+    margin:8px;
+}
+

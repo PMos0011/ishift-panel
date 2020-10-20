@@ -7,7 +7,8 @@ let form = (acc) => {
             value: acc.accountNumber,
             elemConf: {
                 type: "number",
-                name: "accountNumber"
+                name: "accountNumber",
+                className: "input-number-no-arrow"
             }
         },
         {

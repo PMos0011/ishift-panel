@@ -42,7 +42,6 @@
 
 .flex {
   display: flex;
-  justify-content: space-between;
 }
 
 .width-85 {
@@ -51,6 +50,12 @@
 
 .width-80-white{
   width: 80%;
+  padding: 2vh;
+  background-color: white;
+}
+
+.width-95-white{
+  width: 95%;
   padding: 2vh;
   background-color: white;
 }
@@ -94,6 +99,12 @@ a:visited{
   margin:10px;
 }
 
+.icon-size-mini{
+  width: 25px;
+  margin:5px;
+}
+
+
 .icon-add{
   width: 50px;
   margin:10px;
@@ -101,4 +112,17 @@ a:visited{
 
 .direction-rtl{
   direction: rtl;
+}
+
+.display-block{
+  display: block;
+}
+
+.margin-all-1{
+  margin: 10px;
+}
+
+.hr-margin{
+  margin-top:1vh;
+  margin-bottom:1vh;
 }

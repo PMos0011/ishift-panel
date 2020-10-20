@@ -32,7 +32,7 @@ const Customer = (props) => {
                                 className="icon-size pointer-on-hover"
                                 src={deleteIcon} alt="delete" />
                             <Link to={"/auth/bankAccounts/edit/" + props.match.params.id + "/" + acc.id}>
-                                <img className="icon-size " src={editIcon} alt="delete" />
+                                <img className="icon-size " src={editIcon} alt="edit" />
                             </Link>
                         </div>
                         <hr className="item-grid-4-full" />
@@ -40,7 +40,7 @@ const Customer = (props) => {
                 );
             })}
             <Link to={"/auth/bankAccounts/edit/" + props.match.params.id + "/0"}>
-                <img className="icon-add" src={addIcon} alt="delete" />
+                <img className="icon-add" src={addIcon} alt="add" />
             </Link>
         </div>)
 }

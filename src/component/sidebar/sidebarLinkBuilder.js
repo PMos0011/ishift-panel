@@ -47,7 +47,7 @@ const form = (props) => {
     links.push({
         id: "newInvoices",
         elemconf: {
-            to: "/auth/invoice/" + props.companyId + "/0",
+            to: "/auth/invoice/edit/" + props.companyId + "/0",
             className: "sub-item"
         },
         label: "Nowa faktura"
