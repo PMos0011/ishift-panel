@@ -86,6 +86,7 @@ const InvoiceForm = (props) => {
                     partyIdSelectOption={builders.partyOption()}
                     myData={myCompnayData}
                     contractorData={contractorData}
+                    setContractorData={setContractorData}
                     contractorOptions={props.contractorsSelectoptions}
                     onChangeHandler={onPartiesChangeHandler}
                     partyIdTypeOption={partyIdTypeOption}

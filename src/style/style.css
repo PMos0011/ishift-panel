@@ -126,3 +126,12 @@ a:visited{
   margin-top:1vh;
   margin-bottom:1vh;
 }
+
+.footer-height{
+  min-height: 200px;
+}
+
+h4{
+  margin-block-start: 0;
+  margin-block-end: 0;
+}

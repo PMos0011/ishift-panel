@@ -24,7 +24,7 @@ const form = (props) => {
             }
         );
 
-    if (props.companyId !== "")
+    if (props.companyId !== ""){
         links.push(
             {
                 id: "documents",
@@ -53,7 +53,7 @@ const form = (props) => {
         label: "Nowa faktura"
     })
 
-    if (props.companyId !== "") {
+ 
         links.push(
             {
                 id: "bankAccounts",
@@ -72,9 +72,9 @@ const form = (props) => {
             },
             label: "Dodaj konto bankowe"
         });
-    };
+    
 
-    if (props.companyId !== "") {
+    
         links.push(
             {
                 id: "contractors",
@@ -93,9 +93,9 @@ const form = (props) => {
             },
             label: "Dodaj kontrahenta"
         });
-    };
+   
 
-    if (props.companyId !== "") {
+  
         links.push(
             {
                 id: "commodity",

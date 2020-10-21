@@ -8,6 +8,7 @@ import AlertTemplate from 'react-alert-template-basic'
 import Header from './component/header/header';
 import LoginForm from "./component/loginForm/loginForm";
 import Content from './component/content/content';
+import Footer from './component/footer/footer';
 
 import { firstLoad } from './store/firstLoad';
 
@@ -42,6 +43,7 @@ const App = (props) => {
             path="/"
             component={LoginForm}
             exact />
+            <Footer />
         </div>
       </BrowserRouter>
     </AlertProvider>)
