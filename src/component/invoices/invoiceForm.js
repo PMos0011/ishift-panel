@@ -29,6 +29,8 @@ const InvoiceForm = (props) => {
     const [contractorData, setContractorData] = useState([-1, builders.emptyData]);
     const [invoiceCommodities, setInvoiceCommodities] = useState({});
 
+    
+
     const setIssueDate = (date) => {
         setIssue(date);
     }
