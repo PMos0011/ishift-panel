@@ -11,6 +11,12 @@
     margin-bottom: 1vh;
 }
 
+.grid-3-invoice-summary {
+    display: grid;
+    grid-template-columns: 25% 25% auto;
+    grid-template-rows: auto;
+  }
+
 .input-invoice{
     border:none;
     margin:8px;

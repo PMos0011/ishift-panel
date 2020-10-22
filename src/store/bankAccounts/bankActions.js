@@ -13,8 +13,12 @@ export const getBankAccountsData = (id) => {
                 }
             })
             .then((response) => {
-                dispatch(setBankAccounts(response.data)
-                )
+                let options = [];
+                response.data.map(acc => {
+                    options.push({ value: acc.id, label: acc.accountNumber })
+                });
+                dispatch(setBankAccounts(response.data));
+                dispatch(setBankAccountsSelectOptions(options))
             }).catch((err) => {
                 //TODO
                 console.log(err);
@@ -25,6 +29,13 @@ export const getBankAccountsData = (id) => {
 const setBankAccounts = (data) => {
     return {
         type: actionTypes.GET_BANK_ACCOUNTS,
+        data: data
+    }
+}
+
+const setBankAccountsSelectOptions = (data) => {
+    return {
+        type: actionTypes.SET_BANK_ACCOUNTS_SELECT_OPTIONS,
         data: data
     }
 }
@@ -42,7 +53,7 @@ export const saveBankAccount = (data, dataAccess) => {
                 dispatch(setBankAccounts(response.data))
             }).catch((err) => {
                 if (err.response !== undefined) {
-                        dispatch(setErrorMessage("Coś poszło nie tak", true));
+                    dispatch(setErrorMessage("Coś poszło nie tak", true));
                 }
                 else
                     dispatch(setErrorMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));
@@ -52,7 +63,7 @@ export const saveBankAccount = (data, dataAccess) => {
 
 export const deleteBankAccount = (dataAccess, id) => {
     return (dispatch) => {
-        axios.delete(actionTypes.SERVER_ADDRESS + "/bankAccounts/" + dataAccess + "/"+ id,
+        axios.delete(actionTypes.SERVER_ADDRESS + "/bankAccounts/" + dataAccess + "/" + id,
             {
                 headers: {
                     'Authorization': getToken()
@@ -62,7 +73,7 @@ export const deleteBankAccount = (dataAccess, id) => {
                 dispatch(setBankAccounts(response.data))
             }).catch((err) => {
                 if (err.response !== undefined) {
-                        dispatch(setErrorMessage("Coś poszło nie tak", true));
+                    dispatch(setErrorMessage("Coś poszło nie tak", true));
                 }
                 else
                     dispatch(setErrorMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));

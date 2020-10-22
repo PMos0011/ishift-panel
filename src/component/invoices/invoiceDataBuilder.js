@@ -2,7 +2,7 @@ let emptyData = {
     name: "",
     idType: 0,
     idName: "NIP",
-    idValue: ["",""],
+    idValue: ["", ""],
     street: "",
     city: ""
 }
@@ -128,6 +128,18 @@ export const setPartiesDatatBeginState = (sellerData, id) => {
     }
 }
 
+export const setSummaryBeginState = (invoicePaymnetStatusOption) => {
 
+    return {
+        statusId:invoicePaymnetStatusOption.value,
+        statusIdValue:invoicePaymnetStatusOption.label,
+        paidWay:null,
+        paymentOptionIdValue:null,
+        paid:null,
+        paymentDay:null,
+        paidDay:null,
+        bankAcc:null,
+        comments:null
+    }
 
-
+}

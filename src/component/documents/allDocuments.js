@@ -51,7 +51,7 @@ const AllDocuments = (props) => {
             </Aux>
         )
     }
-console.log(props.options);
+
     return (
         <Aux>
             <hr className="doc-hr" />

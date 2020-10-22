@@ -1,6 +1,6 @@
 //server address
-//export const SERVER_ADDRESS = "https://ishift.pl:8080"
-export const SERVER_ADDRESS = "http://localhost:8080"
+export const SERVER_ADDRESS = "https://ishift.pl:8080"
+//export const SERVER_ADDRESS = "http://localhost:8080"
 
 //authorization reducer actions
 export const AUTHORIZE_USER = "AUTHORIZE_USER";
@@ -25,6 +25,7 @@ export const GET_LOGIN_LIST = "GET_LOGIN_LIST";
 
 //bank accounts actions
 export const GET_BANK_ACCOUNTS = " GET_BANK_ACCOUNTS";
+export const SET_BANK_ACCOUNTS_SELECT_OPTIONS = "SET_BANK_ACCOUNTS_SELECT_OPTIONS";
 
 //contractors actions
 export const GET_CONTRACTORS = "GET_CONTRACTORS";

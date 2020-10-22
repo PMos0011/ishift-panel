@@ -23,10 +23,8 @@ export const getCommoditiesData = (id) => {
                         }
                     )
                 })
-
-                dispatch(setCommodities(response.data),
-                    dispatch(setCommodityOptions(selectOptions))
-                )
+                dispatch(setCommodityOptions(selectOptions));
+                dispatch(setCommodities(response.data));
             }).catch((err) => {
                 //TODO
                 console.log(err);

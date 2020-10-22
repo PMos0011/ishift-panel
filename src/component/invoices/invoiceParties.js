@@ -44,9 +44,9 @@ const InvoiceParties = (props) => {
         <div className="doc-grid-2-50-container">
             <div />
             <div className="grid-4-parties">
-                <input type="checkbox" name="fromDb" checked={customerSource} onClick={changeCustomerState} readOnly />
+                <input type="checkbox" name="fromDb" checked={customerSource} onChange={changeCustomerState} />
                 <h4>Klient z bazy danych</h4>
-                <input type="checkbox" name="own" checked={!customerSource} onClick={changeCustomerState} readOnly />
+                <input type="checkbox" name="own" checked={!customerSource} onChange={changeCustomerState} />
                 <h4>Własne dane</h4>
             </div>
             <ContractorForm

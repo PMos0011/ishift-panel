@@ -44,8 +44,7 @@ const InvoiceHeader = (props) => {
 
     return (
             <div className="doc-grid-3-container-auto">
-                <div className="margin-all-1">
-                    <div>
+                <div className="margin-all-1">   
                         <div>dokument</div>
                         <Select
                             className="margin-top-1"
@@ -53,17 +52,14 @@ const InvoiceHeader = (props) => {
                             defaultValue={props.selectOptions[0]}
                             options={props.selectOptions}
                             onChange={setDocType} />
-                    </div>
                 </div>
                 <div className="margin-all-1">
-                    <div>
                         <div>numer</div>
                         <input className="text-x-large-input"
                             type="text"
                             name="invoiceNumber"
                             value={props.headerData.invoiceNumber}                    
                             onChange={(event)=>onChangeHandler(event)} />
-                    </div>
                 </div>
                 <div>
                 </div>
@@ -76,7 +72,6 @@ const InvoiceHeader = (props) => {
                     onChange={event=>onChangeHandler(event)} />
                 </div>
                 <div className="margin-all-1">
-                    <div>
                         <div>data wystawienia</div>
                         <DatePicker
                             className="text-x-large-input"
@@ -85,11 +80,9 @@ const InvoiceHeader = (props) => {
                             onChange={date => setIssueDate(date)}
                             dateFormat="dd.MM.yyyy"
                             locale={pl}
-                        />
-                    </div>
+                        />     
                 </div>
                 <div className="margin-all-1">
-                    <div>
                         <div>data sprzedaży</div>
                         <DatePicker
                             className="text-x-large-input"
@@ -99,7 +92,6 @@ const InvoiceHeader = (props) => {
                             dateFormat="dd.MM.yyyy"
                             locale={pl}
                         />
-                    </div>
                 </div>
             </div>
     )

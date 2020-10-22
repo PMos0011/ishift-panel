@@ -10,6 +10,7 @@ import * as builders from "./invoiceDataBuilder";
 
 import { getContractors } from "../../store/contractors/contractorsActions";
 import { getCommoditiesData } from "../../store/commodity/commodityActions";
+import { getBankAccountsData } from "../../store/bankAccounts/bankActions";
 
 
 const InvoiceForm = (props) => {
@@ -17,6 +18,7 @@ const InvoiceForm = (props) => {
     useEffect(() => {
         props.getContractors(props.match.params.dbId);
         props.getCommodities(props.match.params.dbId);
+        props.getBankAccounts(props.match.params.dbId);
     }, []);
 
     const [headerData, setHeaderData] = useState(builders.setHeaderBeginState(
@@ -28,6 +30,9 @@ const InvoiceForm = (props) => {
         builders.setPartiesDatatBeginState(props.seller, props.contractorIdOptions[0]));
 
     const [invoiceCommodities, setInvoiceCommodities] = useState({});
+    const [summaryData, setSummaryData] = useState(
+        builders.setSummaryBeginState(props.invoicePaymnetStatusOptions[0])
+    );
 
     return (
         <div className="width-95-white app-border-shadow">
@@ -48,7 +53,10 @@ const InvoiceForm = (props) => {
 
             />
             <hr className="hr-margin" />
-            <InvoiceSummary />
+            <InvoiceSummary
+                summaryData={summaryData}
+                setSummaryData={setSummaryData} />
+
         </div>
     )
 }
@@ -58,14 +66,16 @@ const mapStateToProps = (state) => {
         invoiceTypeSelectOptions: state.invoiceReducer.invoiceSelectOptions,
         invoiceType: state.invoiceReducer.invoiceType,
         seller: state.customersReducer.customer,
-        contractorIdOptions: state.contractorsReducer.contractorIdOptions
+        contractorIdOptions: state.contractorsReducer.contractorIdOptions,
+        invoicePaymnetStatusOptions: state.invoiceReducer.invoicePaymnetStatusOptions,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         getContractors: (id) => dispatch(getContractors(id)),
-        getCommodities: (id) => dispatch(getCommoditiesData(id))
+        getCommodities: (id) => dispatch(getCommoditiesData(id)),
+        getBankAccounts: (id) => dispatch(getBankAccountsData(id))
     };
 };
 
