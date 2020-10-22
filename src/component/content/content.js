@@ -37,7 +37,8 @@ const Content = (props) => {
             props.getOfficeData(props.officeId);
     }, []);
 
-    props.onLoad();
+    props.checkUserAuthentication();
+ 
     let AuthorizationRedirect = null;
 
     if (!props.isAuth) {
@@ -165,12 +166,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onLoad: () => dispatch(checkUserAuthentication()),
+        checkUserAuthentication: () => dispatch(checkUserAuthentication()),
         getOfficeData: (id) => dispatch(getAccOfficeData(id)),
         getCompanyData: (id) => dispatch(customerActions.getCustomerData(id)),
         onBankAccountSubmit: (data, access) => dispatch(saveBankAccount(data, access)),
         onContractorSubmit: (data, access) => dispatch(saveContractor(data, access)),
-        onCommoditySubmit: (data, access) => dispatch(saveCommodity(data, access)),
+        onCommoditySubmit: (data, access) => dispatch(saveCommodity(data, access))
     };
 };
 

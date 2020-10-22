@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import Select from "react-select"
 import Aux from "../../hoc/auxiliary";
-import Dinero from "dinero.js";
+import {connect} from "react-redux";
 
 import addIcon from "../../images/add.svg";
 import removeIcon from "../../images/remove.svg";
+
+import * as calculations from "./commoditiesCalculations";
+import { commoditiesSelectStyle } from "./selectCustomStyle";
 
 const InvoiceCommodities = (props) => {
 
@@ -18,139 +21,31 @@ const InvoiceCommodities = (props) => {
         }
     );
 
-    const convertToDinero = (num) => {
-        let n = Number(Number(num) * 100).toFixed();
-        n = parseInt(n);
-        return Dinero({ amount: n, currency: 'PLN' })
-    }
-
     const recalculateSummary = (commodities) => {
-        let summaryNetto = Dinero({ amount: 0, currency: 'PLN' });
-        let summaryVat = Dinero({ amount: 0, currency: 'PLN' });
-        let summaryBrutto = Dinero({ amount: 0, currency: 'PLN' });
 
-        let newVatRateObj = {};
+        let rateObj = calculations.recalculateSummary(commodities);
 
-        for (let key in commodities) {
-
-            summaryNetto = summaryNetto.add(
-                convertToDinero(commodities[key].nettoAmount)
-            );
-            summaryVat = summaryVat.add(
-                convertToDinero(commodities[key].vatAmount)
-            );
-            summaryBrutto = summaryBrutto.add(
-                convertToDinero(commodities[key].brutto)
-            );
-
-            if (newVatRateObj[commodities[key].vat] === undefined) {
-                let newVatRate = {
-                    [commodities[key].vat]: {
-                        nettoAmount: commodities[key].nettoAmount,
-                        vatAmount: commodities[key].vatAmount,
-                        bruttoAmount: commodities[key].brutto
-                    }
-                }
-                newVatRateObj = Object.assign(newVatRateObj, newVatRate)
-            }
-            else {
-                let netto = convertToDinero(newVatRateObj[commodities[key].vat].nettoAmount)
-                    .add(convertToDinero(commodities[key].nettoAmount));
-                let vat = convertToDinero(newVatRateObj[commodities[key].vat].vatAmount)
-                    .add(convertToDinero(commodities[key].vatAmount));
-                let brutto = convertToDinero(newVatRateObj[commodities[key].vat].bruttoAmount)
-                    .add(convertToDinero(commodities[key].brutto));
-
-                newVatRateObj[commodities[key].vat].nettoAmount = netto.toFormat('0.00');
-                newVatRateObj[commodities[key].vat].vatAmount = vat.toFormat('0.00');
-                newVatRateObj[commodities[key].vat].bruttoAmount = brutto.toFormat('0.00');
-            }
-        }
-
-        setVatRate(newVatRateObj);
+        setVatRate(rateObj.newVatRateObj);
 
         setInvoiceSummary({
-            nettoAmount: summaryNetto.toFormat('0.00'),
-            vatAmount: summaryVat.toFormat('0.00'),
-            bruttoAmount: summaryBrutto.toFormat('0.00')
-        })
+            nettoAmount: rateObj.summary[0].toFormat('0.00'),
+            vatAmount: rateObj.summary[1].toFormat('0.00'),
+            bruttoAmount: rateObj.summary[2].toFormat('0.00')
+        });
+        props.setInvoiceCommodities(commodities);
     }
 
-    const moneyCallculations = (invoiceCommodity, id) => {
+    const addInvoiceCommodity = (isFromSelector) => {
 
-        const price = convertToDinero(invoiceCommodity[id].price);
+        let commodity;
+        if (isFromSelector && commoditySelectOption!==undefined)
+            commodity = props.commodities.find(commodity => commodity.id === commoditySelectOption.value);
 
-        const vat = parseFloat(invoiceCommodity[id].vat);
-        const amount = parseFloat(invoiceCommodity[id].amount);
-        const discount = parseFloat(invoiceCommodity[id].discount);
-
-        let nettoAmount = price.multiply(amount);
-        nettoAmount = nettoAmount.percentage(100 - discount);
-        const vatAmount = nettoAmount.percentage(vat);
-        const brutto = nettoAmount.add(vatAmount);
-
-        invoiceCommodity[id].price = price.toFormat('0.00');
-        invoiceCommodity[id].nettoAmount = nettoAmount.toFormat('0.00');
-        invoiceCommodity[id].vatAmount = vatAmount.toFormat('0.00');
-        invoiceCommodity[id].brutto = brutto.toFormat('0.00');
-
-        return { ...invoiceCommodity };
-    }
-
-    const addInvoiceCommodityfromSelector = () => {
-        const commodityFromSelector = props.commodities.find(commodity => commodity.id === commoditySelectOption.value);
-
-        const newId = Math.random().toString(20).substr(2, 6)
-        let invoiceCommodity = {
-            [newId]: {
-                name: commodityFromSelector.name,
-                measure: commodityFromSelector.measure.label,
-                amount: "1",
-                price: commodityFromSelector.price.toString(),
-                discount: "0",
-                nettoAmount: "",
-                vat: commodityFromSelector.vatAmount.toString(),
-                vatAmount: "",
-                brutto: "",
-                measureId: commodityFromSelector.measure.value,
-            }
-        }
-
-        invoiceCommodity = moneyCallculations(invoiceCommodity, newId);
+        let invoiceCommodity = calculations.addInvoiceCommodity(commodity);
 
         let newInvoiceCommodities = {};
         newInvoiceCommodities = Object.assign({ ...props.invoiceCommodities }, invoiceCommodity);
-
         recalculateSummary(newInvoiceCommodities);
-        props.setInvoiceCommodities(newInvoiceCommodities);
-
-    }
-
-    const addNewInvoiceCommodity = () => {
-
-        const newId = Math.random().toString(20).substr(2, 6)
-        let invoiceCommodity = {
-            [newId]: {
-                name: "",
-                measure: "",
-                amount: 1,
-                price: 0,
-                discount: 0,
-                nettoAmount: "",
-                vat: 0,
-                vatAmount: "",
-                brutto: "",
-                measureId: 1,
-            }
-        }
-
-        invoiceCommodity = moneyCallculations(invoiceCommodity, newId);
-
-        let newInvoiceCommodities = {};
-        newInvoiceCommodities = Object.assign({ ...props.invoiceCommodities }, invoiceCommodity);
-
-        recalculateSummary(newInvoiceCommodities);
-        props.setInvoiceCommodities(newInvoiceCommodities);
     }
 
     const recalculateForm = (event, id) => {
@@ -161,11 +56,8 @@ const InvoiceCommodities = (props) => {
 
         props.invoiceCommodities[id][event.target.name] = num.toString();
 
-        let newInvoiceCommodities = moneyCallculations(props.invoiceCommodities, id);
-
+        let newInvoiceCommodities = calculations.moneyCallculations(props.invoiceCommodities, id);
         recalculateSummary(newInvoiceCommodities);
-        props.setInvoiceCommodities(newInvoiceCommodities);
-
     }
 
     const inputchangehandler = (event, id) => {
@@ -173,7 +65,6 @@ const InvoiceCommodities = (props) => {
         props.invoiceCommodities[id][event.target.name] = event.target.value
 
         let newInvoiceCommodities = { ...props.invoiceCommodities };
-
         props.setInvoiceCommodities(newInvoiceCommodities);
     }
 
@@ -181,7 +72,6 @@ const InvoiceCommodities = (props) => {
 
         let { [id]: removed, ...newInvoiceCommodities } = props.invoiceCommodities;
         recalculateSummary(newInvoiceCommodities);
-        props.setInvoiceCommodities(newInvoiceCommodities);
     }
 
     const setMeasure = (data, id) => {
@@ -214,7 +104,7 @@ const InvoiceCommodities = (props) => {
                     options={props.commoditySelectOptions}
                     defaultValue={props.commoditySelectOptions[0]}
                     onChange={setCommoditySelectOption} />
-                <img className="icon-size pointer-on-hover" src={addIcon} alt="add" onClick={addInvoiceCommodityfromSelector} />
+                <img className="icon-size pointer-on-hover" src={addIcon} alt="add" onClick={() => addInvoiceCommodity(true)} />
             </div>
             <div className="grid-11-invoice">
                 <div>Lp</div>
@@ -237,7 +127,7 @@ const InvoiceCommodities = (props) => {
                             <img className="icon-size-mini pointer-on-hover" src={removeIcon} alt="remove" onClick={() => removeInvoiceCommodity(commodity.id)} />
                             <input className="input-invoice" type="text" name="name" value={commodity.formConfig.name} onChange={event => inputchangehandler(event, commodity.id)} />
                             <Select
-                                styles={customStyles}
+                                styles={commoditiesSelectStyle}
                                 options={props.measureSelectOptions}
                                 defaultValue={option}
                                 onChange={data => setMeasure(data, commodity.id)} />
@@ -253,7 +143,7 @@ const InvoiceCommodities = (props) => {
                 })}
                 <hr className="hr-margin invoice-sumary" />
                 <div className="invoice-add-empty">
-                    <img className="icon-size pointer-on-hover" src={addIcon} alt="add" onClick={addNewInvoiceCommodity} />
+                    <img className="icon-size pointer-on-hover" src={addIcon} alt="add" onClick={() => addInvoiceCommodity(false)} />
                 </div>
                 <div>Razem</div>
                 <input className="input-invoice" type="number" name="invoiceSummaryNetto" value={invoiceSummary.nettoAmount} readOnly />
@@ -274,35 +164,20 @@ const InvoiceCommodities = (props) => {
                         )
                     })
                 }
-                 <div className="invoice-add-empty" />
-                 <h3>Do zapłaty</h3>
-                 <input className="margin-all-1 text-x-large-input border-none" type="number" name="SummaryBrutto" value={invoiceSummary.bruttoAmount} readOnly />
+                <div className="invoice-add-empty" />
+                <h3>Do zapłaty</h3>
+                <input className="margin-all-1 text-x-large-input border-none" type="number" name="SummaryBrutto" value={invoiceSummary.bruttoAmount} readOnly />
             </div>
         </Aux>
     )
 }
 
-const customStyles = {
-    option: (styles, state) => ({
+const mapStateToProps = (state) => {
+    return {
+        commoditySelectOptions: state.commodityReducer.commoditySelectOpotions,
+        commodities: state.commodityReducer.commodities,
+        measureSelectOptions: state.commodityReducer.measures,
+    };
+};
 
-        ...styles,
-        fontSize: '10px',
-        textAlign: 'left',
-        width: 'auto',
-
-    }),
-    control: (styles, state) => ({
-        ...styles,
-        border: 'none',
-    }),
-    dropdownIndicator: (styles, state) => ({
-        ...styles,
-        padding: '0px'
-    }),
-    indicatorSeparator: (styles, state) => ({
-        ...styles,
-        width: '0px'
-    }),
-}
-
-export default InvoiceCommodities;
+export default connect(mapStateToProps)(InvoiceCommodities);

@@ -14,7 +14,6 @@ export const getCommoditiesData = (id) => {
             })
             .then((response) => {
 
-                console.log(response.data);
                 let selectOptions = [];
                 response.data.map(obj => {
                     selectOptions.push(

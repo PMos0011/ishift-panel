@@ -1,13 +1,50 @@
 import React from "react";
+import { connect } from "react-redux";
+
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 
+import {invoiceNumberBuilder} from "./invoiceDataBuilder";
+
 import { pl } from "date-fns/locale";
 
-const invoiceHeader = (props) => {
+
+const InvoiceHeader = (props) => {
+
+    const setDocType = (data) =>{
+        let newHeaderData = {...props.headerData};
+
+        newHeaderData.invoiceTypeId = data.value;
+        newHeaderData.invoiceTypeName = data.label;
+        newHeaderData.invoiceNumber = invoiceNumberBuilder(props.invoiceType,data.value)
+
+        props.setHeaderData(newHeaderData);
+    }
+
+    const onChangeHandler = (event) =>{
+        let newHeaderData = {...props.headerData};
+        newHeaderData[event.target.name]=event.target.value;
+
+        props.setHeaderData(newHeaderData);
+    }
+
+    const setIssueDate = (date) =>{
+        let newHeaderData = {...props.headerData};
+        newHeaderData.issueDate=date;
+
+        props.setHeaderData(newHeaderData);
+    }
+
+    const setSellDate = (date) =>{
+        let newHeaderData = {...props.headerData};
+        newHeaderData.sellDate=date;
+
+        props.setHeaderData(newHeaderData);
+    }
+
     return (
             <div className="doc-grid-3-container-auto">
-                <div className=".margin-all-1">
+                <div className="margin-all-1">
                     <div>
                         <div>dokument</div>
                         <Select
@@ -15,7 +52,7 @@ const invoiceHeader = (props) => {
                             placeholder="Wybierz"
                             defaultValue={props.selectOptions[0]}
                             options={props.selectOptions}
-                            onChange={props.setSelectorOptions} />
+                            onChange={setDocType} />
                     </div>
                 </div>
                 <div className="margin-all-1">
@@ -24,8 +61,8 @@ const invoiceHeader = (props) => {
                         <input className="text-x-large-input"
                             type="text"
                             name="invoiceNumber"
-                            value={props.invoiceNumber}
-                            onChange={(event)=>props.onChangeHandler(event)} />
+                            value={props.headerData.invoiceNumber}                    
+                            onChange={(event)=>onChangeHandler(event)} />
                     </div>
                 </div>
                 <div>
@@ -35,8 +72,8 @@ const invoiceHeader = (props) => {
                     <input className="text-x-large-input"
                     type="text"
                     name="placeOfIssue"
-                    value={props.placeOfIssue}
-                    onChange={event=>props.onChangeHandler(event)} />
+                    value={props.headerData.placeOfIssue}                      
+                    onChange={event=>onChangeHandler(event)} />
                 </div>
                 <div className="margin-all-1">
                     <div>
@@ -44,8 +81,8 @@ const invoiceHeader = (props) => {
                         <DatePicker
                             className="text-x-large-input"
                             closeOnScroll={true}
-                            selected={props.issueDate}
-                            onChange={date => props.setIssueDate(date)}
+                            selected={props.headerData.issueDate}
+                            onChange={date => setIssueDate(date)}
                             dateFormat="dd.MM.yyyy"
                             locale={pl}
                         />
@@ -57,8 +94,8 @@ const invoiceHeader = (props) => {
                         <DatePicker
                             className="text-x-large-input"
                             closeOnScroll={true}
-                            selected={props.sellDate}
-                            onChange={date => props.setSellDate(date)}
+                            selected={props.headerData.sellDate}
+                            onChange={date => setSellDate(date)}
                             dateFormat="dd.MM.yyyy"
                             locale={pl}
                         />
@@ -68,4 +105,11 @@ const invoiceHeader = (props) => {
     )
 }
 
-export default invoiceHeader;
+const mapStateToProps = (state) => {
+    return {
+        selectOptions: state.invoiceReducer.invoiceSelectOptions,
+        invoiceType: state.invoiceReducer.invoiceType,
+    };
+};
+
+export default connect(mapStateToProps)(InvoiceHeader);

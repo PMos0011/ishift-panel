@@ -86,12 +86,12 @@ input[type="submit"]:hover {
   font-size: x-large;
 }
 
-.input-number-no-arrow{
+input{
   -moz-appearance: textfield;
 }
 
-.input-number-no-arrow::-webkit-outer-spin-button,
-.input-number-no-arrow::-webkit-inner-spin-button {
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }

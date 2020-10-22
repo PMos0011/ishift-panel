@@ -1,0 +1,120 @@
+import Dinero from "dinero.js";
+
+export const convertToDinero = (num) => {
+    let n = Number(Number(num) * 100).toFixed();
+    n = parseInt(n);
+    return Dinero({ amount: n, currency: 'PLN' })
+}
+
+export const moneyCallculations = (invoiceCommodity, id) => {
+
+    const price = convertToDinero(invoiceCommodity[id].price);
+
+    const vat = parseFloat(invoiceCommodity[id].vat);
+    const amount = parseFloat(invoiceCommodity[id].amount);
+    const discount = parseFloat(invoiceCommodity[id].discount);
+
+    let nettoAmount = price.multiply(amount);
+    nettoAmount = nettoAmount.percentage(100 - discount);
+    const vatAmount = nettoAmount.percentage(vat);
+    const brutto = nettoAmount.add(vatAmount);
+
+    invoiceCommodity[id].price = price.toFormat('0.00');
+    invoiceCommodity[id].nettoAmount = nettoAmount.toFormat('0.00');
+    invoiceCommodity[id].vatAmount = vatAmount.toFormat('0.00');
+    invoiceCommodity[id].brutto = brutto.toFormat('0.00');
+
+    return { ...invoiceCommodity };
+}
+
+export const recalculateSummary = (commodities) => {
+    let summaryNetto = Dinero({ amount: 0, currency: 'PLN' });
+    let summaryVat = Dinero({ amount: 0, currency: 'PLN' });
+    let summaryBrutto = Dinero({ amount: 0, currency: 'PLN' });
+
+    let newVatRateObj = {};
+
+    for (let key in commodities) {
+
+        summaryNetto = summaryNetto.add(
+            convertToDinero(commodities[key].nettoAmount)
+        );
+        summaryVat = summaryVat.add(
+            convertToDinero(commodities[key].vatAmount)
+        );
+        summaryBrutto = summaryBrutto.add(
+            convertToDinero(commodities[key].brutto)
+        );
+
+        if (newVatRateObj[commodities[key].vat] === undefined) {
+            let newVatRate = {
+                [commodities[key].vat]: {
+                    nettoAmount: commodities[key].nettoAmount,
+                    vatAmount: commodities[key].vatAmount,
+                    bruttoAmount: commodities[key].brutto
+                }
+            }
+            newVatRateObj = Object.assign(newVatRateObj, newVatRate)
+        }
+        else {
+            let netto = convertToDinero(newVatRateObj[commodities[key].vat].nettoAmount)
+                .add(convertToDinero(commodities[key].nettoAmount));
+            let vat = convertToDinero(newVatRateObj[commodities[key].vat].vatAmount)
+                .add(convertToDinero(commodities[key].vatAmount));
+            let brutto = convertToDinero(newVatRateObj[commodities[key].vat].bruttoAmount)
+                .add(convertToDinero(commodities[key].brutto));
+
+            newVatRateObj[commodities[key].vat].nettoAmount = netto.toFormat('0.00');
+            newVatRateObj[commodities[key].vat].vatAmount = vat.toFormat('0.00');
+            newVatRateObj[commodities[key].vat].bruttoAmount = brutto.toFormat('0.00');
+        }
+    }
+
+    return {
+        summary: [summaryNetto, summaryVat, summaryBrutto],
+        newVatRateObj
+    };
+}
+
+export const addInvoiceCommodity = (commodityFromSelector) => {
+
+    const newId = Math.random().toString(20).substr(2, 6)
+    let invoiceCommodity = {}
+
+    if (commodityFromSelector !== undefined) {
+        invoiceCommodity = {
+            [newId]: {
+                name: commodityFromSelector.name,
+                measure: commodityFromSelector.measure.label,
+                amount: "1",
+                price: commodityFromSelector.price.toString(),
+                discount: "0",
+                nettoAmount: "",
+                vat: commodityFromSelector.vatAmount.toString(),
+                vatAmount: "",
+                brutto: "",
+                measureId: commodityFromSelector.measure.value,
+            }
+        }
+    } else {
+        invoiceCommodity = {
+            [newId]: {
+                name: "",
+                measure: "",
+                amount: 1,
+                price: 0,
+                discount: 0,
+                nettoAmount: "",
+                vat: 0,
+                vatAmount: "",
+                brutto: "",
+                measureId: 1,
+            }
+        }
+    }
+
+    invoiceCommodity = moneyCallculations(invoiceCommodity, newId);
+
+    return invoiceCommodity;
+}
+

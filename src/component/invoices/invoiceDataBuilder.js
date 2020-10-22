@@ -1,8 +1,34 @@
-export const invoiceNumberBuilder = (invoiceType) => {
+let emptyData = {
+    name: "",
+    idType: 0,
+    idName: "NIP",
+    idValue: ["",""],
+    street: "",
+    city: ""
+}
+
+export const setHeaderBeginState = (selectOptions, customer, invoiceType) => {
+
+    let newHeaderData = {
+        invoiceTypeId: selectOptions[0].value,
+        invoiceTypeName: selectOptions[0].label,
+        invoiceNumber: invoiceNumberBuilder(invoiceType, selectOptions[0].value),
+        placeOfIssue: invoicePlaceOfIssueBuilder(customer),
+        issueDate: new Date(),
+        sellDate: new Date()
+    }
+
+    return newHeaderData;
+}
+
+
+export const invoiceNumberBuilder = (invoiceType, selectedTypeId) => {
+
+    let object = invoiceType.find(type => type.id === selectedTypeId);
 
     let prefix = ""
-    if (invoiceType !== undefined)
-        prefix = invoiceType.prefix;
+    if (object !== undefined)
+        prefix = object.prefix;
     const date = new Date();
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
@@ -12,7 +38,7 @@ export const invoiceNumberBuilder = (invoiceType) => {
 
 }
 
-export const invoicePlaceOfIssueBuilder = (customer) => {
+const invoicePlaceOfIssueBuilder = (customer) => {
 
     let data = ""
     if (customer.companyData.length > 0)
@@ -20,28 +46,11 @@ export const invoicePlaceOfIssueBuilder = (customer) => {
     return data.companyData;
 }
 
-export const partyOption = () => {
 
-    let partyOption = [];
-    const partySelectOptions = ["NIP", "REGON"];
-
-    for (let i = 0; i < partySelectOptions.length; i++)
-        partyOption.push({ value: i, label: partySelectOptions[i] })
-
-    return partyOption;
-}
-
-export let emptyData = {
-    name: "",
-    idType: "",
-    street: "",
-    city: ""
-}
-
-export const myCompanyDataBuilder = (customerData, id) => {
+export const sellerDataBuilder = (sellerData, id) => {
     let data = { ...emptyData };
 
-    if (customerData.companyData.length > 0) {
+    if (sellerData.companyData.length > 0) {
         let street = "";
         let streetNum = "";
         let localNum = "";
@@ -50,7 +59,7 @@ export const myCompanyDataBuilder = (customerData, id) => {
         let nip = "";
         let regon = "";
 
-        customerData.companyData.map(company => {
+        sellerData.companyData.map(company => {
 
             switch (company.companyNumber) {
                 case 1119:
@@ -84,32 +93,39 @@ export const myCompanyDataBuilder = (customerData, id) => {
         data.street = street + " " + streetNum + localNum;
         data.city = zipCode + " " + city;
 
-        if (id === 0)
-            data.idType = nip;
-        else
-            data.idType = regon;
+        data.idType = id.value;
+        data.idName = id.label;
+        data.idValue = [nip, regon];
     }
 
     return data;
 }
 
-export const contractorDataBuilder = (contractor, id) => {
-    let data = { ...emptyData }
+export const buyerDataBuilder = (contractor, newData) => {
 
-    if (id === 0)
-        data.idType = contractor.nip;
-    else
-        data.idType = contractor.regon;
+    newData.idValue = [contractor.nip, contractor.regon]
 
-    data.name = contractor.name;
-    data.street = contractor.street + " " + contractor.streetNumber;
+    newData.name = contractor.name;
+    newData.street = contractor.street + " " + contractor.streetNumber;
     if (contractor.localNumber !== "")
-        data.street = data.street + "/" + contractor.localNumber;
+        newData.street = newData.street + "/" + contractor.localNumber;
 
-    data.city = contractor.zipCode + " " + contractor.city
+    newData.city = contractor.zipCode + " " + contractor.city
 
-    return data;
+    return newData;
 
+}
+
+export const setPartiesDatatBeginState = (sellerData, id) => {
+
+    let newSellerData = sellerDataBuilder(sellerData, id);
+
+    let buyerData = { ...emptyData }
+
+    return {
+        seller: newSellerData,
+        buyer: buyerData
+    }
 }
 
 
