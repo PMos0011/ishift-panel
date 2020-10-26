@@ -53,3 +53,22 @@ const setInvoiceTypes = (data) => {
         data: data
     }
 }
+
+export const putInvoice = (id, data) => {
+    return (dispatch) => {
+        axios.put(actionTypes.SERVER_ADDRESS + "/invoice/"+id,
+        data,
+            {
+                headers: {
+                    'Authorization': getToken()
+                }
+            })
+            .then((response) => {
+                dispatch(setInvoices(response.data)
+                )
+            }).catch((err) => {
+                //TODO
+                console.log(err);
+            })
+    }
+}

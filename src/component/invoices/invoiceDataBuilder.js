@@ -143,3 +143,10 @@ export const setSummaryBeginState = (invoicePaymnetStatusOption) => {
     }
 
 }
+
+export const timeZoneCorrection = (time) =>{
+
+    const UTCOffset = time.getTimezoneOffset()*60*1000;
+    return time.getTime() - UTCOffset;
+    
+}

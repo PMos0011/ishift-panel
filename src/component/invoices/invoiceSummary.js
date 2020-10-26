@@ -65,8 +65,6 @@ const InvoiceSummary = (props) => {
     }
 
     const selectChage = (data, name) => {
-        console.log(data);
-        console.log(name);
 
         let newData = { ...props.summaryData }
 
@@ -133,10 +131,10 @@ const InvoiceSummary = (props) => {
                         className="text-x-large-input"
                         closeOnScroll={true}
                         selected={preventNull(props.summaryData.paidDay)}
+                        disabled={!checkoboxState.paidDay}
+                        onChange={date => setPaidDay(date)}
                         dateFormat="dd.MM.yyyy"
                         locale={pl}
-                        disabled={!checkoboxState.paidDay}
-                        onChange={setPaidDay}
                         name="paidDay" />
                 </div>
                 <div className="margin-all-1">
@@ -161,10 +159,10 @@ const InvoiceSummary = (props) => {
                         className="text-x-large-input"
                         closeOnScroll={true}
                         selected={preventNull(props.summaryData.paymentDay)}
+                        onChange={date => setPaymentDay(date)}
+                        disabled={!checkoboxState.paymentDay}
                         dateFormat="dd.MM.yyyy"
-                        locale={pl}
-                        onChange={setPaymentDay}
-                        disabled={!checkoboxState.paymentDay} />
+                        locale={pl} />
 
                 </div>
                 <div className="margin-all-1">
