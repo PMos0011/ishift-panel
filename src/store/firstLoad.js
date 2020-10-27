@@ -1,8 +1,6 @@
 import { getCustomerData } from "./customers/customersActions";
 
 import {newAuthData, setToken} from "./authorization/authAction";
-import {getMeasures} from "./commodity/commodityActions";
-import {getInvoiceTypes} from "./invoice/invoiceAction";
 
 export const firstLoad = () => {
 
@@ -23,9 +21,7 @@ export const firstLoad = () => {
 
         return (dispatch) => {
             dispatch(setToken(token, expiratinDate),
-            dispatch(getData()),
-            dispatch(getMeasures()),
-            dispatch(getInvoiceTypes())
+            dispatch(getData())
             );
         }
     }

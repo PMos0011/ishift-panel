@@ -1,7 +1,5 @@
 import * as actionTypes from '../actions';
 import * as errorHandling from '../errosHandling/errorActions';
-import {getMeasures} from "../commodity/commodityActions";
-import {getInvoiceTypes} from "../invoice/invoiceAction";
 import jwt_decode from "jwt-decode";
 
 import axios from 'axios';
@@ -14,10 +12,6 @@ export const authorizeUser = (userName, password) => {
         })
             .then((response) => {
                 dispatch(setToken(response.headers.authorization, response.headers.expires));
-
-                //TODO refactor functions belowe
-                dispatch(getMeasures());
-                dispatch(getInvoiceTypes());
             }).catch((err) => {
                 if (err.response !== undefined) {
                     if (err.response.status === 403){

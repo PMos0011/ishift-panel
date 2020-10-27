@@ -19,14 +19,14 @@ const Customer = (props) => {
     return (
         <div className="doc-grid-4-container-commomdity width-80-white app-border-shadow">
             {props.commodities.map(comm => {
-                if (comm.measure === null)
-                    comm.measure = props.measures.find(m => m.value === comm.measureId);
+                // if (comm.measure === null)
+                //     comm.measure = props.measures.find(m => m.label === comm.measure);
                 return (
                     <Aux key={comm.id}>
                         <div className="doc-item-thin">towar/ usługa:</div>
                         <div className="doc-item-thin">{comm.name}</div>
                         <div className="doc-item-thin">miara:</div>
-                        <div className="doc-item-thin">{comm.measure.label}</div>
+                        <div className="doc-item-thin">{comm.measure}</div>
                         <div className="doc-item-thin">cena netto:</div>
                         <div className="doc-item-thin">{priceConverter(comm.price)}</div>
                         <div className="doc-item-thin">stawka VAT:</div>

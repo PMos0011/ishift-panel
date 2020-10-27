@@ -18,22 +18,13 @@ let form = (comm) => {
                 type: "number",
                 name: "price"
             }
-        },
-        {
-            id: "vatAmount",
-            label: "Stawka VAT: ",
-            value: comm.vatAmount,
-            elemConf: {
-                type: "number",
-                name: "vatAmount"
-            }
         }
     ]
 }
 
 export let newObject = {
     id: "",
-    measureId: "",
+    measure: "",
     name: "",
     price: "",
     vatAmount: "",

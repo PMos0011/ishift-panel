@@ -81,9 +81,9 @@ export const deleteCommodity = (dataAccess, id) => {
     }
 }
 
-export const getMeasures = () => {
+export const getMeasures = (id) => {
     return (dispatch) => {
-        axios.get(actionTypes.SERVER_ADDRESS + "/commodity",
+        axios.get(actionTypes.SERVER_ADDRESS + "/commodity/measures/"+id,
             {
                 headers: {
                     'Authorization': getToken()

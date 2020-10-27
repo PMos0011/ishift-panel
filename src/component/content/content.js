@@ -30,15 +30,15 @@ import { saveCommodity } from "../../store/commodity/commodityActions";
 import * as customerActions from '../../store/customers/customersActions';
 
 
-
 const Content = (props) => {
     useEffect(() => {
-        if (props.officeId !== "none")
+        if (props.officeId !== "none") {
             props.getOfficeData(props.officeId);
+        }
     }, []);
 
     props.checkUserAuthentication();
- 
+
     let AuthorizationRedirect = null;
 
     if (!props.isAuth) {
@@ -102,7 +102,7 @@ const Content = (props) => {
                         component={Invoice}
                         exact />
 
-                        <Route
+                    <Route
                         path="/auth/invoice/edit/:dbId/:id"
                         component={InvoiceForm} />
 
@@ -129,7 +129,7 @@ const Content = (props) => {
                         component={Commodities}
                         exact />
 
-                         <Route
+                    <Route
                         path="/auth/commodity/edit/:dbId/:id"
                         component={
                             (p) => (<SubmitForm {...p}
@@ -138,9 +138,10 @@ const Content = (props) => {
                                 newObject={newCommodityObject}
                                 redirectTo="/auth/commodity/"
                                 onSubmit={props.onCommoditySubmit}
-                                selectLabel="Jednostka miary:"
-                                selectOptions={props.measures}
-                                selectBindValue="measureId"
+                                withSelect={true}
+                               // selectLabel="Jednostka miary:"
+                               // selectOptions={props.measures}
+                               // selectBindValue="measureId"
                             />)
                         }
                     />
@@ -159,8 +160,7 @@ const mapStateToProps = (state) => {
         customer: state.customersReducer.customer,
         bankAccounts: state.bankReducer.bankAccounts,
         contractors: state.contractorsReducer.contractors,
-        commodities: state.commodityReducer.commodities,
-        measures: state.commodityReducer.measures
+        commodities: state.commodityReducer.commodities
     };
 };
 
@@ -171,7 +171,7 @@ const mapDispatchToProps = (dispatch) => {
         getCompanyData: (id) => dispatch(customerActions.getCustomerData(id)),
         onBankAccountSubmit: (data, access) => dispatch(saveBankAccount(data, access)),
         onContractorSubmit: (data, access) => dispatch(saveContractor(data, access)),
-        onCommoditySubmit: (data, access) => dispatch(saveCommodity(data, access))
+        onCommoditySubmit: (data, access) => dispatch(saveCommodity(data, access)),
     };
 };
 

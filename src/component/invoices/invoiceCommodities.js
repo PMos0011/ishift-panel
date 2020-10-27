@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Select from "react-select"
 import Aux from "../../hoc/auxiliary";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 
 import addIcon from "../../images/add.svg";
 import removeIcon from "../../images/remove.svg";
@@ -38,7 +38,7 @@ const InvoiceCommodities = (props) => {
     const addInvoiceCommodity = (isFromSelector) => {
 
         let commodity;
-        if (isFromSelector && commoditySelectOption!==undefined)
+        if (isFromSelector && commoditySelectOption !== undefined)
             commodity = props.commodities.find(commodity => commodity.id === commoditySelectOption.value);
 
         let invoiceCommodity = calculations.addInvoiceCommodity(commodity);
@@ -75,8 +75,15 @@ const InvoiceCommodities = (props) => {
     }
 
     const setMeasure = (data, id) => {
-        props.invoiceCommodities[id].measureId = data.value;
         props.invoiceCommodities[id].measure = data.label;
+    }
+
+    const setVatType = (data, id) => {
+
+        props.invoiceCommodities[id].vat = data.label;
+
+        let newInvoiceCommodities = calculations.moneyCallculations(props.invoiceCommodities, id);
+        recalculateSummary(newInvoiceCommodities);
     }
 
     const formArray = [];
@@ -119,7 +126,8 @@ const InvoiceCommodities = (props) => {
                 <div>Kwota VAT</div>
                 <div>wartość brutto</div>
                 {formArray.map(commodity => {
-                    let option = props.measureSelectOptions.find(e => e.value === commodity.formConfig.measureId)
+                    let measureOption = props.measureSelectOptions.find(m => m.label === commodity.formConfig.measure);
+                    let vatOption = props.vatSelectOptions.find(v => v.label == commodity.formConfig.vat);
                     counter++;
                     return (
                         <Aux key={counter}>
@@ -129,13 +137,17 @@ const InvoiceCommodities = (props) => {
                             <Select
                                 styles={commoditiesSelectStyle}
                                 options={props.measureSelectOptions}
-                                defaultValue={option}
+                                defaultValue={measureOption}
                                 onChange={data => setMeasure(data, commodity.id)} />
                             <input className="input-invoice" type="number" name="amount" value={commodity.formConfig.amount} onChange={event => inputchangehandler(event, commodity.id)} onBlur={event => recalculateForm(event, commodity.id)} />
                             <input className="input-invoice" type="number" name="price" value={commodity.formConfig.price} onChange={event => inputchangehandler(event, commodity.id)} onBlur={event => recalculateForm(event, commodity.id)} />
                             <input className="input-invoice" type="number" name="discount" value={commodity.formConfig.discount} onChange={event => inputchangehandler(event, commodity.id)} onBlur={event => recalculateForm(event, commodity.id)} />
                             <input className="input-invoice" type="number" name="nettoAmount" value={commodity.formConfig.nettoAmount} readOnly />
-                            <input className="input-invoice" type="number" name="vat" value={commodity.formConfig.vat} onChange={event => inputchangehandler(event, commodity.id)} onBlur={event => recalculateForm(event, commodity.id)} />
+                            <Select
+                                styles={commoditiesSelectStyle}
+                                options={props.vatSelectOptions}
+                                defaultValue={vatOption}
+                                onChange={data => setVatType(data, commodity.id)} />
                             <input className="input-invoice" type="number" name="vatAmount" value={commodity.formConfig.vatAmount} readOnly />
                             <input className="input-invoice" type="number" name="brutto" value={commodity.formConfig.brutto} readOnly />
                         </Aux>
@@ -157,7 +169,7 @@ const InvoiceCommodities = (props) => {
                             <div className="invoice-add-empty" />
                             <div />
                             <input className="input-invoice" type="number" name="invoiceVatRateNetto" value={vRate.form.nettoAmount} readOnly />
-                            <input className="input-invoice" type="number" name="invoiceVatRate" value={vRate.id} readOnly />
+                            <input className="input-invoice" type="text" name="invoiceVatRate" value={vRate.id} readOnly />
                             <input className="input-invoice" type="number" name="invoiceVatRateSummary" value={vRate.form.vatAmount} readOnly />
                             <input className="input-invoice" type="number" name="invoiceVatRateBrutto" value={vRate.form.bruttoAmount} readOnly />
                         </Aux>
@@ -177,6 +189,7 @@ const mapStateToProps = (state) => {
         commoditySelectOptions: state.commodityReducer.commoditySelectOpotions,
         commodities: state.commodityReducer.commodities,
         measureSelectOptions: state.commodityReducer.measures,
+        vatSelectOptions: state.invoiceReducer.vatTypes
     };
 };
 

@@ -3,10 +3,16 @@ import { connect } from "react-redux";
 import Aux from '../../hoc/auxiliary';
 
 import * as customerActions from '../../store/customers/customersActions';
+import { getMeasures } from "../../store/commodity/commodityActions";
+import { getInvoiceTypes, getVatTypes } from "../../store/invoice/invoiceAction";
 
 const Customer = (props) => {
     useEffect(() => {
         props.onLoad(props.match.params.id);
+            props.getMeasures(props.match.params.id);
+            props.getInvoiceTypes(props.match.params.id);
+            props.getVatTypes(props.match.params.id);
+        
     }, []);
 
     return (
@@ -34,6 +40,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onLoad: (id) => dispatch(customerActions.getCustomerData(id)),
+        getMeasures: (id) => dispatch(getMeasures(id)),
+        getInvoiceTypes: (id) => dispatch(getInvoiceTypes(id)),
+        getVatTypes: (id) => dispatch(getVatTypes(id))
     };
 };
 

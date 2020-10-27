@@ -29,9 +29,9 @@ const setInvoices = (data) => {
     }
 }
 
-export const getInvoiceTypes = () => {
+export const getInvoiceTypes = (id) => {
     return (dispatch) => {
-        axios.get(actionTypes.SERVER_ADDRESS + "/invoice",
+        axios.get(actionTypes.SERVER_ADDRESS + "/invoice/" + id,
             {
                 headers: {
                     'Authorization': getToken()
@@ -56,8 +56,8 @@ const setInvoiceTypes = (data) => {
 
 export const putInvoice = (id, data) => {
     return (dispatch) => {
-        axios.put(actionTypes.SERVER_ADDRESS + "/invoice/"+id,
-        data,
+        axios.put(actionTypes.SERVER_ADDRESS + "/invoice/" + id,
+            data,
             {
                 headers: {
                     'Authorization': getToken()
@@ -70,5 +70,30 @@ export const putInvoice = (id, data) => {
                 //TODO
                 console.log(err);
             })
+    }
+}
+
+export const getVatTypes = (id) => {
+    return (dispatch) => {
+        axios.get(actionTypes.SERVER_ADDRESS + "/invoice/vat/" + id,
+            {
+                headers: {
+                    'Authorization': getToken()
+                }
+            })
+            .then((response) => {
+                dispatch(setVatTypes(response.data)
+                )
+            }).catch((err) => {
+                //TODO
+                console.log(err);
+            })
+    }
+}
+
+const setVatTypes = (data) => {
+    return {
+        type: actionTypes.GET_VAT_TYPES,
+        data: data
     }
 }

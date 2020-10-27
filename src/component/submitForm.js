@@ -7,15 +7,15 @@ import Select from 'react-select';
 
 const MyBankAccounts = (props) => {
     useEffect(() => {
-        if (props.errorMessage !== "")
+        if (props.errorMessage !== "") {
             if (props.isErrorAlert)
                 props.alert.error(props.errorMessage);
             else
                 props.alert.success(props.errorMessage);
+        }
     });
 
     let object = props.dataToChange.find(obj => obj.id == props.match.params.id)
-
     if (object === undefined)
         object = props.newObject;
 
@@ -51,27 +51,35 @@ const MyBankAccounts = (props) => {
         setRedirect(true);
     }
 
-    const setSelectorOptions = (data) => {
-         inputChangeHandler(data.value, props.selectBindValue);
-    }
-
     let selector = null;
 
-    if (props.selectLabel !== undefined) {
+    if (props.withSelect !== undefined) {
 
-        let option = props.selectOptions[0];
-        if (object.id !== "")
-            option = props.selectOptions.find(e => e.value === object.measureId)
+        let measureOption = null;
+        let vateOption = null;
+        if (object.id !== "") {
+            measureOption = props.measures.find(m => m.label === object.measure)
+            vateOption = props.vatTypes.find(v => v.label == object.vatAmount)
+        }
 
         selector =
             <Aux>
-                <label>{props.selectLabel}</label>
+                <label>Stawka VAT [%]</label>
+                <Select
+                    className="margin-top-1"
+                    placeholder="Wybierz stawkę"
+                    defaultValue={vateOption}
+                    options={props.vatTypes}
+                    name="vatAmount"
+                    onChange={(data, name) => inputChangeHandler(data.label, name.name)} />
+                <label>Jednostka miary</label>
                 <Select
                     className="margin-top-1"
                     placeholder="Wybierz jednostkę"
-                    defaultValue={option}
-                    options={props.selectOptions}
-                    onChange={setSelectorOptions} />
+                    defaultValue={measureOption}
+                    options={props.measures}
+                    name="measure"
+                    onChange={(data, name) => inputChangeHandler(data.label, name.name)} />
             </Aux>
     }
 
@@ -104,6 +112,9 @@ const mapStateToProps = (state) => {
     return {
         errorMessage: state.errorReducer.errorMessage,
         isErrorAlert: state.errorReducer.errorAlert,
+        measures: state.commodityReducer.measures,
+        vatTypes: state.invoiceReducer.vatTypes
+
     };
 };
 

@@ -2,13 +2,8 @@ import * as actionTypes from '../actions';
 
 const initialState = {
     invoices: [],
-    invoiceSelectOptions: [
-        {
-            value: 0,
-            label: "błąd pobierania"
-        }
-    ],
-    invoiceType: [],
+    invoiceSelectOptions: [{ value: 0, label: "error" }],
+    invoiceType: [{ value: 0, label: "error" }],
     invoicePaymentOptions: [
         { value: 0, label: "przelew" },
         { value: 1, label: "za pobraniem" },
@@ -24,7 +19,8 @@ const initialState = {
         { value: 0, label: "niezapłacona" },
         { value: 1, label: "zapłacona" },
         { value: 2, label: "częściowo zapłacona" },
-    ]
+    ],
+    vatTypes:[ { value: 0, label: "error" }]
 }
 
 const reducer = (state = initialState, action) => {
@@ -43,7 +39,12 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 invoiceType: action.data,
                 invoiceSelectOptions: selectOptions
-            }
+            };
+            case actionTypes.GET_VAT_TYPES:
+                return {
+                    ...state,
+                    vatTypes: action.data
+                };
         default:
             return state
     }

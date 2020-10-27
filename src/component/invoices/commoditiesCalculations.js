@@ -10,7 +10,10 @@ export const moneyCallculations = (invoiceCommodity, id) => {
 
     const price = convertToDinero(invoiceCommodity[id].price);
 
-    const vat = parseFloat(invoiceCommodity[id].vat);
+    let vat = 0;
+    if (!isNaN(parseFloat(invoiceCommodity[id].vat)))
+        vat = parseFloat(invoiceCommodity[id].vat);
+
     const amount = parseFloat(invoiceCommodity[id].amount);
     const discount = parseFloat(invoiceCommodity[id].discount);
 
@@ -85,15 +88,14 @@ export const addInvoiceCommodity = (commodityFromSelector) => {
         invoiceCommodity = {
             [newId]: {
                 name: commodityFromSelector.name,
-                measure: commodityFromSelector.measure.label,
+                measure: commodityFromSelector.measure,
                 amount: "1",
                 price: commodityFromSelector.price.toString(),
                 discount: "0",
                 nettoAmount: "",
                 vat: commodityFromSelector.vatAmount.toString(),
                 vatAmount: "",
-                brutto: "",
-                measureId: commodityFromSelector.measure.value,
+                brutto: ""
             }
         }
     } else {
@@ -107,8 +109,7 @@ export const addInvoiceCommodity = (commodityFromSelector) => {
                 nettoAmount: "",
                 vat: 0,
                 vatAmount: "",
-                brutto: "",
-                measureId: 1,
+                brutto: ""
             }
         }
     }
