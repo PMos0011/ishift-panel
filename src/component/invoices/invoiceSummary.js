@@ -43,7 +43,7 @@ const InvoiceSummary = (props) => {
             if (!newSate[event.target.name])
                 newSummaryData[event.target.name] = null
 
-            props.setSummaryData(newSummaryData);
+        props.setSummaryData(newSummaryData);
     }
 
     const setPaidDay = (data) => {
@@ -97,8 +97,36 @@ const InvoiceSummary = (props) => {
         onChange={inputChange}
         disabled={!checkoboxState.ownBankAcc} />
 
+    let vatExemptionNp = null;
+    if (props.summaryData.vatExemptionLabelNp !== null)
+        vatExemptionNp = <Aux>
+            <div className="margin-all-1">
+                <label>{preventNull(props.summaryData.vatExemptionLabelNp)}</label>
+                <textarea
+                    className="full-width margin-top-1"
+                    value={preventNull(props.summaryData.vatExemptionValueNp)}
+                    onChange={inputChange}
+                    name="vatExemptionValueNp" />
+            </div>
+        </Aux>
+
+let vatExemptionZw = null;
+if (props.summaryData.vatExemptionLabelZw !== null)
+    vatExemptionZw = <Aux>
+        <div className="margin-all-1">
+            <label>{preventNull(props.summaryData.vatExemptionLabelZw)}</label>
+            <textarea
+                className="full-width margin-top-1"
+                value={preventNull(props.summaryData.vatExemptionValueZw)}
+                onChange={inputChange}
+                name="vatExemptionValueZw" />
+        </div>
+    </Aux>
+
     return (
         <Aux>
+            {vatExemptionNp}
+            {vatExemptionZw}
             <div className="grid-3-invoice-summary">
                 <div className="margin-all-1">Status
             <Select

@@ -21,10 +21,50 @@ const InvoiceCommodities = (props) => {
         }
     );
 
+    const formArray = [];
+    for (let key in props.invoiceCommodities) {
+        formArray.push({
+            id: key,
+            formConfig: props.invoiceCommodities[key]
+        })
+    }
+
+    const formArrayVatRate = [];
+    for (let key in vatRate) {
+        formArrayVatRate.push({
+            id: key,
+            form: vatRate[key]
+        })
+    }
+
+    const checkVatExemptions = (vatRateObj) => {
+
+        let newSumaryData = { ...props.summaryData }
+
+        const vatExemptionNp = vatRateObj["np."];
+        const vatExemptionZw = vatRateObj["zw."];
+
+        if (vatExemptionNp === undefined) {
+            newSumaryData.vatExemptionLabelNp = null;
+            newSumaryData.vatExemptionValueNp = null;
+        } else
+            newSumaryData.vatExemptionLabelNp = "Rodzaj dokonywanej sprzedaży (w związku ze stawką VAT np.)";
+
+        if (vatExemptionZw === undefined) {
+            newSumaryData.vatExemptionLabelZw = null;
+            newSumaryData.vatExemptionValueZw = null;
+        }
+        else
+            newSumaryData.vatExemptionLabelZw = "Podstawa zwolnienia z podatku VAT (w związku ze stawką VAT zw.)";
+
+        props.setSummaryData(newSumaryData);
+    }
+
     const recalculateSummary = (commodities) => {
 
         let rateObj = calculations.recalculateSummary(commodities);
 
+        checkVatExemptions(rateObj.newVatRateObj);
         setVatRate(rateObj.newVatRateObj);
 
         setInvoiceSummary({
@@ -75,31 +115,19 @@ const InvoiceCommodities = (props) => {
     }
 
     const setMeasure = (data, id) => {
-        props.invoiceCommodities[id].measure = data.label;
+
+        let newCommodities = {...props.invoiceCommodities}
+        newCommodities[id].measure = data.label;
+
+        props.setInvoiceCommodities(newCommodities);
     }
 
     const setVatType = (data, id) => {
 
         props.invoiceCommodities[id].vat = data.label;
-
         let newInvoiceCommodities = calculations.moneyCallculations(props.invoiceCommodities, id);
+
         recalculateSummary(newInvoiceCommodities);
-    }
-
-    const formArray = [];
-    for (let key in props.invoiceCommodities) {
-        formArray.push({
-            id: key,
-            formConfig: props.invoiceCommodities[key]
-        })
-    }
-
-    const formArrayVatRate = [];
-    for (let key in vatRate) {
-        formArrayVatRate.push({
-            id: key,
-            form: vatRate[key]
-        })
     }
 
     let counter = 0;
@@ -109,7 +137,7 @@ const InvoiceCommodities = (props) => {
                 <div>Dodaj z bazy: </div>
                 <Select
                     options={props.commoditySelectOptions}
-                    defaultValue={props.commoditySelectOptions[0]}
+                    value={commoditySelectOption}
                     onChange={setCommoditySelectOption} />
                 <img className="icon-size pointer-on-hover" src={addIcon} alt="add" onClick={() => addInvoiceCommodity(true)} />
             </div>
@@ -137,7 +165,7 @@ const InvoiceCommodities = (props) => {
                             <Select
                                 styles={commoditiesSelectStyle}
                                 options={props.measureSelectOptions}
-                                defaultValue={measureOption}
+                                value={measureOption}
                                 onChange={data => setMeasure(data, commodity.id)} />
                             <input className="input-invoice" type="number" name="amount" value={commodity.formConfig.amount} onChange={event => inputchangehandler(event, commodity.id)} onBlur={event => recalculateForm(event, commodity.id)} />
                             <input className="input-invoice" type="number" name="price" value={commodity.formConfig.price} onChange={event => inputchangehandler(event, commodity.id)} onBlur={event => recalculateForm(event, commodity.id)} />
@@ -146,7 +174,7 @@ const InvoiceCommodities = (props) => {
                             <Select
                                 styles={commoditiesSelectStyle}
                                 options={props.vatSelectOptions}
-                                defaultValue={vatOption}
+                                value={vatOption}
                                 onChange={data => setVatType(data, commodity.id)} />
                             <input className="input-invoice" type="number" name="vatAmount" value={commodity.formConfig.vatAmount} readOnly />
                             <input className="input-invoice" type="number" name="brutto" value={commodity.formConfig.brutto} readOnly />

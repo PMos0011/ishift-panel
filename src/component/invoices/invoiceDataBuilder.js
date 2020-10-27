@@ -139,7 +139,11 @@ export const setSummaryBeginState = (invoicePaymnetStatusOption) => {
         paymentDay:null,
         paidDay:null,
         bankAcc:null,
-        comments:null
+        comments:null,
+        vatExemptionLabelNp:null,
+        vatExemptionValueNp:null,
+        vatExemptionLabelZw:null,
+        vatExemptionValueZw:null
     }
 
 }

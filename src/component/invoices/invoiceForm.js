@@ -78,13 +78,13 @@ const InvoiceForm = (props) => {
             <InvoiceParties
                 partiesData={partiesData}
                 setPartiesData={setPartiesData}
-
             />
             <hr className="hr-margin" />
             <InvoiceCommodities
                 invoiceCommodities={invoiceCommodities}
                 setInvoiceCommodities={setInvoiceCommodities}
-
+                summaryData={summaryData}
+                setSummaryData={setSummaryData}
             />
             <hr className="hr-margin" />
             <InvoiceSummary
