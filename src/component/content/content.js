@@ -139,13 +139,8 @@ const Content = (props) => {
                                 redirectTo="/auth/commodity/"
                                 onSubmit={props.onCommoditySubmit}
                                 withSelect={true}
-                               // selectLabel="Jednostka miary:"
-                               // selectOptions={props.measures}
-                               // selectBindValue="measureId"
-                            />)
-                        }
+                            />)}
                     />
-
                 </div>
             </div>
         </Aux>

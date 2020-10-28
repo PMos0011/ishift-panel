@@ -1,7 +1,7 @@
 import * as actionTypes from '../actions';
 import axios from 'axios'
 
-import { setErrorMessage } from '../errosHandling/errorActions';
+import { setMessage } from '../alerts/alertsActions';
 import { getToken } from '../authorization/authAction';
 
 export const getContractors = (id) => {
@@ -53,10 +53,10 @@ export const saveContractor = (data, dataAccess) => {
                 dispatch(setContractors(response.data))
             }).catch((err) => {
                 if (err.response !== undefined) {
-                    dispatch(setErrorMessage("Coś poszło nie tak", true));
+                    dispatch(setMessage("Coś poszło nie tak", true));
                 }
                 else
-                    dispatch(setErrorMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));
+                    dispatch(setMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));
             })
     }
 }
@@ -73,10 +73,10 @@ export const deleteContractor = (dataAccess, id) => {
                 dispatch(setContractors(response.data))
             }).catch((err) => {
                 if (err.response !== undefined) {
-                    dispatch(setErrorMessage("Coś poszło nie tak", true));
+                    dispatch(setMessage("Coś poszło nie tak", true));
                 }
                 else
-                    dispatch(setErrorMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));
+                    dispatch(setMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));
             })
     }
 }

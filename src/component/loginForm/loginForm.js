@@ -1,25 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import { withAlert } from 'react-alert'
 
 import { connect } from "react-redux";
 import Aux from '../../hoc/auxiliary';
 import * as actions from '../../store/authorization/authAction';
+import {setMessage} from '../../store/alerts/alertsActions';
 
 import form from './loginFormBuild';
 
 const LoginForm = (props) => {
 
-    useEffect(() => {
-        if (props.errorMessage !== "")
-        if (props.isErrorAlert)
-            props.alert.error(props.errorMessage);
-        else
-            props.alert.success(props.errorMessage);
-    });
-
     let redirectToBasicsInfo = null;
-
 
     if (props.isAuth) {
         if (props.isAdmin)
@@ -60,9 +51,9 @@ const LoginForm = (props) => {
         event.preventDefault();
 
         if (formComponents.userName.value === "")
-            props.alert.error("Nazwa użytkownika nie może byc pusta!");
+            props.setMessage("Nazwa użytkownika nie może byc pusta!", true);
         else if (formComponents.password.value === "")
-            props.alert.error("Hasło nie może byc puste!");
+            props.setMessage("Hasło nie może byc puste!", true);
         else
             props.onSubmit(formComponents.userName.value,
                 formComponents.password.value);
@@ -96,15 +87,14 @@ const mapStateToProps = (state) => {
         isAuth: state.authReducer.isAuthenticated,
         isAdmin: state.authReducer.isAdmin,
         dataAccess: state.authReducer.dataAccess,
-        errorMessage: state.errorReducer.errorMessage,
-        isErrorAlert: state.errorReducer.errorAlert,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onSubmit: (name, pass) => dispatch(actions.authorizeUser(name, pass))
+        onSubmit: (name, pass) => dispatch(actions.authorizeUser(name, pass)),
+        setMessage: (message, isError) => dispatch(setMessage(message, isError))
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withAlert()(LoginForm));
+export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

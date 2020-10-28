@@ -1,25 +1,28 @@
 import * as actionTypes from '../actions';
-import * as errorHandling from '../errosHandling/errorActions';
+import {setMessage, setLoadingSpinner} from '../alerts/alertsActions';
 import jwt_decode from "jwt-decode";
 
 import axios from 'axios';
 
 export const authorizeUser = (userName, password) => {
+    
     return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
         axios.post(actionTypes.SERVER_ADDRESS + "/login", {
             userName: userName,
             password: password
         })
             .then((response) => {
                 dispatch(setToken(response.headers.authorization, response.headers.expires));
+                dispatch(setLoadingSpinner(false));
             }).catch((err) => {
                 if (err.response !== undefined) {
                     if (err.response.status === 403){
-                        dispatch(errorHandling.setErrorMessage("Nieprawidłowa nazwa użytkownika bądź hasło.", true));
+                        dispatch(setMessage("Nieprawidłowa nazwa użytkownika bądź hasło.", true));
                     }
                 }
                 else {
-                    dispatch(errorHandling.setErrorMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później.", true));
+                    dispatch(setMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później.", true));
                 }
             })
     }

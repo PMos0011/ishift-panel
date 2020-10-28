@@ -7,7 +7,9 @@ export const AUTHORIZE_USER = "AUTHORIZE_USER";
 export const LOGOUT_USER = "LOGOUT_USER";
 
 //error handling actions
-export const SET_ERROR_MESSAGE = "SET_ERROR_MESSAGE";
+export const SET_ERROR_ALERT = "SET_ERROR_MESSAGE";
+export const SET_SUCCESS_ALERT = "SET_SUCCESS_ALERT"
+export const SET_LOADING_SPINNER = "SET_LOADING_SPINNER";
 
 //AccountingOffice actions
 export const GET_ACCOUNTING_OFFICE_DATA = "GET_ACCOUNTING_OFFICE_DATA";

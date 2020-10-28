@@ -1,20 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import Aux from "../../hoc/auxiliary";
-import { withAlert } from 'react-alert'
 
 import { changeMyData } from "../../store/settings/settingsActions";
 import form from "./myDataEditFormBuild";
+import {setMessage} from '../../store/alerts/alertsActions';
 
 const MyDataChange = (props) => {
-
-    useEffect(() => {
-        if (props.errorMessage !== "")
-            if (props.isErrorAlert)
-                props.alert.error(props.errorMessage);
-            else
-                props.alert.success(props.errorMessage);
-    });
 
     const [formComponents, setComponents] = useState(form(props.myData));
 
@@ -42,8 +34,6 @@ const MyDataChange = (props) => {
         setComponents(updatedForm);
     }
 
-
-
     const submitForm = (event) => {
         event.preventDefault();
 
@@ -62,7 +52,7 @@ const MyDataChange = (props) => {
         }
         )
         if (dataToSend.length < 1)
-            props.alert.error("Nie ma żadnych zmian do wysłania");
+            props.setMessage("Nie ma żadnych zmian do wysłania", true);
         else {
             props.onSubmit(
                 dataToSend,
@@ -94,8 +84,6 @@ const MyDataChange = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        errorMessage: state.errorReducer.errorMessage,
-        isErrorAlert: state.errorReducer.errorAlert,
         myData: state.customersReducer.customer.companyData,
         dataAccess:state.authReducer.dataAccess
     };
@@ -104,7 +92,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onSubmit: (data, dataAccess) => dispatch(changeMyData(data, dataAccess)),
+        setMessage: (message, isError) => dispatch(setMessage(message, isError))
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withAlert()(MyDataChange));
+export default connect(mapStateToProps, mapDispatchToProps)(MyDataChange);

@@ -2,7 +2,7 @@ import * as actionTypes from '../actions';
 import axios from 'axios'
 import jwt_decode from "jwt-decode";
 
-import { setErrorMessage } from '../errosHandling/errorActions';
+import { setMessage } from '../alerts/alertsActions';
 import { getToken, logoutUser } from '../authorization/authAction';
 
 
@@ -47,22 +47,22 @@ export const changeAccessData = (newlogin, newPassword, oldPassword) => {
                 }
             })
             .then(() => {
-                dispatch(setErrorMessage("Udało się! Za chwilę zostaniesz wylogowany", false));
+                dispatch(setMessage("Udało się! Za chwilę zostaniesz wylogowany", false));
                 setTimeout(() => dispatch(logoutUser()), 5000)
 
             }).catch((err) => {
                 if (err.response !== undefined) {
                     if (err.response.status === 400)
-                        dispatch(setErrorMessage("Nieprawidłowe hasło", true));
+                        dispatch(setMessage("Nieprawidłowe hasło", true));
 
                     else if (err.response.status === 404)
-                        dispatch(setErrorMessage("Użytkownik nieznaleziony", true));
+                        dispatch(setMessage("Użytkownik nieznaleziony", true));
 
                     else if (err.response.status === 409)
-                        dispatch(setErrorMessage("Nazwa użytkownika jest już zajęta", true));
+                        dispatch(setMessage("Nazwa użytkownika jest już zajęta", true));
                 }
                 else
-                    dispatch(setErrorMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));
+                    dispatch(setMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));
 
 
             })
@@ -79,13 +79,13 @@ export const changeMyData = (data, dataAccess) => {
                 }
             })
             .then(() => {
-                dispatch(setErrorMessage("dane zostały zmienione", false));
+                dispatch(setMessage("dane zostały zmienione", false));
             }).catch((err) => {
                 if (err.response !== undefined) {
-                        dispatch(setErrorMessage("Coś poszło nie tak", true));
+                        dispatch(setMessage("Coś poszło nie tak", true));
                 }
                 else
-                    dispatch(setErrorMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));
+                    dispatch(setMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));
             })
     }
 }

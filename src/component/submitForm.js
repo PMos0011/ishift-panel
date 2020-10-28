@@ -1,19 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import Aux from "../hoc/auxiliary";
-import { withAlert } from 'react-alert'
 import Select from 'react-select';
 
 const MyBankAccounts = (props) => {
-    useEffect(() => {
-        if (props.errorMessage !== "") {
-            if (props.isErrorAlert)
-                props.alert.error(props.errorMessage);
-            else
-                props.alert.success(props.errorMessage);
-        }
-    });
 
     let object = props.dataToChange.find(obj => obj.id == props.match.params.id)
     if (object === undefined)
@@ -110,12 +101,10 @@ const MyBankAccounts = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        errorMessage: state.errorReducer.errorMessage,
-        isErrorAlert: state.errorReducer.errorAlert,
         measures: state.commodityReducer.measures,
         vatTypes: state.invoiceReducer.vatTypes
 
     };
 };
 
-export default connect(mapStateToProps)(withAlert()(MyBankAccounts));
+export default connect(mapStateToProps)(MyBankAccounts);

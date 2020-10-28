@@ -1,22 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import Aux from "../../hoc/auxiliary";
 
-import { withAlert } from 'react-alert'
-
 import { changeAccessData } from "../../store/settings/settingsActions";
 import form from "./passwordChangeBaseBuild";
+import { setMessage } from "../../store/alerts/alertsActions";
 
 const PassChange = (props) => {
-
-    useEffect(() => {
-        if (props.errorMessage !== "")
-        if (props.isErrorAlert)
-            props.alert.error(props.errorMessage);
-        else
-            props.alert.success(props.errorMessage);
-    });
-
 
     const [formComponents, setComponents] = useState(form);
 
@@ -49,17 +39,15 @@ const PassChange = (props) => {
                 updatedLoginForm.newPasswordConfirm.redLabel = false;
             }
 
-
         setComponents(updatedLoginForm);
     }
-
 
     const submitForm = (event) => {
         event.preventDefault();
 
         if (formComponents.password.value === "") {
 
-            props.alert.error("Hasło nie może byc puste!");
+            props.setMessage("Hasło nie może byc puste!", true);
 
             const updatedLoginForm = {
                 ...formComponents
@@ -71,10 +59,10 @@ const PassChange = (props) => {
             setComponents(updatedLoginForm);
 
         } else if (formComponents.newPassword.value !== formComponents.newPasswordConfirm.value)
-            props.alert.error("pola nowego hasła nie są jednakowe");
+            props.setMessage("pola nowego hasła nie są jednakowe", true);
 
         else if (formComponents.newPassword.value === "" && formComponents.userName.value === "")
-            props.alert.error("Nie mam co zmienić. Login i hasło są puste");
+            props.setMessage("Nie mam co zmienić. Login i hasło są puste", true);
 
         else {
             props.onSubmit(
@@ -108,17 +96,11 @@ const PassChange = (props) => {
     )
 };
 
-const mapStateToProps = (state) => {
-    return {
-        errorMessage: state.errorReducer.errorMessage,
-        isErrorAlert: state.errorReducer.errorAlert,
-    };
-};
-
 const mapDispatchToProps = (dispatch) => {
     return {
         onSubmit: (newlogin, newPassword, oldPassword) => dispatch(changeAccessData(newlogin, newPassword, oldPassword)),
+        setMessage: (message, isError) => dispatch(setMessage(message, isError))
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withAlert()(PassChange));
+export default connect(null, mapDispatchToProps)(PassChange);

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from "react-redux";
-import { withAlert } from 'react-alert'
 
 import InvoiceHeader from "./invoiceHeader";
 import InvoiceParties from "./invoiceParties";
@@ -75,8 +74,8 @@ const InvoiceForm = (props) => {
         else if (commodities.length < 1)
             props.alert.error("Brak towarów!");
         else
-        // props.putInvoice(props.match.params.dbId, data);
-        props.test(data)
+         props.putInvoice(props.match.params.dbId, data);
+        //props.test(data)
     }
 
     return (
@@ -130,4 +129,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withAlert()(InvoiceForm));
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceForm);

@@ -1,7 +1,7 @@
 import * as actionTypes from '../actions';
 import axios from 'axios'
 
-import { setErrorMessage } from '../errosHandling/errorActions';
+import { setMessage } from '../alerts/alertsActions';
 import { getToken } from '../authorization/authAction';
 
 export const getInvoices = (id) => {

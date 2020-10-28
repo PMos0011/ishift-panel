@@ -2,8 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter, Route } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { positions, Provider as AlertProvider } from 'react-alert'
-import AlertTemplate from 'react-alert-template-basic'
+import Modal from "./component/modal";
 
 import Header from './component/header/header';
 import LoginForm from "./component/loginForm/loginForm";
@@ -20,21 +19,17 @@ import './style/sidebar-style.css';
 import './style/style.css';
 import './style/table-style.css';
 import './style/invoice-commodity-style.css';
-
-const options = {
-  position: positions.MIDDLE,
-  timeout: 5000,
-}
+import "./style/modal-style.css";
 
 const App = (props) => {
   useEffect(() => {
     props.onLoad();
   }, []);
-
+  
   return (
-    <AlertProvider template={AlertTemplate} {...options}>
       <BrowserRouter>
         <div className="App">
+        <Modal />
           <Header />
           <Route
             path="/auth"
@@ -46,8 +41,9 @@ const App = (props) => {
             <Footer />
         </div>
       </BrowserRouter>
-    </AlertProvider>)
+    )
 }
+
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -55,4 +51,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(null, mapDispatchToProps)(App)
