@@ -11,9 +11,9 @@ const InvoiceSummary = (props) => {
     const [checkoboxState, setCheckboxstate] = useState({
         paid: false,
         paidDay: false,
-        paidWay: true,
-        paymentDay: true,
-        bankAccfromDb: true,
+        paidWay: false,
+        paymentDay: false,
+        bankAccfromDb: false,
         ownBankAcc: false,
         comments: false
     });

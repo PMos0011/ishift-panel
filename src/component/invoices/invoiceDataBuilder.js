@@ -47,8 +47,10 @@ const invoicePlaceOfIssueBuilder = (customer) => {
 }
 
 
-export const sellerDataBuilder = (sellerData, id) => {
+const sellerDataBuilder = (sellerData, id) => {
     let data = { ...emptyData };
+    data.idType = 0;
+    data.idName = "NIP"
 
     if (sellerData.companyData.length > 0) {
         let street = "";
@@ -131,26 +133,26 @@ export const setPartiesDatatBeginState = (sellerData, id) => {
 export const setSummaryBeginState = (invoicePaymnetStatusOption) => {
 
     return {
-        statusId:invoicePaymnetStatusOption.value,
-        statusIdValue:invoicePaymnetStatusOption.label,
-        paidWay:null,
-        paymentOptionIdValue:null,
-        paid:null,
-        paymentDay:null,
-        paidDay:null,
-        bankAcc:null,
-        comments:null,
-        vatExemptionLabelNp:null,
-        vatExemptionValueNp:null,
-        vatExemptionLabelZw:null,
-        vatExemptionValueZw:null
+        statusId: invoicePaymnetStatusOption.value,
+        statusIdValue: invoicePaymnetStatusOption.label,
+        paidWay: null,
+        paymentOptionIdValue: null,
+        paid: null,
+        paymentDay: null,
+        paidDay: null,
+        bankAcc: null,
+        comments: null,
+        vatExemptionLabelNp: null,
+        vatExemptionValueNp: null,
+        vatExemptionLabelZw: null,
+        vatExemptionValueZw: null
     }
 
 }
 
-export const timeZoneCorrection = (time) =>{
+export const timeZoneCorrection = (time) => {
 
-    const UTCOffset = time.getTimezoneOffset()*60*1000;
+    const UTCOffset = time.getTimezoneOffset() * 60 * 1000;
     return time.getTime() - UTCOffset;
-    
+
 }

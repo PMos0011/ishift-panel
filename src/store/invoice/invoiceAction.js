@@ -97,3 +97,31 @@ const setVatTypes = (data) => {
         data: data
     }
 }
+
+export const test = (data) => {
+    return (dispatch) => {
+        axios.put(actionTypes.SERVER_ADDRESS + "/test/",data,
+            {
+                responseType: 'blob',
+                headers: {
+                    'Authorization': getToken()
+                }
+            })
+            .then((response) => {
+                generate(response.data)
+
+            }).catch((err) => {
+                //TODO
+                console.log(err);
+            })
+    }
+}
+
+const generate = (data) =>{
+    const file = new Blob(
+        [data],
+        { type: 'application/pdf' }
+    );
+    const fileURL = URL.createObjectURL(file);
+    window.open(fileURL);
+}
