@@ -115,10 +115,10 @@ const setVatTypes = (data) => {
     }
 }
 
-export const test = (data) => {
+export const invoicePreview = (data) => {
     return (dispatch) => {
         dispatch(setLoadingSpinner(true));
-        axios.put(actionTypes.SERVER_ADDRESS + "/test/",data,
+        axios.put(actionTypes.SERVER_ADDRESS + "/invoice/preview",data,
             {
                 responseType: 'blob',
                 headers: {

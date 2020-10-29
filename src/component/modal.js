@@ -51,8 +51,10 @@ const Modal = (props) => {
     return (
         <div className="modal-transition" style={{
             opacity: showModal ? '1' : '0',
-            visibility: showModal ? "visible" : "hidden"
-        }}>
+            visibility: showModal ? "visible" : "hidden",
+            transitionDelay: props.spinner? "1s":"0s"
+        }}
+        >
 
             <div className="modal-background"> </div>
             <div className={modalStyle.join(" ")} onClick={() => clearMessage()}>

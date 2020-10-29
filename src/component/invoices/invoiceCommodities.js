@@ -47,15 +47,17 @@ const InvoiceCommodities = (props) => {
         if (vatExemptionNp === undefined) {
             newSumaryData.vatExemptionLabelNp = null;
             newSumaryData.vatExemptionValueNp = null;
-        } else
+        } else{
             newSumaryData.vatExemptionLabelNp = "Rodzaj dokonywanej sprzedaży (w związku ze stawką VAT np.)";
+            newSumaryData.vatExemptionValueNp = "";}
 
         if (vatExemptionZw === undefined) {
             newSumaryData.vatExemptionLabelZw = null;
             newSumaryData.vatExemptionValueZw = null;
         }
         else
-            newSumaryData.vatExemptionLabelZw = "Podstawa zwolnienia z podatku VAT (w związku ze stawką VAT zw.)";
+            {newSumaryData.vatExemptionLabelZw = "Podstawa zwolnienia z podatku VAT (w związku ze stawką VAT zw.)";
+            newSumaryData.vatExemptionValueZw = "";}
 
         props.setSummaryData(newSumaryData);
     }
@@ -73,6 +75,7 @@ const InvoiceCommodities = (props) => {
             bruttoAmount: rateObj.summary[2].toFormat('0.00')
         });
         props.setInvoiceCommodities(commodities);
+        props.setInvoicePaymentAmount(rateObj.summary[2].toFormat('0.00'));
     }
 
     const addInvoiceCommodity = (isFromSelector) => {

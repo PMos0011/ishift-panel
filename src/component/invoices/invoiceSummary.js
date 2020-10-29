@@ -8,7 +8,12 @@ import { pl } from "date-fns/locale";
 
 const InvoiceSummary = (props) => {
 
-    const [checkoboxState, setCheckboxstate] = useState({
+    const preventNull = (data) => {
+
+        return data !== null ? data : ""
+    }
+
+    const [checkboxState, setCheckboxState] = useState({
         paid: false,
         paidDay: false,
         paidWay: false,
@@ -18,30 +23,29 @@ const InvoiceSummary = (props) => {
         comments: false
     });
 
-    const preventNull = (data) => {
-
-        return data !== null ? data : ""
-    }
-
     const checkboxChange = (event) => {
-        let newSate = { ...checkoboxState };
-        newSate[event.target.name] = !checkoboxState[event.target.name]
+        let newState = { ...checkboxState };
+        newState[event.target.name] = !checkboxState[event.target.name]
 
-        if (event.target.name === "bankAccfromDb" && newSate.bankAccfromDb)
-            newSate.ownBankAcc = false
-        if (newSate.ownBankAcc)
-            newSate.bankAccfromDb = false
+        if (event.target.name === "bankAccfromDb" && newState.bankAccfromDb)
+            newState.ownBankAcc = false
+        if (newState.ownBankAcc)
+            newState.bankAccfromDb = false
 
-        setCheckboxstate(newSate)
+        setCheckboxState(newState)
 
         let newSummaryData = { ...props.summaryData }
 
         if (event.target.name === "bankAccfromDb" || event.target.name === "ownBankAcc") {
-            if (!newSate.ownBankAcc && !newSate.bankAccfromDb)
+            if (!newState.ownBankAcc && !newState.bankAccfromDb)
                 newSummaryData.bankAcc = null;
+            else
+                newSummaryData.bankAcc = "";
         } else
-            if (!newSate[event.target.name])
+            if (!newState[event.target.name])
                 newSummaryData[event.target.name] = null
+            else
+                newSummaryData[event.target.name] = ""
 
         props.setSummaryData(newSummaryData);
     }
@@ -65,23 +69,41 @@ const InvoiceSummary = (props) => {
     }
 
     const selectChage = (data, name) => {
-
-        let newData = { ...props.summaryData }
-
+        let newSummaryData = { ...props.summaryData }
+        
         switch (name.name) {
             case "paymentStatus":
-                newData.statusId = data.value;
-                newData.statusIdValue = data.label;
+                newSummaryData.statusId = data.value;
+                newSummaryData.statusIdValue = data.label;
+                let newState = { ...checkboxState };
+                if (data.value === 0) {
+                    newState.paid = false;
+                    newState.paidDay = false;
+                    newSummaryData.paid = null;
+                    newSummaryData.paidDay = null;
+                }
+                else {
+                    newState.paid = true;
+                    newState.paidDay = true;
+                    if (newSummaryData.paidDay === null)
+                        newSummaryData.paidDay = "";
+                    if (newSummaryData.paid === null)
+                        newSummaryData.paid = "";
+                    if (data.value === 1)
+                        newSummaryData.paid = props.invoicePaymentAmount;
+
+                }
+                setCheckboxState(newState);
                 break;
             case "paymentOption":
-                newData.paidWay = data.value;
-                newData.paymentOptionIdValue = data.label;
+                newSummaryData.paidWay = data.value;
+                newSummaryData.paymentOptionIdValue = data.label;
                 break
             case "bankAcc":
-                newData.bankAcc = data.label;
+                newSummaryData.bankAcc = data.label;
                 break;
         }
-        props.setSummaryData(newData);
+        props.setSummaryData(newSummaryData);
     }
 
     const bankAccSelect = <Select className="margin-top-1"
@@ -95,7 +117,7 @@ const InvoiceSummary = (props) => {
         name="bankAcc"
         value={preventNull(props.summaryData.bankAcc)}
         onChange={inputChange}
-        disabled={!checkoboxState.ownBankAcc} />
+        disabled={!checkboxState.ownBankAcc} />
 
     let vatExemptionNp = null;
     if (props.summaryData.vatExemptionLabelNp !== null)
@@ -110,18 +132,18 @@ const InvoiceSummary = (props) => {
             </div>
         </Aux>
 
-let vatExemptionZw = null;
-if (props.summaryData.vatExemptionLabelZw !== null)
-    vatExemptionZw = <Aux>
-        <div className="margin-all-1">
-            <label>{preventNull(props.summaryData.vatExemptionLabelZw)}</label>
-            <textarea
-                className="full-width margin-top-1"
-                value={preventNull(props.summaryData.vatExemptionValueZw)}
-                onChange={inputChange}
-                name="vatExemptionValueZw" />
-        </div>
-    </Aux>
+    let vatExemptionZw = null;
+    if (props.summaryData.vatExemptionLabelZw !== null)
+        vatExemptionZw = <Aux>
+            <div className="margin-all-1">
+                <label>{preventNull(props.summaryData.vatExemptionLabelZw)}</label>
+                <textarea
+                    className="full-width margin-top-1"
+                    value={preventNull(props.summaryData.vatExemptionValueZw)}
+                    onChange={inputChange}
+                    name="vatExemptionValueZw" />
+            </div>
+        </Aux>
 
     return (
         <Aux>
@@ -139,27 +161,27 @@ if (props.summaryData.vatExemptionLabelZw !== null)
                 <div className="margin-all-1">
                     <input type="checkbox"
                         name="paid"
-                        checked={checkoboxState.paid}
+                        checked={checkboxState.paid}
                         onChange={checkboxChange} />Zapłacono
             <input className="text-x-large-input"
                         type="number"
                         name="paid"
                         value={preventNull(props.summaryData.paid)}
                         onChange={inputChange}
-                        disabled={!checkoboxState.paid} />
+                        disabled={!checkboxState.paid} />
 
                 </div>
                 <div className="margin-all-1">
                     <input type="checkbox"
                         name="paidDay"
-                        checked={checkoboxState.paidDay}
+                        checked={checkboxState.paidDay}
                         onChange={checkboxChange}
                     />Data płatności<br />
                     <DatePicker
                         className="text-x-large-input"
                         closeOnScroll={true}
                         selected={preventNull(props.summaryData.paidDay)}
-                        disabled={!checkoboxState.paidDay}
+                        disabled={!checkboxState.paidDay}
                         onChange={date => setPaidDay(date)}
                         dateFormat="dd.MM.yyyy"
                         locale={pl}
@@ -168,7 +190,7 @@ if (props.summaryData.vatExemptionLabelZw !== null)
                 <div className="margin-all-1">
                     <input type="checkbox"
                         name="paidWay"
-                        checked={checkoboxState.paidWay}
+                        checked={checkboxState.paidWay}
                         onChange={checkboxChange} />Sposób płatności
             <Select
                         className="margin-top-1"
@@ -176,19 +198,19 @@ if (props.summaryData.vatExemptionLabelZw !== null)
                         defaultValue={props.invoicePaymentOptions[props.summaryData.paidWay]}
                         name="paymentOption"
                         onChange={(data, name) => selectChage(data, name)}
-                        isDisabled={!checkoboxState.paidWay} />
+                        isDisabled={!checkboxState.paidWay} />
                 </div>
                 <div className="margin-all-1">
                     <input type="checkbox"
                         name="paymentDay"
-                        checked={checkoboxState.paymentDay}
+                        checked={checkboxState.paymentDay}
                         onChange={checkboxChange} />Termin płatności
             <DatePicker
                         className="text-x-large-input"
                         closeOnScroll={true}
                         selected={preventNull(props.summaryData.paymentDay)}
                         onChange={date => setPaymentDay(date)}
-                        disabled={!checkoboxState.paymentDay}
+                        disabled={!checkboxState.paymentDay}
                         dateFormat="dd.MM.yyyy"
                         locale={pl} />
 
@@ -196,26 +218,26 @@ if (props.summaryData.vatExemptionLabelZw !== null)
                 <div className="margin-all-1">
                     <input type="checkbox"
                         name="bankAccfromDb"
-                        checked={checkoboxState.bankAccfromDb}
+                        checked={checkboxState.bankAccfromDb}
                         onChange={checkboxChange} />Numer konta z bazy danych
                     <input type="checkbox"
                         name="ownBankAcc"
-                        checked={checkoboxState.ownBankAcc}
+                        checked={checkboxState.ownBankAcc}
                         onChange={checkboxChange} />Własny numer konta<br />
-                    {checkoboxState.bankAccfromDb ? bankAccSelect : bankAccInput}
+                    {checkboxState.bankAccfromDb ? bankAccSelect : bankAccInput}
                 </div>
             </div>
             <div className="margin-all-1">
                 <input type="checkbox"
                     name="comments"
-                    checked={checkoboxState.comments}
+                    checked={checkboxState.comments}
                     onChange={checkboxChange} />Uawgi <br />
                 <textarea
                     className="full-width margin-top-1"
                     value={preventNull(props.summaryData.comments)}
                     onChange={inputChange}
                     name="comments"
-                    disabled={!checkoboxState.comments} />
+                    disabled={!checkboxState.comments} />
             </div>
         </Aux>
     )
