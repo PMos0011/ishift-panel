@@ -1,11 +1,13 @@
 import * as actionTypes from '../actions';
 import axios from 'axios'
 
-import { setMessage } from '../alerts/alertsActions';
+import * as messages from "../alertsMessages";
+import { setMessage, setLoadingSpinner } from '../alerts/alertsActions';
 import { getToken } from '../authorization/authAction';
 
 export const getContractors = (id) => {
     return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
         axios.get(actionTypes.SERVER_ADDRESS + "/contractors/" + id,
             {
                 headers: {
@@ -13,11 +15,14 @@ export const getContractors = (id) => {
                 }
             })
             .then((response) => {
-                dispatch(setContractors(response.data)
-                )
+                dispatch(setContractors(response.data));
+                dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                //TODO
-                console.log(err);
+                if (err.response !== undefined) {
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
+                }
+                else
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
     }
 }
@@ -42,6 +47,7 @@ const setContractors = (data) => {
 
 export const saveContractor = (data, dataAccess) => {
     return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
         axios.put(actionTypes.SERVER_ADDRESS + "/contractors/" + dataAccess,
             data,
             {
@@ -50,19 +56,21 @@ export const saveContractor = (data, dataAccess) => {
                 }
             })
             .then((response) => {
-                dispatch(setContractors(response.data))
+                dispatch(setContractors(response.data));
+                dispatch(setLoadingSpinner(false));
             }).catch((err) => {
                 if (err.response !== undefined) {
-                    dispatch(setMessage("Coś poszło nie tak", true));
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
                 }
                 else
-                    dispatch(setMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
     }
 }
 
 export const deleteContractor = (dataAccess, id) => {
     return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
         axios.delete(actionTypes.SERVER_ADDRESS + "/contractors/" + dataAccess + "/" + id,
             {
                 headers: {
@@ -70,13 +78,14 @@ export const deleteContractor = (dataAccess, id) => {
                 }
             })
             .then((response) => {
-                dispatch(setContractors(response.data))
+                dispatch(setContractors(response.data));
+                dispatch(setLoadingSpinner(false));
             }).catch((err) => {
                 if (err.response !== undefined) {
-                    dispatch(setMessage("Coś poszło nie tak", true));
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
                 }
                 else
-                    dispatch(setMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
     }
 }

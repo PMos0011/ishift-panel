@@ -1,10 +1,13 @@
 import * as actionTypes from '../actions';
 import axios from 'axios'
 
+import * as messages from "../alertsMessages";
+import { setMessage, setLoadingSpinner } from '../alerts/alertsActions';
 import { getToken } from '../authorization/authAction';
 
 export const getAllCustomers = (id) => {
     return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
         axios.get(actionTypes.SERVER_ADDRESS + "/customers/" + id,
             {
                 headers: {
@@ -12,11 +15,14 @@ export const getAllCustomers = (id) => {
                 }
             })
             .then((response) => {
-                dispatch(setCompanyNames(response.data)
-                )
+                dispatch(setCompanyNames(response.data));
+                dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                //TODO
-                console.log(err);
+                if (err.response !== undefined) {
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
+                }
+                else
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
     }
 }
@@ -24,6 +30,7 @@ export const getAllCustomers = (id) => {
 
 export const getCustomerData = (id) => {
     return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
         axios.get(actionTypes.SERVER_ADDRESS + "/customer/" + id,
             {
                 headers: {
@@ -31,11 +38,14 @@ export const getCustomerData = (id) => {
                 }
             })
             .then((response) => {
-                dispatch(setCustomerData(response.data)
-                )
+                dispatch(setCustomerData(response.data));
+                dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                //TODO
-                console.log(err);
+                if (err.response !== undefined) {
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
+                }
+                else
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
     }
 }

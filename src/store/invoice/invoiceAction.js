@@ -1,11 +1,13 @@
 import * as actionTypes from '../actions';
 import axios from 'axios'
 
-import { setMessage } from '../alerts/alertsActions';
+import * as messages from "../alertsMessages";
+import { setMessage, setLoadingSpinner } from '../alerts/alertsActions';
 import { getToken } from '../authorization/authAction';
 
 export const getInvoices = (id) => {
     return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
         axios.get(actionTypes.SERVER_ADDRESS + "/invoice/" + id,
             {
                 headers: {
@@ -13,11 +15,14 @@ export const getInvoices = (id) => {
                 }
             })
             .then((response) => {
-                dispatch(setInvoices(response.data)
-                )
+                dispatch(setInvoices(response.data));
+                dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                //TODO
-                console.log(err);
+                if (err.response !== undefined) {
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
+                }
+                else
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
     }
 }
@@ -31,6 +36,7 @@ const setInvoices = (data) => {
 
 export const getInvoiceTypes = (id) => {
     return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
         axios.get(actionTypes.SERVER_ADDRESS + "/invoice/" + id,
             {
                 headers: {
@@ -38,11 +44,14 @@ export const getInvoiceTypes = (id) => {
                 }
             })
             .then((response) => {
-                dispatch(setInvoiceTypes(response.data)
-                )
+                dispatch(setInvoiceTypes(response.data))
+                dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                //TODO
-                console.log(err);
+                if (err.response !== undefined) {
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
+                }
+                else
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
     }
 }
@@ -56,6 +65,7 @@ const setInvoiceTypes = (data) => {
 
 export const putInvoice = (id, data) => {
     return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
         axios.put(actionTypes.SERVER_ADDRESS + "/invoice/" + id,
             data,
             {
@@ -64,17 +74,21 @@ export const putInvoice = (id, data) => {
                 }
             })
             .then((response) => {
-                dispatch(setInvoices(response.data)
-                )
+                dispatch(setInvoices(response.data))
+                dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                //TODO
-                console.log(err);
+                if (err.response !== undefined) {
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
+                }
+                else
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
     }
 }
 
 export const getVatTypes = (id) => {
     return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
         axios.get(actionTypes.SERVER_ADDRESS + "/invoice/vat/" + id,
             {
                 headers: {
@@ -82,11 +96,14 @@ export const getVatTypes = (id) => {
                 }
             })
             .then((response) => {
-                dispatch(setVatTypes(response.data)
-                )
+                dispatch(setVatTypes(response.data));
+                dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                //TODO
-                console.log(err);
+                if (err.response !== undefined) {
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
+                }
+                else
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
     }
 }
@@ -100,6 +117,7 @@ const setVatTypes = (data) => {
 
 export const test = (data) => {
     return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
         axios.put(actionTypes.SERVER_ADDRESS + "/test/",data,
             {
                 responseType: 'blob',
@@ -108,11 +126,15 @@ export const test = (data) => {
                 }
             })
             .then((response) => {
-                generate(response.data)
+                generate(response.data);
+                dispatch(setLoadingSpinner(false));
 
             }).catch((err) => {
-                //TODO
-                console.log(err);
+                if (err.response !== undefined) {
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
+                }
+                else
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
     }
 }

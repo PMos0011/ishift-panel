@@ -1,11 +1,13 @@
 import * as actionTypes from '../actions';
 import axios from 'axios'
 
-import { setMessage } from '../alerts/alertsActions';
+import * as messages from "../alertsMessages";
+import { setMessage, setLoadingSpinner } from '../alerts/alertsActions';
 import { getToken } from '../authorization/authAction';
 
 export const getCommoditiesData = (id) => {
     return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
         axios.get(actionTypes.SERVER_ADDRESS + "/commodity/" + id,
             {
                 headers: {
@@ -25,9 +27,13 @@ export const getCommoditiesData = (id) => {
                 })
                 dispatch(setCommodityOptions(selectOptions));
                 dispatch(setCommodities(response.data));
+                dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                //TODO
-                console.log(err);
+                if (err.response !== undefined) {
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
+                }
+                else
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
     }
 }
@@ -42,6 +48,7 @@ const setCommodities = (data) => {
 
 export const saveCommodity = (data, dataAccess) => {
     return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
         axios.put(actionTypes.SERVER_ADDRESS + "/commodity/" + dataAccess,
             data,
             {
@@ -50,19 +57,21 @@ export const saveCommodity = (data, dataAccess) => {
                 }
             })
             .then((response) => {
-                dispatch(setCommodities(response.data))
+                dispatch(setCommodities(response.data));
+                dispatch(setLoadingSpinner(false));
             }).catch((err) => {
                 if (err.response !== undefined) {
-                    dispatch(setMessage("Coś poszło nie tak", true));
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
                 }
                 else
-                    dispatch(setMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
     }
 }
 
 export const deleteCommodity = (dataAccess, id) => {
     return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
         axios.delete(actionTypes.SERVER_ADDRESS + "/commodity/" + dataAccess + "/" + id,
             {
                 headers: {
@@ -70,13 +79,14 @@ export const deleteCommodity = (dataAccess, id) => {
                 }
             })
             .then((response) => {
-                dispatch(setCommodities(response.data))
+                dispatch(setCommodities(response.data));
+                dispatch(setLoadingSpinner(false));
             }).catch((err) => {
                 if (err.response !== undefined) {
-                    dispatch(setMessage("Coś poszło nie tak", true));
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
                 }
                 else
-                    dispatch(setMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później", true));
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
     }
 }
@@ -93,8 +103,11 @@ export const getMeasures = (id) => {
                 dispatch(setMeasure(response.data)
                 )
             }).catch((err) => {
-                //TODO
-                console.log(err);
+                if (err.response !== undefined) {
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
+                }
+                else
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
     }
 }

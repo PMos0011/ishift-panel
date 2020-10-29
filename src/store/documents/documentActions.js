@@ -3,10 +3,13 @@ import axios from 'axios'
 import { convertToDate } from '../../component/documents/documentConverters';
 import map from "../../component/documents/supportedDocuments";
 
+import * as messages from "../alertsMessages";
+import { setMessage, setLoadingSpinner } from '../alerts/alertsActions';
 import { getToken } from '../authorization/authAction';
 
 export const getAllDocuments = (id) => {
     return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
         axios.get(actionTypes.SERVER_ADDRESS + "/documents/" + id,
             {
                 headers: {
@@ -16,10 +19,14 @@ export const getAllDocuments = (id) => {
             .then((response) => {
                 convertResponseToDate(response);
                 let options = createOptions(response);
-                dispatch(setDocuments(response.data, options))
+                dispatch(setDocuments(response.data, options));
+                dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                //TODO
-                console.log(err);
+                if (err.response !== undefined) {
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
+                }
+                else
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
     }
 }
@@ -59,6 +66,7 @@ const setDocuments = (documents, options) => {
 
 export const getDocumentDetails = (dbId, id) => {
     return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
         axios.get(actionTypes.SERVER_ADDRESS + "/documents/" + dbId + "/" + id,
             {
                 headers: {
@@ -67,10 +75,14 @@ export const getDocumentDetails = (dbId, id) => {
             })
             .then((response) => {
                 response.data.rokMiesiac = convertToDate(response.data.rokMiesiac);
-                dispatch(setDocumentdetails(response.data))
+                dispatch(setDocumentdetails(response.data));
+                dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                //TODO
-                console.log(err);
+                if (err.response !== undefined) {
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
+                }
+                else
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
     }
 }

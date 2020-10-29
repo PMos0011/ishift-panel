@@ -1,11 +1,12 @@
 import * as actionTypes from '../actions';
-import {setMessage, setLoadingSpinner} from '../alerts/alertsActions';
+import * as messages from "../alertsMessages";
+import { setMessage, setLoadingSpinner } from '../alerts/alertsActions';
 import jwt_decode from "jwt-decode";
 
 import axios from 'axios';
 
 export const authorizeUser = (userName, password) => {
-    
+
     return (dispatch) => {
         dispatch(setLoadingSpinner(true));
         axios.post(actionTypes.SERVER_ADDRESS + "/login", {
@@ -17,18 +18,18 @@ export const authorizeUser = (userName, password) => {
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
                 if (err.response !== undefined) {
-                    if (err.response.status === 403){
-                        dispatch(setMessage("Nieprawidłowa nazwa użytkownika bądź hasło.", true));
-                    }
+                    if (err.response.status === 403)
+                        dispatch(setMessage(messages.WRONG_USERNAME_OR_PASSWORD, true));
+                    else
+                        dispatch(setMessage(messages.GENERAL_ERROR, true));
                 }
-                else {
-                    dispatch(setMessage("Błąd komuniacji z serwerem. Spróbuj ponownie później.", true));
-                }
+                else
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
     }
 }
 
-export const newAuthData = (token, expireDate) =>{
+export const newAuthData = (token, expireDate) => {
     let decodedToken = jwt_decode(token);
     let isAdmin = false;
     let access = "";
@@ -56,7 +57,7 @@ export const setToken = (token, expireDate) => {
     localStorage.setItem("token", token);
     localStorage.setItem("expireDate", expireDate);
     localStorage.setItem("isAuthenticated", true);
-   
+
     return {
         type: actionTypes.AUTHORIZE_USER,
         data: newAuthData(token, expireDate),
@@ -83,8 +84,6 @@ export const logoutUser = () => {
         type: actionTypes.LOGOUT_USER,
     }
 }
-
-
 
 export const getToken = () => {
     return localStorage.getItem("token")
