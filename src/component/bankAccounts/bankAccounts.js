@@ -8,7 +8,7 @@ import editIcon from '../../images/edit_icon.svg';
 import addIcon from "../../images/add_icon.svg";
 
 import { getBankAccountsData, deleteBankAccount } from "../../store/bankAccounts/bankActions";
-import deleteAction from "../deleteConfirmation";
+import {deleteAlert} from "../../store/alerts/alertsActions";
 
 import * as converter from './converters';
 
@@ -28,7 +28,7 @@ const Customer = (props) => {
                         <div className="doc-item-thin">{acc.zipCode + " " + acc.city}</div>
                         <div className="item-grid-4-full direction-rtl">
                             <img onClick={() =>
-                                deleteAction(props.match.params.id, acc.id, "konta", props.deleteAccoount)}
+                                props.deleteAlert(props.match.params.id, acc.id, "konta", props.deleteAccoount)}
                                 className="icon-size pointer-on-hover"
                                 src={deleteIcon} alt="delete" />
                             <Link to={"/auth/bankAccounts/edit/" + props.match.params.id + "/" + acc.id}>
@@ -55,7 +55,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onLoad: (id) => dispatch(getBankAccountsData(id)),
-        deleteAccoount: (access, id) => dispatch(deleteBankAccount(access, id))
+        deleteAccoount: (access, id) => dispatch(deleteBankAccount(access, id)),
+        deleteAlert: (access, id, message, action) => dispatch(deleteAlert(access, id, message, action))
     };
 };
 

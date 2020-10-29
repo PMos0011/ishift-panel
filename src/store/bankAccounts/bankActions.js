@@ -70,6 +70,8 @@ export const saveBankAccount = (data, dataAccess) => {
 }
 
 export const deleteBankAccount = (dataAccess, id) => {
+    console.log(dataAccess);
+    console.log(id);
     return (dispatch) => {
         dispatch(setLoadingSpinner(true));
         axios.delete(actionTypes.SERVER_ADDRESS + "/bankAccounts/" + dataAccess + "/" + id,

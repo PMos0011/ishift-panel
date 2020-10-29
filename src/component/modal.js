@@ -2,12 +2,12 @@ import React from "react";
 import { connect } from "react-redux";
 import Aux from "../hoc/auxiliary";
 
-import { clearMessage } from "../store/alerts/alertsActions";
+import { clearMessage, deleteAlert } from "../store/alerts/alertsActions";
 
 const Modal = (props) => {
 
     let showModal = false;
-    if (props.spinner || props.isErrorAlert || props.isSuccessAlert)
+    if (props.spinner || props.isErrorAlert || props.isSuccessAlert || props.action !== "")
         showModal = true
     else
         showModal = false
@@ -26,10 +26,27 @@ const Modal = (props) => {
         props.clearMessage()
     }
 
+    const onDeleteClick = () => {
+        props.action(props.access, props.id);
+        props.deleteAlert("", "", "", "");
+    }
+
+    const onCancelClick = () => {
+        props.deleteAlert("", "", "", "")
+    }
+
     const spinner =
         <Aux>
             <div className="lds-ellipsis"><div /><div /><div /><div /></div>
         </Aux>
+
+    const deleteConfirmation = <Aux>
+        <h2>Usunięcie danych {props.message}</h2>
+        <h4>Czy na pewno usunąć dane {props.message}?</h4>
+        <h6>(cofnięcie operacji nie będzie możliwe)</h6>
+        <button className="modal-button" onClick={onDeleteClick}>Oczywiście, usuwam</button>
+        <button className="modal-button" onClick={onCancelClick}>Jeszcze się zastanowie</button>
+    </Aux>
 
     return (
         <div className="modal-transition" style={{
@@ -42,6 +59,7 @@ const Modal = (props) => {
                 {props.spinner ? spinner : null}
                 {props.isErrorAlert ? props.message : null}
                 {props.isSuccessAlert ? props.message : null}
+                {props.action !== "" ? deleteConfirmation : null}
             </div>
         </div >
     )
@@ -53,13 +71,17 @@ const mapStateToProps = (state) => {
         message: state.alertsReducer.message,
         isErrorAlert: state.alertsReducer.errorAlert,
         isSuccessAlert: state.alertsReducer.successAlert,
-        spinner: state.alertsReducer.spinner
+        spinner: state.alertsReducer.spinner,
+        action: state.alertsReducer.action,
+        id: state.alertsReducer.id,
+        access: state.alertsReducer.access
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        clearMessage: () => dispatch(clearMessage())
+        clearMessage: () => dispatch(clearMessage()),
+        deleteAlert: (access, id, message, action) => dispatch(deleteAlert(access, id, message, action))
     };
 };
 

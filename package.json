@@ -10,7 +10,6 @@
     "dinero.js": "^1.8.1",
     "jwt-decode": "^3.0.0",
     "react": "^16.13.1",
-    "react-confirm-alert": "^2.6.2",
     "react-datepicker": "^3.2.2",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",

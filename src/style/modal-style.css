@@ -38,9 +38,23 @@
     transition: all 0.35s ease-in-out;
 }
 
-
 .clickable:hover{
 cursor: pointer;
+}
+
+.modal-button{
+	padding: 7px;
+	margin: 20px;
+	margin-top: 5vh;
+	border-radius: 6px;
+	transition: all 0.2s ease-in-out;
+	background-color:rgb(220,220,220);
+	cursor: pointer;
+	border: none
+}
+
+.modal-button:hover{
+	background-color:white
 }
 
 /* Spinner animation */

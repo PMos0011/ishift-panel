@@ -21,6 +21,12 @@ export const clearMessage = ()=>{
     }
 }
 
+export const deleteAlert = (access, id, message, action) =>{
+    return (dispatch) =>{
+        dispatch(setDeleteAlert(access, id, message, action));
+    }
+}
+
 const setErrorAlert = (message, alert) => {
     return {
         type: actionTypes.SET_ERROR_ALERT,
@@ -34,6 +40,16 @@ const setSuccessAlert = (message, alert) => {
         type: actionTypes.SET_SUCCESS_ALERT,
         message: message,
         alert: alert
+    }
+}
+
+const setDeleteAlert = (access, id, message, action) => {
+    return {
+        type: actionTypes.SET_DELETE_ALERT,
+        access:access,
+        id:id,
+        message: message,
+        action: action
     }
 }
 

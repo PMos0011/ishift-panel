@@ -9,7 +9,7 @@ import editIcon from '../../images/edit_icon.svg';
 import infoIcon from "../../images/info_icon.svg";
 
 import { deleteContractor } from "../../store/contractors/contractorsActions";
-import deleteAction from "../deleteConfirmation";
+import { deleteAlert } from "../../store/alerts/alertsActions";
 
 const Contractor = (props) => {
     const [isHide, setState] = useState(true)
@@ -47,7 +47,7 @@ const Contractor = (props) => {
     const showToggle =
         <div className="item-grid-2-full direction-rtl">
             <img onClick={() =>
-                deleteAction(props.dataAccess, contractor.id, "kontrahenta", props.deleteContractor)}
+                props.deleteAlert(props.dataAccess, contractor.id, "kontrahenta", props.deleteContractor)}
                 className="icon-size pointer-on-hover"
                 src={deleteIcon} alt="delete" />
             <Link to={"/auth/contractors/edit/" + props.dataAccess + "/" + contractor.id}>
@@ -74,7 +74,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        deleteContractor: (access, id) => dispatch(deleteContractor(access, id))
+        deleteContractor: (access, id) => dispatch(deleteContractor(access, id)),
+        deleteAlert: (access, id, message, action) => dispatch(deleteAlert(access, id, message, action))
     };
 };
 

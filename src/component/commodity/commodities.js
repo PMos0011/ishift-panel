@@ -9,7 +9,7 @@ import addIcon from "../../images/add_icon.svg";
 
 import { getCommoditiesData, deleteCommodity } from "../../store/commodity/commodityActions";
 import { priceConverter, percentConverter } from "./converters";
-import deleteAction from "../deleteConfirmation";
+import {deleteAlert} from "../../store/alerts/alertsActions";
 
 const Customer = (props) => {
     useEffect(() => {
@@ -19,8 +19,6 @@ const Customer = (props) => {
     return (
         <div className="doc-grid-4-container-commomdity width-80-white app-border-shadow">
             {props.commodities.map(comm => {
-                // if (comm.measure === null)
-                //     comm.measure = props.measures.find(m => m.label === comm.measure);
                 return (
                     <Aux key={comm.id}>
                         <div className="doc-item-thin">towar/ usługa:</div>
@@ -33,7 +31,7 @@ const Customer = (props) => {
                         <div className="doc-item-thin">{percentConverter(comm.vatAmount)}</div>
                         <div className="item-grid-4-full direction-rtl">
                             <img onClick={() =>
-                                deleteAction(props.match.params.id, comm.id, "towar", props.deleteCommodity)}
+                               props.deleteAlert(props.match.params.id, comm.id, "towaru", props.deleteCommodity)}
                                 className="icon-size pointer-on-hover"
                                 src={deleteIcon} alt="delete" />
                             <Link to={"/auth/commodity/edit/" + props.match.params.id + "/" + comm.id}>
@@ -61,7 +59,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onLoad: (id) => dispatch(getCommoditiesData(id)),
-        deleteCommodity: (access, id) => dispatch(deleteCommodity(access, id))
+        deleteCommodity: (access, id) => dispatch(deleteCommodity(access, id)),
+        deleteAlert: (access, id, message, action) => dispatch(deleteAlert(access, id, message, action))
     };
 };
 
