@@ -7,11 +7,12 @@ import InvoiceCommodities from "./invoiceCommodities";
 import InvoiceSummary from "./invoiceSummary";
 
 import * as builders from "./invoiceDataBuilder";
+import { isBankAccountNumberIncorrect } from "../bankAccounts/converters";
 
 import { getContractors } from "../../store/contractors/contractorsActions";
 import { getCommoditiesData } from "../../store/commodity/commodityActions";
 import { getBankAccountsData } from "../../store/bankAccounts/bankActions";
-import { putInvoice, invoicePreview } from "../../store/invoice/invoiceAction";
+import { saveInvoice, invoicePreview, saveInvoiceAndDownload } from "../../store/invoice/invoiceAction";
 import { setMessage } from '../../store/alerts/alertsActions';
 
 
@@ -37,9 +38,7 @@ const InvoiceForm = (props) => {
     );
     let [invoicePaymentAmount, setInvoicePaymentAmount] = useState(0);
 
-    const onPreviewClick = () => {
-        let isFormCorrect = true;
-
+    const basicsFormCheck = () => {
         if (partiesData.buyer.name === "")
             props.setMessage("Brak nabywcy!", true);
         else if (Object.keys(invoiceCommodities) < 1)
@@ -50,7 +49,7 @@ const InvoiceForm = (props) => {
             props.setMessage("Brak numeru faktury!", true);
         else if (summaryData.bankAcc !== null && summaryData.bankAcc === "")
             props.setMessage("Numer konta jest nieuzupełniony!", true);
-        else if (summaryData.bankAcc !== null && summaryData.bankAcc.length != 26)
+        else if (summaryData.bankAcc !== null && isBankAccountNumberIncorrect(summaryData.bankAcc))
             props.setMessage("Niepoprawny numer konta!", true);
         else if (summaryData.paid !== null && summaryData.paid == "")
             props.setMessage("Nie ma wpisanej kwoty w \"Zapłacono\"!", true);
@@ -68,60 +67,95 @@ const InvoiceForm = (props) => {
             props.setMessage("Podstawa zwlnienia podatku VAT zw jest niewpisana!", true);
         else if (summaryData.paid > invoicePaymentAmount)
             props.setMessage("Nadpłaty obecnie nie są obsługiwane. Kwota \"Zapłacono\" musi być mniejsza bądź równa kwocie \"Do zapłaty\"", true);
+        else
+            return true;
 
-        else {
-            const commodities = []
-            for (let key in invoiceCommodities) {
-                if (invoiceCommodities[key].name === "") {
-                    props.setMessage("Brak nawzy towaru bądź usługi!", true);
-                    isFormCorrect = false
-                    break;
-                }
-                if (invoiceCommodities[key].measure === "") {
-                    props.setMessage("Gdzieś nie jest wybrana jednostka miary!", true);
-                    isFormCorrect = false
-                    break;
-                }
-                if (invoiceCommodities[key].amount <= 0) {
-                    props.setMessage("Chcesz sprzedać 0 towaru!", true);
-                    isFormCorrect = false
-                    break;
-                }
-                commodities.push(invoiceCommodities[key]);
+        return false;
+    }
+
+    const commoditiesCheck = () => {
+
+        const commodities = []
+        for (let key in invoiceCommodities) {
+            if (invoiceCommodities[key].name === "") {
+                props.setMessage("Brak nawzy towaru bądź usługi!", true);
+                return null;
             }
+            if (invoiceCommodities[key].measure === "") {
+                props.setMessage("Gdzieś nie jest wybrana jednostka miary!", true);
+                return null;
+            }
+            if (invoiceCommodities[key].amount <= 0) {
+                props.setMessage("Chcesz sprzedać 0 towaru!", true);
+                return null;
+            }
+            commodities.push(invoiceCommodities[key]);
+        }
 
-            if (isFormCorrect) {
+        return commodities;
+    }
 
-                let seller = { ...partiesData.seller };
-                let buyer = { ...partiesData.buyer };
-                let header = { ...headerData };
-                let summary = { ...summaryData }
+    const createDataToSend = (commodities) => {
+        let seller = { ...partiesData.seller };
+        let buyer = { ...partiesData.buyer };
+        let header = { ...headerData };
+        let summary = { ...summaryData }
 
-                seller.idValue = partiesData.seller.idValue[partiesData.seller.idType];
-                buyer.idValue = partiesData.buyer.idValue[partiesData.buyer.idType];
-                if (buyer.idValue === undefined || buyer.idValue === null || buyer.idValue === "") {
-                    buyer.idValue = ""
-                    buyer.idName = ""
-                }
+        seller.idValue = partiesData.seller.idValue[partiesData.seller.idType];
+        buyer.idValue = partiesData.buyer.idValue[partiesData.buyer.idType];
+        if (buyer.idValue === undefined || buyer.idValue === null || buyer.idValue === "") {
+            buyer.idValue = ""
+            buyer.idName = ""
+        }
 
-                header.issueDate = builders.timeZoneCorrection(headerData.issueDate);
-                header.sellDate = builders.timeZoneCorrection(headerData.sellDate);
+        header.issueDate = builders.timeZoneCorrection(headerData.issueDate);
+        header.sellDate = builders.timeZoneCorrection(headerData.sellDate);
 
-                if (summary.paidDay !== null)
-                    summary.paidDay = builders.timeZoneCorrection(summaryData.paidDay);
-                if (summary.paymentDay !== null)
-                    summary.paymentDay = builders.timeZoneCorrection(summaryData.paymentDay);
+        if (summary.paidDay !== null)
+            summary.paidDay = builders.timeZoneCorrection(summaryData.paidDay);
+        if (summary.paymentDay !== null)
+            summary.paymentDay = builders.timeZoneCorrection(summaryData.paymentDay);
 
-                const data = {
-                    header,
-                    seller,
-                    buyer,
-                    commodities,
-                    summary
-                }
+        const data = {
+            header,
+            seller,
+            buyer,
+            commodities,
+            summary
+        }
 
-                //props.putInvoice(props.match.params.dbId, data);
-                props.invoicePreview(data)
+        return data;
+    }
+
+    const onPreviewClick = () => {
+
+        if (basicsFormCheck()) {
+            const commodities = commoditiesCheck();
+            if (commodities !== null) {
+                const data = createDataToSend(commodities);
+                props.invoicePreview(data);
+            }
+        }
+    }
+
+    const onSaveClick = () => {
+
+        if (basicsFormCheck()) {
+            const commodities = commoditiesCheck();
+            if (commodities !== null) {
+                const data = createDataToSend(commodities);
+                props.saveInvoice(props.match.params.dbId, data);
+            }
+        }
+    }
+
+    const onSaveAndDownload = () => {
+
+        if (basicsFormCheck()) {
+            const commodities = commoditiesCheck();
+            if (commodities !== null) {
+                const data = createDataToSend(commodities);
+                props.saveInvoiceAndDownload(props.match.params.dbId, data);
             }
         }
     }
@@ -152,8 +186,11 @@ const InvoiceForm = (props) => {
                 invoicePaymentAmount={invoicePaymentAmount} />
 
             <hr className="hr-margin" />
-            <input type="submit" value="Podgląd" onClick={onPreviewClick} />
-
+            <div className="grid-3-invoice-submit">
+                <input type="submit" value="Podgląd" onClick={onPreviewClick} />
+                <input type="submit" value="Zapisz" onClick={onSaveClick} />
+                <input type="submit" value="Zapisz i pobierz" onClick={onSaveAndDownload} />
+            </div>
         </div>
     )
 }
@@ -173,9 +210,10 @@ const mapDispatchToProps = (dispatch) => {
         getContractors: (id) => dispatch(getContractors(id)),
         getCommodities: (id) => dispatch(getCommoditiesData(id)),
         getBankAccounts: (id) => dispatch(getBankAccountsData(id)),
-        putInvoice: (id, data) => dispatch(putInvoice(id, data)),
+        saveInvoice: (id, data) => dispatch(saveInvoice(id, data)),
         setMessage: (message, isError) => dispatch(setMessage(message, isError)),
-        invoicePreview: (data) => dispatch(invoicePreview(data))
+        invoicePreview: (data) => dispatch(invoicePreview(data)),
+        saveInvoiceAndDownload: (id, data) => dispatch(saveInvoiceAndDownload(id, data))
     };
 };
 

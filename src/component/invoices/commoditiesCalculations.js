@@ -1,7 +1,8 @@
 import Dinero from "dinero.js";
 
 export const convertToDinero = (num) => {
-    let n = Number(Number(num) * 100).toFixed();
+    let n = Number(num) * 100;
+    n = n.toFixed(0);
     n = parseInt(n);
     return Dinero({ amount: n, currency: 'PLN' })
 }
@@ -17,9 +18,9 @@ export const moneyCallculations = (invoiceCommodity, id) => {
     const amount = parseFloat(invoiceCommodity[id].amount);
     const discount = parseFloat(invoiceCommodity[id].discount);
 
-    let nettoAmount = price.multiply(amount);
-    nettoAmount = nettoAmount.percentage(100 - discount);
-    const vatAmount = nettoAmount.percentage(vat);
+    let nettoAmount = price.multiply(amount, "HALF_UP");
+    nettoAmount = nettoAmount.multiply((100 - discount) / 100, "HALF_UP");
+    const vatAmount = nettoAmount.multiply(vat / 100, "HALF_UP");
     const brutto = nettoAmount.add(vatAmount);
 
     invoiceCommodity[id].price = price.toFormat('0.00');
@@ -81,8 +82,8 @@ export const recalculateSummary = (commodities) => {
 
 export const addInvoiceCommodity = (commodityFromSelector) => {
 
-    const newId = Math.random().toString(20).substr(2, 6)
-    let invoiceCommodity = {}
+    const newId = Math.random().toString(20).substr(2, 6);
+    let invoiceCommodity = {};
 
     if (commodityFromSelector !== undefined) {
         invoiceCommodity = {

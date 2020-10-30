@@ -2,8 +2,8 @@ import * as actionTypes from '../actions';
 
 const initialState = {
     commodities: [],
-    measures: [{ value: 0, label: "error" }],
-    commoditySelectOpotions: [{ value: 0, label: "error" }]
+    measures: [{ value: 0, label: "" }],
+    commoditySelectOpotions: [{ value: 0, label: "" }]
 }
 
 const reducer = (state = initialState, action) => {

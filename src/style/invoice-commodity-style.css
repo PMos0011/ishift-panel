@@ -11,9 +11,29 @@
     margin-bottom: 1vh;
 }
 
+.grid-2-invoice-summary {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: auto;
+  }
+
 .grid-3-invoice-summary {
     display: grid;
-    grid-template-columns: 25% 25% auto;
+    grid-template-columns: 25% 35% 40%;
+    grid-template-rows: auto;
+  }
+
+  .grid-3-invoice-submit {
+    display: grid;
+    width: 50%;
+    grid-template-columns: 25% 25% 25%;
+    grid-template-rows: auto;
+    justify-content: space-between;
+  }
+
+  .grid-4-invoice-summary {
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
     grid-template-rows: auto;
   }
 

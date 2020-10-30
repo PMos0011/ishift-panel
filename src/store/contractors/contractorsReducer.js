@@ -3,7 +3,7 @@ import * as actionTypes from '../actions';
 const initialState = {
     contractors: [],
     contractorsSelectoptions: [
-        { value: 0, label: "błąd ładowania" }
+        { value: 0, label: "" }
     ],
     contractorIdOptions: [
         { value: 0, label: "NIP" },

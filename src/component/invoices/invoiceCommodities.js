@@ -47,17 +47,19 @@ const InvoiceCommodities = (props) => {
         if (vatExemptionNp === undefined) {
             newSumaryData.vatExemptionLabelNp = null;
             newSumaryData.vatExemptionValueNp = null;
-        } else{
+        } else {
             newSumaryData.vatExemptionLabelNp = "Rodzaj dokonywanej sprzedaży (w związku ze stawką VAT np.)";
-            newSumaryData.vatExemptionValueNp = "";}
+            newSumaryData.vatExemptionValueNp = "";
+        }
 
         if (vatExemptionZw === undefined) {
             newSumaryData.vatExemptionLabelZw = null;
             newSumaryData.vatExemptionValueZw = null;
         }
-        else
-            {newSumaryData.vatExemptionLabelZw = "Podstawa zwolnienia z podatku VAT (w związku ze stawką VAT zw.)";
-            newSumaryData.vatExemptionValueZw = "";}
+        else {
+            newSumaryData.vatExemptionLabelZw = "Podstawa zwolnienia z podatku VAT (w związku ze stawką VAT zw.)";
+            newSumaryData.vatExemptionValueZw = "";
+        }
 
         props.setSummaryData(newSumaryData);
     }
@@ -119,7 +121,7 @@ const InvoiceCommodities = (props) => {
 
     const setMeasure = (data, id) => {
 
-        let newCommodities = {...props.invoiceCommodities}
+        let newCommodities = { ...props.invoiceCommodities }
         newCommodities[id].measure = data.label;
 
         props.setInvoiceCommodities(newCommodities);
@@ -170,9 +172,9 @@ const InvoiceCommodities = (props) => {
                                 options={props.measureSelectOptions}
                                 value={measureOption}
                                 onChange={data => setMeasure(data, commodity.id)} />
-                            <input className="input-invoice" type="number" name="amount" value={commodity.formConfig.amount} onChange={event => inputchangehandler(event, commodity.id)} onBlur={event => recalculateForm(event, commodity.id)} />
-                            <input className="input-invoice" type="number" name="price" value={commodity.formConfig.price} onChange={event => inputchangehandler(event, commodity.id)} onBlur={event => recalculateForm(event, commodity.id)} />
-                            <input className="input-invoice" type="number" name="discount" value={commodity.formConfig.discount} onChange={event => inputchangehandler(event, commodity.id)} onBlur={event => recalculateForm(event, commodity.id)} />
+                            <input className="input-invoice" type="number" name="amount" min="0" step="0.05" value={commodity.formConfig.amount} onChange={event => inputchangehandler(event, commodity.id)} onBlur={event => recalculateForm(event, commodity.id)} />
+                            <input className="input-invoice" type="number" name="price" min="0" step="0.05" value={commodity.formConfig.price} onChange={event => inputchangehandler(event, commodity.id)} onBlur={event => recalculateForm(event, commodity.id)} />
+                            <input className="input-invoice" type="number" name="discount" min="0" step="0.05" value={commodity.formConfig.discount} onChange={event => inputchangehandler(event, commodity.id)} onBlur={event => recalculateForm(event, commodity.id)} />
                             <input className="input-invoice" type="number" name="nettoAmount" value={commodity.formConfig.nettoAmount} readOnly />
                             <Select
                                 styles={commoditiesSelectStyle}

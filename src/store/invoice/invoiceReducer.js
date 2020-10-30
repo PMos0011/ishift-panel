@@ -2,8 +2,8 @@ import * as actionTypes from '../actions';
 
 const initialState = {
     invoices: [],
-    invoiceSelectOptions: [{ value: 0, label: "error" }],
-    invoiceType: [{ value: 0, label: "error" }],
+    invoiceSelectOptions: [{ value: 0, label: "" }],
+    invoiceType: [{ value: 0, label: "" }],
     invoicePaymentOptions: [
         { value: 0, label: "przelew" },
         { value: 1, label: "za pobraniem" },
@@ -20,7 +20,7 @@ const initialState = {
         { value: 1, label: "zapłacona" },
         { value: 2, label: "częściowo zapłacona" },
     ],
-    vatTypes:[ { value: 0, label: "error" }]
+    vatTypes:[ { value: 0, label: "" }]
 }
 
 const reducer = (state = initialState, action) => {

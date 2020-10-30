@@ -7,7 +7,8 @@ const initialState = {
     spinner: false,
     access: "",
     id: "",
-    action: ""
+    action: "",
+    alertId: ""
 }
 
 const reducer = (state = initialState, action) => {
@@ -16,14 +17,25 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 message: action.message,
-                errorAlert: action.alert
+                errorAlert: action.alert,
+                alertId: action.alertId
             };
         case actionTypes.SET_SUCCESS_ALERT:
             return {
                 ...state,
                 message: action.message,
-                successAlert: action.alert
+                successAlert: action.alert,
+                alertId: action.alertId
             };
+        case actionTypes.CLEAR_ALERT:
+            if (isNotThisSameAlert(action.alertId, state.alertId))
+                return {
+                    ...state,
+                    message: "",
+                    errorAlert: false,
+                    successAlert: false,
+                    alertId: ""
+                };
         case actionTypes.SET_LOADING_SPINNER:
             return {
                 ...state,
@@ -40,6 +52,10 @@ const reducer = (state = initialState, action) => {
         default:
             return state
     }
+}
+
+const isNotThisSameAlert = (idFromAction, idFromReducer) => {
+    return (idFromAction === undefined || idFromAction === idFromReducer)
 }
 
 export default reducer;

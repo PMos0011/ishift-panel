@@ -63,10 +63,10 @@ const setInvoiceTypes = (data) => {
     }
 }
 
-export const putInvoice = (id, data) => {
+export const saveInvoice = (id, data) => {
     return (dispatch) => {
         dispatch(setLoadingSpinner(true));
-        axios.put(actionTypes.SERVER_ADDRESS + "/invoice/" + id,
+        axios.put(actionTypes.SERVER_ADDRESS + "/invoice/save/" + id,
             data,
             {
                 headers: {
@@ -75,6 +75,30 @@ export const putInvoice = (id, data) => {
             })
             .then((response) => {
                 dispatch(setInvoices(response.data))
+                dispatch(setLoadingSpinner(false));
+            }).catch((err) => {
+                if (err.response !== undefined) {
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
+                }
+                else
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+            })
+    }
+};
+
+export const saveInvoiceAndDownload = (id, data) => {
+    return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
+        axios.put(actionTypes.SERVER_ADDRESS + "/invoice/save/preview/" + id,
+            data,
+            {
+                responseType: 'blob',
+                headers: {
+                    'Authorization': getToken()
+                }
+            })
+            .then((response) => {
+                generate(response.data);
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
                 if (err.response !== undefined) {

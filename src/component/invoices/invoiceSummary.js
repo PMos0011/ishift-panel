@@ -4,6 +4,9 @@ import Select from "react-select"
 import DatePicker from "react-datepicker";
 import Aux from "../../hoc/auxiliary";
 
+import { setMessage } from '../../store/alerts/alertsActions';
+import {isBankAccountNumberIncorrect} from "../bankAccounts/converters";
+
 import { pl } from "date-fns/locale";
 
 const InvoiceSummary = (props) => {
@@ -70,7 +73,7 @@ const InvoiceSummary = (props) => {
 
     const selectChage = (data, name) => {
         let newSummaryData = { ...props.summaryData }
-        
+
         switch (name.name) {
             case "paymentStatus":
                 newSummaryData.statusId = data.value;
@@ -106,6 +109,18 @@ const InvoiceSummary = (props) => {
         props.setSummaryData(newSummaryData);
     }
 
+    const bankAccountNumberValidation = () => {
+        let number = props.summaryData.bankAcc.replaceAll(" ", "");
+        
+        if(isBankAccountNumberIncorrect(number))
+        props.setMessage("Coś jest nie tak z numerem konta", true);
+        else{
+            let newSummaryData = { ...props.summaryData };
+            newSummaryData.bankAcc = number;
+            props.setSummaryData(newSummaryData);
+        }
+    }
+
     const bankAccSelect = <Select className="margin-top-1"
         name="bankAcc"
         options={props.bankAccountsSelectOptions}
@@ -117,6 +132,7 @@ const InvoiceSummary = (props) => {
         name="bankAcc"
         value={preventNull(props.summaryData.bankAcc)}
         onChange={inputChange}
+        onBlur = {bankAccountNumberValidation}
         disabled={!checkboxState.ownBankAcc} />
 
     let vatExemptionNp = null;
@@ -147,9 +163,11 @@ const InvoiceSummary = (props) => {
 
     return (
         <Aux>
-            {vatExemptionNp}
-            {vatExemptionZw}
-            <div className="grid-3-invoice-summary">
+            <div className="grid-2-invoice-summary">
+                {vatExemptionNp}
+                {vatExemptionZw}
+            </div>
+            <div className="grid-4-invoice-summary">
                 <div className="margin-all-1">Status
             <Select
                         className="margin-top-1"
@@ -199,7 +217,8 @@ const InvoiceSummary = (props) => {
                         name="paymentOption"
                         onChange={(data, name) => selectChage(data, name)}
                         isDisabled={!checkboxState.paidWay} />
-                </div>
+                </div></div>
+            <div className="grid-3-invoice-summary">
                 <div className="margin-all-1">
                     <input type="checkbox"
                         name="paymentDay"
@@ -226,18 +245,18 @@ const InvoiceSummary = (props) => {
                         onChange={checkboxChange} />Własny numer konta<br />
                     {checkboxState.bankAccfromDb ? bankAccSelect : bankAccInput}
                 </div>
-            </div>
-            <div className="margin-all-1">
-                <input type="checkbox"
-                    name="comments"
-                    checked={checkboxState.comments}
-                    onChange={checkboxChange} />Uawgi <br />
-                <textarea
-                    className="full-width margin-top-1"
-                    value={preventNull(props.summaryData.comments)}
-                    onChange={inputChange}
-                    name="comments"
-                    disabled={!checkboxState.comments} />
+                <div className="margin-all-1">
+                    <input type="checkbox"
+                        name="comments"
+                        checked={checkboxState.comments}
+                        onChange={checkboxChange} />Uawgi <br />
+                    <textarea
+                        className="full-width margin-top-1"
+                        value={preventNull(props.summaryData.comments)}
+                        onChange={inputChange}
+                        name="comments"
+                        disabled={!checkboxState.comments} />
+                </div>
             </div>
         </Aux>
     )
@@ -251,4 +270,10 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(InvoiceSummary);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setMessage: (message, isError) => dispatch(setMessage(message, isError)),
+    };
+};
+
+export default connect(mapStateToProps,mapDispatchToProps)(InvoiceSummary);
