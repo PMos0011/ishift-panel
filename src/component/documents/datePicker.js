@@ -8,6 +8,10 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const Picker = (props) => {
 
+  const setMaxDate =()=>{
+   return new Date(new Date().getFullYear(), new Date().getMonth()+1);
+  }
+
   return (
     <Aux>
       <h3>od dnia:</h3>
@@ -34,7 +38,7 @@ const Picker = (props) => {
         startDate={props.startDate}
         endDate={props.endDate}
         minDate={props.startDate}
-        maxDate={new Date()}
+        maxDate={setMaxDate()}
         closeOnScroll={true}
         showMonthYearPicker
         locale={pl}

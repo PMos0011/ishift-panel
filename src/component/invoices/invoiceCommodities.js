@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select"
 import Aux from "../../hoc/auxiliary";
 import { connect } from "react-redux";
@@ -10,8 +10,11 @@ import * as calculations from "./commoditiesCalculations";
 import { commoditiesSelectStyle } from "./selectCustomStyle";
 
 const InvoiceCommodities = (props) => {
+    useEffect(()=>{
+        setCommoditySelectOption(props.commoditySelectOptions[0])
+    },[props.commoditySelectOptions])
 
-    const [commoditySelectOption, setCommoditySelectOption] = useState(props.commoditySelectOptions[0]);
+    const [commoditySelectOption, setCommoditySelectOption] = useState();
     const [vatRate, setVatRate] = useState({});
     const [invoiceSummary, setInvoiceSummary] = useState(
         {

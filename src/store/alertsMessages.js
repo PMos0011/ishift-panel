@@ -10,3 +10,4 @@ export const USERNAME_TAKEN = "Nazwa użytkownika jest już zajęta.";
 //Success
 export const SUCCESS_LOGIN_CHANGE = "Udało się! Za chwilę zostaniesz wylogowany.";
 export const DATA_CHANGED = "Dane zostały zmienione.";
+export const DATA_SAVED = "Dane zostały zapisane";

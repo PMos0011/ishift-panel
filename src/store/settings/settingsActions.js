@@ -5,6 +5,7 @@ import jwt_decode from "jwt-decode";
 import * as messages from "../alertsMessages";
 import { setMessage, setLoadingSpinner } from '../alerts/alertsActions';
 import { getToken, logoutUser } from '../authorization/authAction';
+import { getCustomerData } from "../customers/customersActions";
 
 
 export const getUsersList = () => {
@@ -87,6 +88,7 @@ export const changeMyData = (data, dataAccess) => {
             })
             .then(() => {
                 dispatch(setMessage(messages.DATA_CHANGED, false));
+                dispatch(getCustomerData(dataAccess));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
                 if (err.response !== undefined) {

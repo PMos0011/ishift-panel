@@ -7,12 +7,12 @@ let emptyData = {
     city: ""
 }
 
-export const setHeaderBeginState = (selectOptions, customer, invoiceType) => {
+export const setHeaderBeginState = (selectOptions, customer, invoiceType, lastInvoice) => {
 
     let newHeaderData = {
         invoiceTypeId: selectOptions[0].value,
         invoiceTypeName: selectOptions[0].label,
-        invoiceNumber: invoiceNumberBuilder(invoiceType, selectOptions[0].value),
+        invoiceNumber: invoiceNumberBuilder(invoiceType, selectOptions[0].value, lastInvoice),
         placeOfIssue: invoicePlaceOfIssueBuilder(customer),
         issueDate: new Date(),
         sellDate: new Date()
@@ -22,9 +22,21 @@ export const setHeaderBeginState = (selectOptions, customer, invoiceType) => {
 }
 
 
-export const invoiceNumberBuilder = (invoiceType, selectedTypeId) => {
+export const invoiceNumberBuilder = (invoiceType, selectedTypeId, lastInvoice) => {
 
     let object = invoiceType.find(type => type.id === selectedTypeId);
+
+    let number = 1
+
+    try {
+        const invoiceNumberArray = lastInvoice.invoiceNumber.split("/");
+        const month = Number(invoiceNumberArray[invoiceNumberArray.length - 2]);
+        if (month == new Date().getMonth() + 1) {
+            number = Number(invoiceNumberArray[invoiceNumberArray.length - 3]);
+            number++;
+        }
+
+    } catch (error) {}
 
     let prefix = ""
     if (object !== undefined)
@@ -32,9 +44,8 @@ export const invoiceNumberBuilder = (invoiceType, selectedTypeId) => {
     const date = new Date();
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
-    let number = prefix + "/1/" + month + "/" + year;
 
-    return number;
+    return prefix + "/" + number + "/" + month + "/" + year;
 
 }
 

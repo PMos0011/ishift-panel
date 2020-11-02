@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from "react-redux";
+import { Redirect } from 'react-router-dom';
 
 import InvoiceHeader from "./invoiceHeader";
 import InvoiceParties from "./invoiceParties";
@@ -12,22 +13,28 @@ import { isBankAccountNumberIncorrect } from "../bankAccounts/converters";
 import { getContractors } from "../../store/contractors/contractorsActions";
 import { getCommoditiesData } from "../../store/commodity/commodityActions";
 import { getBankAccountsData } from "../../store/bankAccounts/bankActions";
-import { saveInvoice, invoicePreview, saveInvoiceAndDownload } from "../../store/invoice/invoiceAction";
+import { saveInvoice, invoicePreview, saveInvoiceAndDownload, getLastInvoices } from "../../store/invoice/invoiceAction";
 import { setMessage } from '../../store/alerts/alertsActions';
 
 
 const InvoiceForm = (props) => {
 
     useEffect(() => {
+        props.getLastInvoices(props.match.params.dbId);
         props.getContractors(props.match.params.dbId);
         props.getCommodities(props.match.params.dbId);
         props.getBankAccounts(props.match.params.dbId);
     }, []);
 
-    const [headerData, setHeaderData] = useState(builders.setHeaderBeginState(
-        props.invoiceTypeSelectOptions,
-        props.seller,
-        props.invoiceType));
+    useEffect(()=>{
+        setHeaderData(builders.setHeaderBeginState(
+            props.invoiceTypeSelectOptions,
+            props.seller,
+            props.invoiceType,
+            props.lastInvoice))
+    },[props.lastInvoice])
+
+    const [headerData, setHeaderData] = useState({invoiceNumber:""});
 
     const [partiesData, setPartiesData] = useState(
         builders.setPartiesDatatBeginState(props.seller, props.contractorIdOptions[0]));
@@ -37,6 +44,11 @@ const InvoiceForm = (props) => {
         builders.setSummaryBeginState(props.invoicePaymnetStatusOptions[0])
     );
     let [invoicePaymentAmount, setInvoicePaymentAmount] = useState(0);
+    const [redirect, setRedirect] = useState(false);
+
+    let redirectTo = null;
+    if (redirect)
+        redirectTo = <Redirect to={"/"} />
 
     const basicsFormCheck = () => {
         if (partiesData.buyer.name === "")
@@ -145,6 +157,7 @@ const InvoiceForm = (props) => {
             if (commodities !== null) {
                 const data = createDataToSend(commodities);
                 props.saveInvoice(props.match.params.dbId, data);
+                setRedirect(true);
             }
         }
     }
@@ -156,12 +169,14 @@ const InvoiceForm = (props) => {
             if (commodities !== null) {
                 const data = createDataToSend(commodities);
                 props.saveInvoiceAndDownload(props.match.params.dbId, data);
+                setRedirect(true);
             }
         }
     }
 
     return (
         <div className="width-95-white app-border-shadow">
+            {redirectTo}
             <InvoiceHeader
                 headerData={headerData}
                 setHeaderData={setHeaderData}
@@ -199,6 +214,7 @@ const mapStateToProps = (state) => {
     return {
         invoiceTypeSelectOptions: state.invoiceReducer.invoiceSelectOptions,
         invoiceType: state.invoiceReducer.invoiceType,
+        lastInvoice: state.invoiceReducer.lastInvoice,
         seller: state.customersReducer.customer,
         contractorIdOptions: state.contractorsReducer.contractorIdOptions,
         invoicePaymnetStatusOptions: state.invoiceReducer.invoicePaymnetStatusOptions,
@@ -213,7 +229,8 @@ const mapDispatchToProps = (dispatch) => {
         saveInvoice: (id, data) => dispatch(saveInvoice(id, data)),
         setMessage: (message, isError) => dispatch(setMessage(message, isError)),
         invoicePreview: (data) => dispatch(invoicePreview(data)),
-        saveInvoiceAndDownload: (id, data) => dispatch(saveInvoiceAndDownload(id, data))
+        saveInvoiceAndDownload: (id, data) => dispatch(saveInvoiceAndDownload(id, data)),
+        getLastInvoices:(id)=>dispatch(getLastInvoices(id))
     };
 };
 

@@ -14,6 +14,7 @@ import MyDataChanger from "../settings/myDataEdit";
 import MyBankAccounts from "../bankAccounts/bankAccounts";
 import Invoice from "../invoices/invoice";
 import InvoiceForm from "../invoices/invoiceForm";
+import ImportedInvoices from "../invoices/importedInvoices";
 import Contractors from "../contractors/contractors";
 import Commodities from "../commodity/commodities";
 
@@ -96,11 +97,15 @@ const Content = (props) => {
                             />)
                         }
                     />
-
                     <Route
-                        path="/auth/invoice/:dbId/:id"
+                        path="/auth/imported/:id"
+                        component={ImportedInvoices}
+                        exact />
+                    <Route
+                        path="/auth/invoice/:id"
                         component={Invoice}
                         exact />
+
 
                     <Route
                         path="/auth/invoice/edit/:dbId/:id"

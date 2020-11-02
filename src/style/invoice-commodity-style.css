@@ -37,6 +37,25 @@
     grid-template-rows: auto;
   }
 
+  .grid-7-container-invoice {
+    display: grid;
+    grid-template-columns: 6% 12% 12% 12% auto 10% 5%;
+    grid-template-rows: auto;
+  }
+
+  .grid-6-container-invoice {
+    display: grid;
+    grid-template-columns: 6% 12% 12% 12% auto 10%;
+    grid-template-rows: auto;
+  }
+
+  .imported-input-style{
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+    width: 5vW;
+  }
+  
+
 .input-invoice{
     border:none;
     margin:8px;

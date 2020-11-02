@@ -52,7 +52,7 @@ const Modal = (props) => {
         <div className="modal-transition" style={{
             opacity: showModal ? '1' : '0',
             visibility: showModal ? "visible" : "hidden",
-            transitionDelay: props.spinner? "1s":"0s"
+            transitionDelay: props.spinner? "0.5s":"0s"
         }}
         >
 

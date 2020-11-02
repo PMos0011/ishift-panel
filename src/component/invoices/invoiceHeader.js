@@ -42,6 +42,7 @@ const InvoiceHeader = (props) => {
         props.setHeaderData(newHeaderData);
     }
 
+
     return (
             <div className="doc-grid-3-container-auto">
                 <div className="margin-all-1">   
@@ -51,6 +52,7 @@ const InvoiceHeader = (props) => {
                             placeholder="Wybierz"
                             defaultValue={props.selectOptions[0]}
                             options={props.selectOptions}
+                            isOptionDisabled={(option) => option.value > 0}
                             onChange={setDocType} />
                 </div>
                 <div className="margin-all-1">
@@ -68,7 +70,7 @@ const InvoiceHeader = (props) => {
                     <input className="text-x-large-input"
                     type="text"
                     name="placeOfIssue"
-                    value={props.headerData.placeOfIssue}                      
+                    value={props.headerData.placeOfIssue!==undefined?props.headerData.placeOfIssue:""}                      
                     onChange={event=>onChangeHandler(event)} />
                 </div>
                 <div className="margin-all-1">

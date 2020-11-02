@@ -39,7 +39,7 @@ const form = (props) => {
     links.push({
         id: "invoices",
         elemconf: {
-            to: "/auth/invoice/" + props.companyId + "/0",
+            to: "/auth/invoice/" + props.companyId,
             className: "main-item"
         },
         label: "Faktury"
@@ -51,7 +51,16 @@ const form = (props) => {
             className: "sub-item"
         },
         label: "Nowa faktura"
-    })
+    });
+    links.push({
+        id: "importedInvoices",
+        elemconf: {
+            to: "/auth/imported/" + props.companyId,
+            className: "sub-item"
+        },
+        label: "Faktury importowane"
+    });
+
 
  
         links.push(
