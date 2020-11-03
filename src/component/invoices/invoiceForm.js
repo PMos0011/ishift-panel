@@ -73,11 +73,11 @@ const InvoiceForm = (props) => {
             props.setMessage("Nie wybrano terminu płatności!", true);
         else if (summaryData.comments !== null && summaryData.comments == "")
             props.setMessage("Uwagi są niewpisane!", true);
-        else if (summaryData.vatExemptionValueNp !== null && summaryData.vatExemptionValueNp == "")
+        else if (summaryData.vatExemptionValueNp !== null && summaryData.vatExemptionLabelNp !== "" && summaryData.vatExemptionValueNp == "")
             props.setMessage("Podstawa podatku VAT np jest niewpisana!", true);
-        else if (summaryData.vatExemptionValueZw !== null && summaryData.vatExemptionValueZw == "")
+        else if (summaryData.vatExemptionValueZw !== null && summaryData.vatExemptionLabelZw !== "" && summaryData.vatExemptionValueZw == "")
             props.setMessage("Podstawa zwlnienia podatku VAT zw jest niewpisana!", true);
-        else if (summaryData.paid > invoicePaymentAmount)
+        else if (Number(summaryData.paid) > Number(invoicePaymentAmount))
             props.setMessage("Nadpłaty obecnie nie są obsługiwane. Kwota \"Zapłacono\" musi być mniejsza bądź równa kwocie \"Do zapłaty\"", true);
         else
             return true;
@@ -176,7 +176,7 @@ const InvoiceForm = (props) => {
 
     return (
         <div className="width-95-white app-border-shadow">
-            {redirectTo}
+            {props.match.params.dbId!=="demo"? redirectTo:null}
             <InvoiceHeader
                 headerData={headerData}
                 setHeaderData={setHeaderData}

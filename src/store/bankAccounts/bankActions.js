@@ -48,47 +48,53 @@ const setBankAccountsSelectOptions = (data) => {
 
 export const saveBankAccount = (data, dataAccess) => {
     return (dispatch) => {
-        dispatch(setLoadingSpinner(true));
-        axios.put(actionTypes.SERVER_ADDRESS + "/bankAccounts/" + dataAccess,
-            data,
-            {
-                headers: {
-                    'Authorization': getToken()
-                }
-            })
-            .then((response) => {
-                dispatch(setBankAccounts(response.data));
-                dispatch(setLoadingSpinner(false));
-            }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
-            })
+        if (dataAccess !== "demo") {
+            dispatch(setLoadingSpinner(true));
+            axios.put(actionTypes.SERVER_ADDRESS + "/bankAccounts/" + dataAccess,
+                data,
+                {
+                    headers: {
+                        'Authorization': getToken()
+                    }
+                })
+                .then((response) => {
+                    dispatch(setBankAccounts(response.data));
+                    dispatch(setLoadingSpinner(false));
+                }).catch((err) => {
+                    if (err.response !== undefined) {
+                        dispatch(setMessage(messages.GENERAL_ERROR, true));
+                    }
+                    else
+                        dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                })
+        } else
+            dispatch(setMessage(messages.DEMO_ALERT, true));
     }
 }
 
 export const deleteBankAccount = (dataAccess, id) => {
-    console.log(dataAccess);
-    console.log(id);
+
     return (dispatch) => {
-        dispatch(setLoadingSpinner(true));
-        axios.delete(actionTypes.SERVER_ADDRESS + "/bankAccounts/" + dataAccess + "/" + id,
-            {
-                headers: {
-                    'Authorization': getToken()
-                }
-            })
-            .then((response) => {
-                dispatch(setBankAccounts(response.data));
-                dispatch(setLoadingSpinner(false));
-            }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
-            })
+        if (dataAccess !== "demo") {
+            dispatch(setLoadingSpinner(true));
+            axios.delete(actionTypes.SERVER_ADDRESS + "/bankAccounts/" + dataAccess + "/" + id,
+                {
+                    headers: {
+                        'Authorization': getToken()
+                    }
+                })
+                .then((response) => {
+                    dispatch(setBankAccounts(response.data));
+                    dispatch(setLoadingSpinner(false));
+                }).catch((err) => {
+                    if (err.response !== undefined) {
+                        dispatch(setMessage(messages.GENERAL_ERROR, true));
+                    }
+                    else
+                        dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                })
+        } else
+            dispatch(setMessage(messages.DEMO_ALERT, true));
     }
+
 }

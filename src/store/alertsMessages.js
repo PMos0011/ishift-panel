@@ -5,6 +5,7 @@ export const GENERAL_ERROR = "Coś poszło nie tak.";
 export const WRONG_PASSWORD = "Nieprawidłowe hasło.";
 export const WRONG_USERNAME = "Użytkownik nieznaleziony.";
 export const USERNAME_TAKEN = "Nazwa użytkownika jest już zajęta.";
+export const DEMO_ALERT = "Z użytkownikem demo to się niestety nie uda."
 
 
 //Success

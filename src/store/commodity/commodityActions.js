@@ -48,6 +48,7 @@ const setCommodities = (data) => {
 
 export const saveCommodity = (data, dataAccess) => {
     return (dispatch) => {
+        if (dataAccess !== "demo") {
         dispatch(setLoadingSpinner(true));
         axios.put(actionTypes.SERVER_ADDRESS + "/commodity/" + dataAccess,
             data,
@@ -65,12 +66,14 @@ export const saveCommodity = (data, dataAccess) => {
                 }
                 else
                     dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
-            })
+            })} else
+            dispatch(setMessage(messages.DEMO_ALERT, true));
     }
 }
 
 export const deleteCommodity = (dataAccess, id) => {
     return (dispatch) => {
+        if (dataAccess !== "demo") {
         dispatch(setLoadingSpinner(true));
         axios.delete(actionTypes.SERVER_ADDRESS + "/commodity/" + dataAccess + "/" + id,
             {
@@ -87,7 +90,8 @@ export const deleteCommodity = (dataAccess, id) => {
                 }
                 else
                     dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
-            })
+            })} else
+            dispatch(setMessage(messages.DEMO_ALERT, true));
     }
 }
 

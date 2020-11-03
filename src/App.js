@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { connect } from "react-redux";
 
 import Modal from "./component/modal";
@@ -25,23 +25,24 @@ const App = (props) => {
   useEffect(() => {
     props.onLoad();
   }, []);
-  
+
   return (
-      <BrowserRouter>
-        <div className="App">
+    <BrowserRouter>
+      <div className="App">
         <Modal />
-          <Header />
+        <Header />
+        <Switch>
           <Route
             path="/auth"
             component={Content} />
           <Route
             path="/"
-            component={LoginForm}
-            exact />
-            <Footer />
-        </div>
-      </BrowserRouter>
-    )
+            component={LoginForm} />
+          <Footer />
+        </Switch>
+      </div>
+    </BrowserRouter>
+  )
 }
 
 

@@ -57,24 +57,27 @@ const ImpoerdetInvoice = (props) => {
     }
 
     return (
-        <div className="width-80-white app-border-shadow">
-            <div className="doc-grid-5-container-auto">
-                <DatePicker
-                    startDate={beginDate}
-                    endDate={endDate}
-                    setStartDate={setFirstDayOfMonth}
-                    setEndDate={setLasDayOfmonth}
-                />
-            </div>
-            <input style={{
-                marginTop: '2vh',
-                marginBottom: '2vh',
-                width: '20%'
-            }}
-                type="submit" value="Pobierz" onClick={onButtonClick} />
+        <Aux>
+            <h3>Faktury importowane</h3>
+            <div className="width-80-white app-border-shadow">
+                <div className="doc-grid-5-container-auto">
+                    <DatePicker
+                        startDate={beginDate}
+                        endDate={endDate}
+                        setStartDate={setFirstDayOfMonth}
+                        setEndDate={setLasDayOfmonth}
+                    />
+                </div>
+                <input style={{
+                    marginTop: '2vh',
+                    marginBottom: '2vh',
+                    width: '20%'
+                }}
+                    type="submit" value="Pobierz" onClick={onButtonClick} />
 
-            {props.importedInvoices.length > 0 ? showInvoices() : noInvoices}
-        </div>
+                {props.importedInvoices.length > 0 ? showInvoices() : noInvoices}
+            </div>
+        </Aux>
     )
 }
 

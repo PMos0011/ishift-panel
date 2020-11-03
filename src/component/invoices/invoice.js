@@ -57,7 +57,7 @@ const Invoice = (props) => {
                                     <div className="doc-det">{buyer.name}</div>
                                     <div className="doc-det">{converters.createDate(invoice.issueDate)}</div>
                                     <img onClick={() =>
-                                       props.invoicePreview(props.match.params.id, invoice.id)}
+                                        props.invoicePreview(props.match.params.id, invoice.id)}
                                         className="icon-size pointer-on-hover"
                                         src={downloadIcon} alt="preview" />
                                 </Aux>
@@ -71,25 +71,28 @@ const Invoice = (props) => {
     }
 
     return (
-        <div className="width-80-white app-border-shadow">
-            <div className="doc-grid-5-container-auto">
-                <DatePicker
-                    startDate={beginDate}
-                    endDate={endDate}
-                    setStartDate={setFirstDayOfMonth}
-                    setEndDate={setLasDayOfmonth}
-                />
+        <Aux>
+            <h3>Faktury</h3>
+            <div className="width-80-white app-border-shadow">
+                <div className="doc-grid-5-container-auto">
+                    <DatePicker
+                        startDate={beginDate}
+                        endDate={endDate}
+                        setStartDate={setFirstDayOfMonth}
+                        setEndDate={setLasDayOfmonth}
+                    />
+                </div>
+                <input style={{
+                    marginTop: '2vh',
+                    marginBottom: '2vh',
+                    width: '20%'
+                }}
+                    type="submit" value="Pobierz" onClick={onButtonClick} />
+
+                {props.invoices.length > 0 ? showInvoices() : noInvoices}
+
             </div>
-            <input style={{
-                marginTop: '2vh',
-                marginBottom: '2vh',
-                width: '20%'
-            }}
-                type="submit" value="Pobierz" onClick={onButtonClick} />
-
-            {props.invoices.length > 0 ? showInvoices() : noInvoices}
-
-        </div>
+        </Aux>
     )
 }
 

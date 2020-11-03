@@ -77,7 +77,7 @@ const MyBankAccounts = (props) => {
 
     return (
         <div className=" form-white-background app-border-shadow">
-            {redirectTo}
+            {props.match.params.dbId!=="demo"? redirectTo:null}
             <form onSubmit={submitForm}>
                 <div className="doc-grid-2-auto-container full-width doc-grid-fill">
                     {props.form(formObject).map(formInput => {

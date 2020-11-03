@@ -47,6 +47,7 @@ const setContractors = (data) => {
 
 export const saveContractor = (data, dataAccess) => {
     return (dispatch) => {
+        if (dataAccess !== "demo") {
         dispatch(setLoadingSpinner(true));
         axios.put(actionTypes.SERVER_ADDRESS + "/contractors/" + dataAccess,
             data,
@@ -65,11 +66,14 @@ export const saveContractor = (data, dataAccess) => {
                 else
                     dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
+        } else
+        dispatch(setMessage(messages.DEMO_ALERT, true));
     }
 }
 
 export const deleteContractor = (dataAccess, id) => {
     return (dispatch) => {
+        if (dataAccess !== "demo") {
         dispatch(setLoadingSpinner(true));
         axios.delete(actionTypes.SERVER_ADDRESS + "/contractors/" + dataAccess + "/" + id,
             {
@@ -86,6 +90,8 @@ export const deleteContractor = (dataAccess, id) => {
                 }
                 else
                     dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
-            })
+            }) 
+        } else
+            dispatch(setMessage(messages.DEMO_ALERT, true));
     }
 }

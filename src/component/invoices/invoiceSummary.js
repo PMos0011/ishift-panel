@@ -5,7 +5,7 @@ import DatePicker from "react-datepicker";
 import Aux from "../../hoc/auxiliary";
 
 import { setMessage } from '../../store/alerts/alertsActions';
-import {isBankAccountNumberIncorrect} from "../bankAccounts/converters";
+import { isBankAccountNumberIncorrect } from "../bankAccounts/converters";
 
 import { pl } from "date-fns/locale";
 
@@ -23,7 +23,9 @@ const InvoiceSummary = (props) => {
         paymentDay: false,
         bankAccfromDb: false,
         ownBankAcc: false,
-        comments: false
+        comments: false,
+        vatExemptionLabelNp: false,
+        vatExemptionLabelZw: false
     });
 
     const checkboxChange = (event) => {
@@ -44,6 +46,18 @@ const InvoiceSummary = (props) => {
                 newSummaryData.bankAcc = null;
             else
                 newSummaryData.bankAcc = "";
+        } else if (event.target.name === "vatExemptionLabelNp" || event.target.name === "vatExemptionLabelZw") {
+            if (!newState[event.target.name]) {
+                newSummaryData[event.target.name] = ""
+                if (event.target.name === "vatExemptionLabelNp")
+                    newSummaryData.vatExemptionValueNp = "";
+                else
+                    newSummaryData.vatExemptionValueZw = "";
+            } else
+                if (event.target.name === "vatExemptionLabelNp")
+                    newSummaryData.vatExemptionLabelNp = "Rodzaj dokonywanej sprzedaży (w związku ze stawką VAT np.)";
+                else
+                    newSummaryData.vatExemptionLabelZw = "Podstawa zwolnienia z podatku VAT (w związku ze stawką VAT zw.)";
         } else
             if (!newState[event.target.name])
                 newSummaryData[event.target.name] = null
@@ -111,10 +125,10 @@ const InvoiceSummary = (props) => {
 
     const bankAccountNumberValidation = () => {
         let number = props.summaryData.bankAcc.replaceAll(" ", "");
-        
-        if(isBankAccountNumberIncorrect(number))
-        props.setMessage("Coś jest nie tak z numerem konta", true);
-        else{
+
+        if (isBankAccountNumberIncorrect(number))
+            props.setMessage("Coś jest nie tak z numerem konta", true);
+        else {
             let newSummaryData = { ...props.summaryData };
             newSummaryData.bankAcc = number;
             props.setSummaryData(newSummaryData);
@@ -132,19 +146,24 @@ const InvoiceSummary = (props) => {
         name="bankAcc"
         value={preventNull(props.summaryData.bankAcc)}
         onChange={inputChange}
-        onBlur = {bankAccountNumberValidation}
+        onBlur={bankAccountNumberValidation}
         disabled={!checkboxState.ownBankAcc} />
 
     let vatExemptionNp = null;
     if (props.summaryData.vatExemptionLabelNp !== null)
         vatExemptionNp = <Aux>
             <div className="margin-all-1">
-                <label>{preventNull(props.summaryData.vatExemptionLabelNp)}</label>
+                <input type="checkbox"
+                    name="vatExemptionLabelNp"
+                    checked={checkboxState.vatExemptionLabelNp}
+                    onChange={checkboxChange} />
+                    Rodzaj dokonywanej sprzedaży (w związku ze stawką VAT np.)
                 <textarea
                     className="full-width margin-top-1"
                     value={preventNull(props.summaryData.vatExemptionValueNp)}
                     onChange={inputChange}
-                    name="vatExemptionValueNp" />
+                    name="vatExemptionValueNp"
+                    disabled={!checkboxState.vatExemptionLabelNp} />
             </div>
         </Aux>
 
@@ -152,12 +171,17 @@ const InvoiceSummary = (props) => {
     if (props.summaryData.vatExemptionLabelZw !== null)
         vatExemptionZw = <Aux>
             <div className="margin-all-1">
-                <label>{preventNull(props.summaryData.vatExemptionLabelZw)}</label>
+                <input type="checkbox"
+                    name="vatExemptionLabelZw"
+                    checked={checkboxState.vatExemptionLabelZw}
+                    onChange={checkboxChange} />
+               Podstawa zwolnienia z podatku VAT (w związku ze stawką VAT zw.)
                 <textarea
                     className="full-width margin-top-1"
                     value={preventNull(props.summaryData.vatExemptionValueZw)}
                     onChange={inputChange}
-                    name="vatExemptionValueZw" />
+                    name="vatExemptionValueZw"
+                    disabled={!checkboxState.vatExemptionLabelZw} />
             </div>
         </Aux>
 
@@ -276,4 +300,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps,mapDispatchToProps)(InvoiceSummary);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceSummary);

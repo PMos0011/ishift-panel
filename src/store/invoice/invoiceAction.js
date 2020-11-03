@@ -133,6 +133,7 @@ const setInvoiceTypes = (data) => {
 
 export const saveInvoice = (id, data) => {
     return (dispatch) => {
+        if (id !== "demo") {
         dispatch(setLoadingSpinner(true));
         axios.put(actionTypes.SERVER_ADDRESS + "/invoice/save/" + id,
             data,
@@ -151,11 +152,14 @@ export const saveInvoice = (id, data) => {
                 else
                     dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
+        } else
+        dispatch(setMessage(messages.DEMO_ALERT, true));
     }
 };
 
 export const saveInvoiceAndDownload = (id, data) => {
     return (dispatch) => {
+        if (id !== "demo") {
         dispatch(setLoadingSpinner(true));
         axios.put(actionTypes.SERVER_ADDRESS + "/invoice/save/preview/" + id,
             data,
@@ -175,6 +179,8 @@ export const saveInvoiceAndDownload = (id, data) => {
                 else
                     dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
+        } else
+        dispatch(setMessage(messages.DEMO_ALERT, true));
     }
 }
 

@@ -6,6 +6,8 @@ import Aux from '../../hoc/auxiliary';
 import * as actions from '../../store/authorization/authAction';
 import {setMessage} from '../../store/alerts/alertsActions';
 
+import "../../style/demo-login-style.css";
+
 import form from './loginFormBuild';
 
 const LoginForm = (props) => {
@@ -61,6 +63,11 @@ const LoginForm = (props) => {
 
     return (
         <Aux>
+            <div className="demo-div app-border-shadow">
+                <h3>Demo</h3>
+                <h5>Login: demo</h5>
+                <h5>Hasło: demo</h5>
+            </div>
             <div className="gray-card flex-center app-border-shadow">
                 {redirectToBasicsInfo}
                 <form className="text-x-large-input" onSubmit={submitForm}>

@@ -10,9 +10,9 @@ import * as calculations from "./commoditiesCalculations";
 import { commoditiesSelectStyle } from "./selectCustomStyle";
 
 const InvoiceCommodities = (props) => {
-    useEffect(()=>{
+    useEffect(() => {
         setCommoditySelectOption(props.commoditySelectOptions[0])
-    },[props.commoditySelectOptions])
+    }, [props.commoditySelectOptions])
 
     const [commoditySelectOption, setCommoditySelectOption] = useState();
     const [vatRate, setVatRate] = useState({});
@@ -44,14 +44,14 @@ const InvoiceCommodities = (props) => {
 
         let newSumaryData = { ...props.summaryData }
 
-        const vatExemptionNp = vatRateObj["np."];
-        const vatExemptionZw = vatRateObj["zw."];
+        const vatExemptionNp = vatRateObj["NP."];
+        const vatExemptionZw = vatRateObj["ZW."];
 
         if (vatExemptionNp === undefined) {
             newSumaryData.vatExemptionLabelNp = null;
             newSumaryData.vatExemptionValueNp = null;
-        } else {
-            newSumaryData.vatExemptionLabelNp = "Rodzaj dokonywanej sprzedaży (w związku ze stawką VAT np.)";
+        } else if (newSumaryData.vatExemptionValueNp === null) {
+            newSumaryData.vatExemptionLabelNp = "";
             newSumaryData.vatExemptionValueNp = "";
         }
 
@@ -59,8 +59,8 @@ const InvoiceCommodities = (props) => {
             newSumaryData.vatExemptionLabelZw = null;
             newSumaryData.vatExemptionValueZw = null;
         }
-        else {
-            newSumaryData.vatExemptionLabelZw = "Podstawa zwolnienia z podatku VAT (w związku ze stawką VAT zw.)";
+        else if (newSumaryData.vatExemptionValueZw === null) {
+            newSumaryData.vatExemptionLabelZw = "";
             newSumaryData.vatExemptionValueZw = "";
         }
 

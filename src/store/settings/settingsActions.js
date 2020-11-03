@@ -40,6 +40,7 @@ const setLoginList = (list) => {
 export const changeAccessData = (newlogin, newPassword, oldPassword) => {
 
     return (dispatch) => {
+        if (jwt_decode(localStorage.getItem("token")).sub !== "demo") {
         dispatch(setLoadingSpinner(true));
         axios.put(actionTypes.SERVER_ADDRESS + "/settings/accessData",
             {
@@ -70,14 +71,15 @@ export const changeAccessData = (newlogin, newPassword, oldPassword) => {
                 }
                 else
                     dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
-
-
             })
+        } else
+        dispatch(setMessage(messages.DEMO_ALERT, true));
     }
 }
 
 export const changeMyData = (data, dataAccess) => {
     return (dispatch) => {
+        if (dataAccess !== "demo") {
         dispatch(setLoadingSpinner(true));
         axios.put(actionTypes.SERVER_ADDRESS + "/settings/myData/" + dataAccess,
             data,
@@ -97,5 +99,7 @@ export const changeMyData = (data, dataAccess) => {
                 else
                     dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
             })
+        } else
+        dispatch(setMessage(messages.DEMO_ALERT, true));
     }
 }
