@@ -17,6 +17,12 @@
     grid-template-rows: auto;
   }
 
+  .grid-2-invoice-correction {
+    display: grid;
+    grid-template-columns: 67% 33%;
+    grid-template-rows: auto;
+  }
+
 .grid-3-invoice-summary {
     display: grid;
     grid-template-columns: 25% 35% 40%;
@@ -72,4 +78,17 @@
 .border-none{
     border:none;
 }
+
+.item-grid-11-full {
+  grid-column: 1/12;
+}
+
+.item-grid-7-11 {
+  grid-column: 7/12;
+}
+
+.item-grid-6-full {
+  grid-column: 1/7;
+}
+
 

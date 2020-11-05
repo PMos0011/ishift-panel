@@ -7,6 +7,12 @@ export const convertToDinero = (num) => {
     return Dinero({ amount: n, currency: 'PLN' })
 }
 
+export const correctionCallculations = (before, after) =>{
+    before = parseFloat(before).toFixed(2);
+    after = parseFloat(after).toFixed(2);
+    return (after- before).toFixed(2);
+}
+
 export const moneyCallculations = (invoiceCommodity, id) => {
 
     const price = convertToDinero(invoiceCommodity[id].price);
@@ -118,5 +124,28 @@ export const addInvoiceCommodity = (commodityFromSelector) => {
     invoiceCommodity = moneyCallculations(invoiceCommodity, newId);
 
     return invoiceCommodity;
+}
+
+export const commodityToCorrect = (commodity) =>{
+
+    const newId = Math.random().toString(20).substr(2, 6);
+    let invoiceCommodity = {
+        [newId]: {
+            name: commodity.name,
+            measure: commodity.measure,
+            amount: commodity.amount,
+            price: commodity.price,
+            discount: commodity.discount,
+            nettoAmount: "",
+            vat: commodity.vat,
+            vatAmount: "",
+            brutto: ""
+        }
+    };
+
+    invoiceCommodity = moneyCallculations(invoiceCommodity, newId);
+
+    return invoiceCommodity;
+    
 }
 

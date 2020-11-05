@@ -36,6 +36,12 @@
   margin: auto;
 }
 
+.flex-center-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .pointer-on-hover:hover {
   cursor: pointer;
 }

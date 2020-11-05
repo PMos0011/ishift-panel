@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import Aux from "../../hoc/auxiliary";
 import DatePicker from "../documents/datePicker";
 
@@ -9,6 +10,7 @@ import * as converters from "./invoicesConverters";
 import { getInvoices, invoicePreviewFromDataBase } from "../../store/invoice/invoiceAction";
 
 import downloadIcon from "../../images/download_icon.svg";
+import editIcon from "../../images/edit_icon.svg";
 
 const Invoice = (props) => {
     useEffect(() => {
@@ -35,14 +37,13 @@ const Invoice = (props) => {
         let counter = 0;
         try {
             return (
-                <div className="grid-7-container-invoice">
+                <div className="grid-6-container-invoice">
                     <div className="doc-detail-header-item">Lp</div>
                     <div className="doc-detail-header-item">Brutto</div>
                     <div className="doc-detail-header-item">VAT</div>
                     <div className="doc-detail-header-item">Numer</div>
                     <div className="doc-detail-header-item">Nabywca</div>
                     <div className="doc-detail-header-item">Data</div>
-                    <div />
 
                     {
                         props.invoices.map(invoice => {
@@ -50,16 +51,22 @@ const Invoice = (props) => {
                             counter++;
                             return (
                                 <Aux key={invoice.id}>
-                                    <div className="doc-det">{counter}</div>
-                                    <div className="doc-det">{convertAmount(invoice.summaryData.bruttoAmount)}</div>
-                                    <div className="doc-det">{convertAmount(invoice.summaryData.vatAmount)}</div>
-                                    <div className="doc-det">{invoice.invoiceNumber}</div>
-                                    <div className="doc-det">{buyer.name}</div>
-                                    <div className="doc-det">{converters.createDate(invoice.issueDate)}</div>
+                                    <div className="doc-item-thin">{counter}</div>
+                                    <div className="doc-item-thin">{convertAmount(invoice.summaryData.bruttoAmount)}</div>
+                                    <div className="doc-item-thin">{convertAmount(invoice.summaryData.vatAmount)}</div>
+                                    <div className="doc-item-thin">{invoice.invoiceNumber}</div>
+                                    <div className="doc-item-thin">{buyer.name}</div>
+                                    <div className="doc-item-thint">{converters.createDate(invoice.issueDate)}</div>
+                                    <div className="item-grid-6-full direction-rtl">
+                                    <Link to={"/auth/invoice/edit/" + props.match.params.id + "/" + invoice.id}>
+                                        <img className="icon-size " src={editIcon} alt="edit" />
+                                    </Link>
                                     <img onClick={() =>
                                         props.invoicePreview(props.match.params.id, invoice.id)}
                                         className="icon-size pointer-on-hover"
                                         src={downloadIcon} alt="preview" />
+                                        </div>
+                                        <hr className="hr-margin item-grid-6-full" />
                                 </Aux>
                             )
                         })}

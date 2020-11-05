@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { connect } from 'react-redux';
+import Aux from "../../hoc/auxiliary";
 import ContractorForm from "./contractorForm";
 import { buyerDataBuilder } from "./invoiceDataBuilder";
 
 
 const InvoiceParties = (props) => {
 
-    const [customerSource, setCustomerSource] = useState(true);
+
+    const [customerSource, setCustomerSource] = useState(props.newInvoice);
 
     const changeCustomerState = () => {
         setCustomerSource(!customerSource);
@@ -40,15 +42,21 @@ const InvoiceParties = (props) => {
         props.setPartiesData(newData);
     }
 
+    const inputCheckobx = 
+    <Aux>
+        <div />
+    <div className="grid-4-parties">
+        <input type="checkbox" name="fromDb" checked={customerSource} onChange={changeCustomerState} />
+        <h4>Klient z bazy danych</h4>
+        <input type="checkbox" name="own" checked={!customerSource} onChange={changeCustomerState} />
+        <h4>Własne dane</h4>
+    </div>
+    </Aux>
+
     return (
         <div className="doc-grid-2-50-container">
-            <div />
-            <div className="grid-4-parties">
-                <input type="checkbox" name="fromDb" checked={customerSource} onChange={changeCustomerState} />
-                <h4>Klient z bazy danych</h4>
-                <input type="checkbox" name="own" checked={!customerSource} onChange={changeCustomerState} />
-                <h4>Własne dane</h4>
-            </div>
+           
+        {props.newInvoice?inputCheckobx:null}
             <ContractorForm
                 isReadOnly={true}
                 isSeller={true}
@@ -56,14 +64,16 @@ const InvoiceParties = (props) => {
                 onSelectChange={onSelectChange}
                 contractorData={props.partiesData.seller}
                 onInputChange={onInputChange}
+                newInvoice={props.newInvoice}
             />
             <ContractorForm
-                isReadOnly={customerSource}
+                isReadOnly={props.newInvoice?customerSource:true}
                 isSeller={false}
-                isTextArea={!customerSource}
+                isTextArea={props.newInvoice?!customerSource:true}
                 onSelectChange={onSelectChange}
                 contractorData={props.partiesData.buyer}
                 onInputChange={onInputChange}
+                newInvoice={props.newInvoice}
             />
         </div>
     )

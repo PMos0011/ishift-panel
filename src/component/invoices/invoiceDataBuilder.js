@@ -7,15 +7,19 @@ let emptyData = {
     city: ""
 }
 
-export const setHeaderBeginState = (selectOptions, customer, invoiceType, lastInvoice) => {
+export const setHeaderBeginState = (selectOption, customer, invoiceType, lastInvoice, invoiceSellDate) => {
+
+    let newSellDate = new Date();
+    if(invoiceSellDate!==undefined)
+    newSellDate=new Date(invoiceSellDate);
 
     let newHeaderData = {
-        invoiceTypeId: selectOptions[0].value,
-        invoiceTypeName: selectOptions[0].label,
-        invoiceNumber: invoiceNumberBuilder(invoiceType, selectOptions[0].value, lastInvoice),
+        invoiceTypeId: selectOption.value,
+        invoiceTypeName: selectOption.label,
+        invoiceNumber: invoiceNumberBuilder(invoiceType, selectOption.value, lastInvoice),
         placeOfIssue: invoicePlaceOfIssueBuilder(customer),
         issueDate: new Date(),
-        sellDate: new Date()
+        sellDate:  newSellDate
     }
 
     return newHeaderData;

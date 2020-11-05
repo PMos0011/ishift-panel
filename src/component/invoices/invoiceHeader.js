@@ -42,7 +42,6 @@ const InvoiceHeader = (props) => {
         props.setHeaderData(newHeaderData);
     }
 
-
     return (
             <div className="doc-grid-3-container-auto">
                 <div className="margin-all-1">   
@@ -50,7 +49,7 @@ const InvoiceHeader = (props) => {
                         <Select
                             className="margin-top-1"
                             placeholder="Wybierz"
-                            defaultValue={props.selectOptions[0]}
+                            value={props.selectOptions[props.headerData.invoiceTypeId-1]}
                             options={props.selectOptions}
                             isOptionDisabled={(option) => option.value > 0}
                             onChange={setDocType} />

@@ -10,37 +10,99 @@ import * as calculations from "./commoditiesCalculations";
 import { commoditiesSelectStyle } from "./selectCustomStyle";
 
 const InvoiceCommodities = (props) => {
+    const summaryBeginState = {
+        nettoAmount: "0.00",
+        vatAmount: "0.00",
+        bruttoAmount: "0.00"
+    }
+
+    const [commoditySelectOption, setCommoditySelectOption] = useState();
+    const [vatRate, setVatRate] = useState({});
+    const [correctionVatRate, setCorrectionVatRate] = useState({});
+    const [invoiceCommoditySummary, setInvoiceCommoditySummary] = useState({ ...summaryBeginState });
+    const [invoiceCorrectionSummary, setInvoiceCorrectionSummary] = useState({ ...summaryBeginState });
+    const [invoiceSummary, setInvoiceSummary] = useState({ ...summaryBeginState });
+
+    useEffect(()=>{
+        if(props.newInvoice){
+        setVatRate({});
+        setCorrectionVatRate({});
+        setInvoiceCommoditySummary({ ...summaryBeginState });
+        setInvoiceCorrectionSummary({ ...summaryBeginState });
+        setInvoiceSummary({ ...summaryBeginState });}
+    },[props.correctionInvoiceCommodities])
+
+
+    useEffect(() => {
+        try {
+                let newInvoiceCommodities = {};
+                const sortedCommodities = props.invoiceCommodities.sort((a, b) => a.name.localeCompare(b.name));
+                sortedCommodities.map((commodity) => {
+                    let invoiceCommodity = {};
+                    invoiceCommodity = calculations.commodityToCorrect(commodity);
+                    newInvoiceCommodities = Object.assign({ ...newInvoiceCommodities }, invoiceCommodity)
+                });
+
+                let newCorrectionCommodities = {};
+
+                for (let key in newInvoiceCommodities) {
+                    let newCorrection = {
+                        [key]: {
+                            ...newInvoiceCommodities[key]
+                        }
+                    }
+                    newCorrectionCommodities = Object.assign({ ...newCorrectionCommodities }, newCorrection);
+                }
+
+                props.setCorrectionInvoiceCommodities(newCorrectionCommodities);
+
+                recalculateSummary(newInvoiceCommodities);
+                calcualteCorrectionSummary(newCorrectionCommodities);
+        } catch (error) { console.log(error) }
+    }, []);
+
     useEffect(() => {
         setCommoditySelectOption(props.commoditySelectOptions[0])
     }, [props.commoditySelectOptions])
 
-    const [commoditySelectOption, setCommoditySelectOption] = useState();
-    const [vatRate, setVatRate] = useState({});
-    const [invoiceSummary, setInvoiceSummary] = useState(
-        {
-            nettoAmount: "0.00",
-            vatAmount: "0.00",
-            bruttoAmount: "0.00"
-        }
-    );
+
+    useEffect(() => {
+        setInvoiceSummary({
+            nettoAmount: calculations.correctionCallculations(invoiceCorrectionSummary.nettoAmount, invoiceCommoditySummary.nettoAmount),
+            vatAmount: calculations.correctionCallculations(invoiceCorrectionSummary.vatAmount, invoiceCommoditySummary.vatAmount),
+            bruttoAmount: calculations.correctionCallculations(invoiceCorrectionSummary.bruttoAmount, invoiceCommoditySummary.bruttoAmount)
+        });
+        props.setInvoicePaymentAmount(calculations.correctionCallculations(invoiceCorrectionSummary.bruttoAmount, invoiceCommoditySummary.bruttoAmount));
+    }, [invoiceCommoditySummary])
 
     const formArray = [];
     for (let key in props.invoiceCommodities) {
         formArray.push({
             id: key,
-            formConfig: props.invoiceCommodities[key]
+            formConfig: props.invoiceCommodities[key],
+            correctionFormConfig: props.correctionInvoiceCommodities[key]
         })
     }
 
+    let allVatRates = [...Object.keys(vatRate)];
+
+    try {
+        allVatRates = [... new Set([...Object.keys(vatRate), ...Object.keys(correctionVatRate)])];
+        allVatRates = allVatRates.sort();
+    } catch (error) { console.log(error) }
+
     const formArrayVatRate = [];
-    for (let key in vatRate) {
+    for (let i in allVatRates) {
         formArrayVatRate.push({
-            id: key,
-            form: vatRate[key]
+            id: allVatRates[i],
+            form: vatRate[allVatRates[i]],
+            correctionForm: correctionVatRate[allVatRates[i]]
         })
     }
 
     const checkVatExemptions = (vatRateObj) => {
+
+        console.log(vatRateObj)
 
         let newSumaryData = { ...props.summaryData }
 
@@ -67,6 +129,17 @@ const InvoiceCommodities = (props) => {
         props.setSummaryData(newSumaryData);
     }
 
+    const calcualteCorrectionSummary = (commodities) => {
+        let rateObj = calculations.recalculateSummary(commodities);
+        setCorrectionVatRate(rateObj.newVatRateObj);
+
+        setInvoiceCorrectionSummary({
+            nettoAmount: rateObj.summary[0].toFormat('0.00'),
+            vatAmount: rateObj.summary[1].toFormat('0.00'),
+            bruttoAmount: rateObj.summary[2].toFormat('0.00')
+        });
+    }
+
     const recalculateSummary = (commodities) => {
 
         let rateObj = calculations.recalculateSummary(commodities);
@@ -74,13 +147,13 @@ const InvoiceCommodities = (props) => {
         checkVatExemptions(rateObj.newVatRateObj);
         setVatRate(rateObj.newVatRateObj);
 
-        setInvoiceSummary({
+        setInvoiceCommoditySummary({
             nettoAmount: rateObj.summary[0].toFormat('0.00'),
             vatAmount: rateObj.summary[1].toFormat('0.00'),
             bruttoAmount: rateObj.summary[2].toFormat('0.00')
         });
+
         props.setInvoiceCommodities(commodities);
-        props.setInvoicePaymentAmount(rateObj.summary[2].toFormat('0.00'));
     }
 
     const addInvoiceCommodity = (isFromSelector) => {
@@ -138,17 +211,178 @@ const InvoiceCommodities = (props) => {
         recalculateSummary(newInvoiceCommodities);
     }
 
+    const commodityRow = (id, commodity, isReadOnly, isCorrection, counter) => {
+        let measureOption = props.measureSelectOptions.find(m => m.label === commodity.measure);
+        let vatOption = props.vatSelectOptions.find(v => v.label == commodity.vat);
+
+        let tableFirst2Columns = <Aux>
+            {counter === undefined ? <div /> : <div>{counter}</div>}
+            {isCorrection ? <div /> : <img className="icon-size-mini pointer-on-hover" src={removeIcon} alt="remove" onClick={() => removeInvoiceCommodity(id)} />}
+        </Aux>
+
+        if (isCorrection && counter === undefined)
+            tableFirst2Columns = <div className="item-grid-2-full flex-center"><h5>po korekcie:</h5></div>
+
+
+        return (
+            <Aux>
+                {tableFirst2Columns}
+                <input className="input-invoice" type="text" name="name" value={commodity.name} onChange={event => inputchangehandler(event, id)} readOnly={isReadOnly} />
+                <Select
+                    styles={commoditiesSelectStyle}
+                    options={props.measureSelectOptions}
+                    value={measureOption}
+                    onChange={data => setMeasure(data, id)}
+                    isDisabled={isReadOnly} />
+                <input className="input-invoice" type="number" name="amount" min="0" step="0.01" value={commodity.amount} onChange={event => inputchangehandler(event, id)} onBlur={event => recalculateForm(event, id)} readOnly={isReadOnly} />
+                <input className="input-invoice" type="number" name="price" min="0" step="0.01" value={commodity.price} onChange={event => inputchangehandler(event, id)} onBlur={event => recalculateForm(event, id)} readOnly={isReadOnly} />
+                <input className="input-invoice" type="number" name="discount" min="0" step="0.01" value={commodity.discount} onChange={event => inputchangehandler(event, id)} onBlur={event => recalculateForm(event, id)} readOnly={isReadOnly} />
+                <input className="input-invoice" type="number" name="nettoAmount" value={commodity.nettoAmount} readOnly />
+                <Select
+                    styles={commoditiesSelectStyle}
+                    options={props.vatSelectOptions}
+                    value={vatOption}
+                    onChange={data => setVatType(data, id)}
+                    isDisabled={isReadOnly} />
+                <input className="input-invoice" type="number" name="vatAmount" value={commodity.vatAmount} readOnly />
+                <input className="input-invoice" type="number" name="brutto" value={commodity.brutto !== undefined ? commodity.brutto : 0} readOnly />
+            </Aux>)
+    }
+
+    const correctionRow = (commodityBeforeCorrection, commodityAfterCorrection) => {
+
+        return (
+            <Aux>
+                <div className="item-grid-4-full flex-center-right"><h5>korekta:</h5></div>
+                <input className="input-invoice" type="number" value={calculations.correctionCallculations(commodityBeforeCorrection.amount, commodityAfterCorrection.amount)} readOnly />
+                <input className="input-invoice" type="number" value={calculations.correctionCallculations(commodityBeforeCorrection.price, commodityAfterCorrection.price)} readOnly />
+                <input className="input-invoice" type="number" value={calculations.correctionCallculations(commodityBeforeCorrection.discount, commodityAfterCorrection.discount)} readOnly />
+                <input className="input-invoice" type="number" value={calculations.correctionCallculations(commodityBeforeCorrection.nettoAmount, commodityAfterCorrection.nettoAmount)} readOnly />
+                <div />
+                <input className="input-invoice" type="number" value={calculations.correctionCallculations(commodityBeforeCorrection.vatAmount, commodityAfterCorrection.vatAmount)} readOnly />
+                <input className="input-invoice" type="number" value={calculations.correctionCallculations(commodityBeforeCorrection.brutto, commodityAfterCorrection.brutto)} readOnly />
+            </Aux>
+        )
+
+    }
+    const displayCommodity = (commodity, counter) => {
+        if (commodity.correctionFormConfig === undefined)
+            return commodityRow(commodity.id, commodity.formConfig, false, false, counter)
+        else {
+            return (
+                <Aux>
+                    {commodityRow(commodity.id, commodity.correctionFormConfig, true, true, counter)}
+                    {commodityRow(commodity.id, commodity.formConfig, false, true)}
+                    {correctionRow(commodity.correctionFormConfig, commodity.formConfig)}
+                    <hr className="hr-margin item-grid-11-full" />
+                </Aux>
+            )
+        }
+    }
+
+    const preventUndefined = (object) => {
+        let nettoAmount = "0.00";
+        let vatAmount = "0.00"
+        let bruttoAmount = "0.00";
+        if (object !== undefined) {
+            nettoAmount = object.nettoAmount;
+            vatAmount = object.vatAmount;
+            bruttoAmount = object.bruttoAmount;
+        }
+
+        return {
+            nettoAmount: nettoAmount,
+            vatAmount: vatAmount,
+            bruttoAmount: bruttoAmount
+        }
+
+    }
+
+    const vatRateRow = (id, vRate, rowExplenation) => {
+        const newVRate = preventUndefined(vRate);
+        return (
+            <Aux>
+                <div className="invoice-add-empty" />
+                <div className="flex-center-right">{rowExplenation}</div>
+                <input className="input-invoice" type="number" name="invoiceVatRateNetto" value={newVRate.nettoAmount} readOnly />
+                <input className="input-invoice" type="text" name="invoiceVatRate" value={id} readOnly />
+                <input className="input-invoice" type="number" name="invoiceVatRateSummary" value={newVRate.vatAmount} readOnly />
+                <input className="input-invoice" type="number" name="invoiceVatRateBrutto" value={newVRate.bruttoAmount} readOnly />
+            </Aux>
+        )
+    }
+
+    const correctionVatRow = (before, after) => {
+        const newBefore = preventUndefined(before);
+        const newAfter = preventUndefined(after);
+        return (
+            <Aux>
+                <div className="invoice-add-empty" />
+                <div className="flex-center-right">korekta:</div>
+                <input className="input-invoice" type="number" name="invoiceVatRateNetto" value={calculations.correctionCallculations(newBefore.nettoAmount, newAfter.nettoAmount)} readOnly />
+                <div />
+                <input className="input-invoice" type="number" name="invoiceVatRateSummary" value={calculations.correctionCallculations(newBefore.vatAmount, newAfter.vatAmount)} readOnly />
+                <input className="input-invoice" type="number" name="invoiceVatRateBrutto" value={calculations.correctionCallculations(newBefore.bruttoAmount, newAfter.bruttoAmount)} readOnly />
+            </Aux>
+        )
+    }
+
+    const displayVatRate = (id, vRate, newInvoice) => {
+        if (newInvoice)
+            return (
+                <Aux key={id}> {vatRateRow(id, vRate.form, "")} </Aux>)
+        return (
+            <Aux key={id}>
+                {vatRateRow(id, vRate.correctionForm, "przed:")}
+                {vatRateRow(id, vRate.form, "po:")}
+                {correctionVatRow(vRate.correctionForm, vRate.form)}
+                <hr className="hr-margin item-grid-7-11" />
+            </Aux>)
+    }
+
+    const summaryRow = (summary, newInvoice, rowDescription) => {
+        return (
+            <Aux>
+                <div className="invoice-add-empty">
+                    {newInvoice ? <img className="icon-size pointer-on-hover" src={addIcon} alt="add" onClick={() => addInvoiceCommodity(false)} /> : null}
+                </div>
+                <div className="flex-center">{rowDescription}</div>
+                <input className="input-invoice" type="number" name="invoiceSummaryNetto" value={summary.nettoAmount} readOnly />
+                <div />
+                <input className="input-invoice" type="number" name="invoiceSummaryVat" value={summary.vatAmount} readOnly />
+                <input className="input-invoice" type="number" name="invoiceSummaryBrutto" value={summary.bruttoAmount} readOnly />
+            </Aux>
+        )
+
+    }
+
+    const displayInvoiceSummary = (commodityiesSummary, correctionSummary, invoiceSummary, newInvoice) => {
+        if (newInvoice)
+            return summaryRow(invoiceSummary, newInvoice, "RAZEM");
+
+        return (
+            <Aux>
+                {summaryRow(correctionSummary, newInvoice, "przed:")}
+                {summaryRow(commodityiesSummary, newInvoice, "po:")}
+                {summaryRow(invoiceSummary, newInvoice, "RAZEM")}
+                <hr className="hr-margin item-grid-7-11" />
+            </Aux>)
+
+    }
+
+    const commodityFromDatabase = <div className="doc-grid-3-container-invoice">
+        <div>Dodaj z bazy: </div>
+        <Select
+            options={props.commoditySelectOptions}
+            value={commoditySelectOption}
+            onChange={setCommoditySelectOption} />
+        <img className="icon-size pointer-on-hover" src={addIcon} alt="add" onClick={() => addInvoiceCommodity(true)} />
+    </div>
+
     let counter = 0;
     return (
         <Aux>
-            <div className="doc-grid-3-container-invoice">
-                <div>Dodaj z bazy: </div>
-                <Select
-                    options={props.commoditySelectOptions}
-                    value={commoditySelectOption}
-                    onChange={setCommoditySelectOption} />
-                <img className="icon-size pointer-on-hover" src={addIcon} alt="add" onClick={() => addInvoiceCommodity(true)} />
-            </div>
+            {props.newInvoice ? commodityFromDatabase : null}
             <div className="grid-11-invoice">
                 <div>Lp</div>
                 <div />
@@ -162,56 +396,19 @@ const InvoiceCommodities = (props) => {
                 <div>Kwota VAT</div>
                 <div>wartość brutto</div>
                 {formArray.map(commodity => {
-                    let measureOption = props.measureSelectOptions.find(m => m.label === commodity.formConfig.measure);
-                    let vatOption = props.vatSelectOptions.find(v => v.label == commodity.formConfig.vat);
                     counter++;
                     return (
                         <Aux key={counter}>
-                            <div>{counter}</div>
-                            <img className="icon-size-mini pointer-on-hover" src={removeIcon} alt="remove" onClick={() => removeInvoiceCommodity(commodity.id)} />
-                            <input className="input-invoice" type="text" name="name" value={commodity.formConfig.name} onChange={event => inputchangehandler(event, commodity.id)} />
-                            <Select
-                                styles={commoditiesSelectStyle}
-                                options={props.measureSelectOptions}
-                                value={measureOption}
-                                onChange={data => setMeasure(data, commodity.id)} />
-                            <input className="input-invoice" type="number" name="amount" min="0" step="0.05" value={commodity.formConfig.amount} onChange={event => inputchangehandler(event, commodity.id)} onBlur={event => recalculateForm(event, commodity.id)} />
-                            <input className="input-invoice" type="number" name="price" min="0" step="0.05" value={commodity.formConfig.price} onChange={event => inputchangehandler(event, commodity.id)} onBlur={event => recalculateForm(event, commodity.id)} />
-                            <input className="input-invoice" type="number" name="discount" min="0" step="0.05" value={commodity.formConfig.discount} onChange={event => inputchangehandler(event, commodity.id)} onBlur={event => recalculateForm(event, commodity.id)} />
-                            <input className="input-invoice" type="number" name="nettoAmount" value={commodity.formConfig.nettoAmount} readOnly />
-                            <Select
-                                styles={commoditiesSelectStyle}
-                                options={props.vatSelectOptions}
-                                value={vatOption}
-                                onChange={data => setVatType(data, commodity.id)} />
-                            <input className="input-invoice" type="number" name="vatAmount" value={commodity.formConfig.vatAmount} readOnly />
-                            <input className="input-invoice" type="number" name="brutto" value={commodity.formConfig.brutto} readOnly />
+                            {displayCommodity(commodity, counter)}
                         </Aux>
                     )
                 })}
                 <hr className="hr-margin invoice-sumary" />
-                <div className="invoice-add-empty">
-                    <img className="icon-size pointer-on-hover" src={addIcon} alt="add" onClick={() => addInvoiceCommodity(false)} />
-                </div>
-                <div>Razem</div>
-                <input className="input-invoice" type="number" name="invoiceSummaryNetto" value={invoiceSummary.nettoAmount} readOnly />
-                <div />
-                <input className="input-invoice" type="number" name="invoiceSummaryVat" value={invoiceSummary.vatAmount} readOnly />
-                <input className="input-invoice" type="number" name="invoiceSummaryBrutto" value={invoiceSummary.bruttoAmount} readOnly />
 
-                {
-                    formArrayVatRate.map(vRate => {
-                        return (<Aux key={vRate.id}>
-                            <div className="invoice-add-empty" />
-                            <div />
-                            <input className="input-invoice" type="number" name="invoiceVatRateNetto" value={vRate.form.nettoAmount} readOnly />
-                            <input className="input-invoice" type="text" name="invoiceVatRate" value={vRate.id} readOnly />
-                            <input className="input-invoice" type="number" name="invoiceVatRateSummary" value={vRate.form.vatAmount} readOnly />
-                            <input className="input-invoice" type="number" name="invoiceVatRateBrutto" value={vRate.form.bruttoAmount} readOnly />
-                        </Aux>
-                        )
-                    })
-                }
+                {displayInvoiceSummary(invoiceCommoditySummary, invoiceCorrectionSummary, invoiceSummary, props.newInvoice)}
+
+                {formArrayVatRate.map(vRate => displayVatRate(vRate.id, vRate, props.newInvoice))}
+
                 <div className="invoice-add-empty" />
                 <h3>Do zapłaty</h3>
                 <input className="margin-all-1 text-x-large-input border-none" type="number" name="SummaryBrutto" value={invoiceSummary.bruttoAmount} readOnly />

@@ -6,6 +6,7 @@ import InvoiceHeader from "./invoiceHeader";
 import InvoiceParties from "./invoiceParties";
 import InvoiceCommodities from "./invoiceCommodities";
 import InvoiceSummary from "./invoiceSummary";
+import InvoiceCorrectionHeader from "./invoiceCorrectionHeader";
 
 import * as builders from "./invoiceDataBuilder";
 import { isBankAccountNumberIncorrect } from "../bankAccounts/converters";
@@ -19,6 +20,24 @@ import { setMessage } from '../../store/alerts/alertsActions';
 
 const InvoiceForm = (props) => {
 
+    let [currentInvoiceId, setCurrentInvoiceId] = useState(props.match.params.id);
+    if (currentInvoiceId !== props.match.params.id)
+        setCurrentInvoiceId(props.match.params.id)
+
+    useEffect(() => {
+        if (props.match.params.id == 0) {
+            setInvoiceCommodities({});
+            setCorrectionInvoiceCommodities({});
+
+            setHeaderData(builders.setHeaderBeginState(
+                props.invoiceTypeSelectOptions[0],
+                props.seller,
+                props.invoiceType,
+                props.lastInvoice,
+                new Date()))
+        }
+    }, [currentInvoiceId])
+
     useEffect(() => {
         props.getLastInvoices(props.match.params.dbId);
         props.getContractors(props.match.params.dbId);
@@ -26,23 +45,108 @@ const InvoiceForm = (props) => {
         props.getBankAccounts(props.match.params.dbId);
     }, []);
 
-    useEffect(()=>{
-        setHeaderData(builders.setHeaderBeginState(
-            props.invoiceTypeSelectOptions,
-            props.seller,
-            props.invoiceType,
-            props.lastInvoice))
-    },[props.lastInvoice])
+    useEffect(() => {
+        let selectOption = 0;
+        let sellDate;
+        let lastInvoice = props.lastInvoice
+        try {
+            if (props.match.params.id != 0) {
+                selectOption = 1;
+                sellDate = props.invoices.find(inv => inv.id == props.match.params.id).sellDate
+                lastInvoice = null;
+            }
 
-    const [headerData, setHeaderData] = useState({invoiceNumber:""});
+            setHeaderData(builders.setHeaderBeginState(
+                props.invoiceTypeSelectOptions[selectOption],
+                props.seller,
+                props.invoiceType,
+                lastInvoice,
+                sellDate))
+        }
+        catch (error) { console.log(error) }
+    }, [props.lastInvoice])
 
-    const [partiesData, setPartiesData] = useState(
-        builders.setPartiesDatatBeginState(props.seller, props.contractorIdOptions[0]));
+    let newInvoice = true;
+    if (props.match.params.id != 0)
+        newInvoice = false;
 
-    const [invoiceCommodities, setInvoiceCommodities] = useState({});
-    const [summaryData, setSummaryData] = useState(
-        builders.setSummaryBeginState(props.invoicePaymnetStatusOptions[0])
-    );
+    let invoice = {
+        headerData: {
+            invoiceNumber: ""
+        },
+        correctionData: {},
+        partiesData: builders.setPartiesDatatBeginState(props.seller, props.contractorIdOptions[0]),
+        invoiceCommodities: {},
+        summaryData: builders.setSummaryBeginState(props.invoicePaymnetStatusOptions[0])
+    }
+    if (!newInvoice) {
+        try {
+            let invoiceToCorrection = props.invoices.find(inv => inv.id == props.match.params.id);
+
+            invoice.correctionData = {
+                correctedInvoiceNumber: invoiceToCorrection.invoiceTypeName + " " + invoiceToCorrection.invoiceNumber,
+                correctedInvoiceDate: new Date(invoiceToCorrection.issueDate),
+                correctionReason: "",
+            }
+
+            let seller = invoiceToCorrection.partiesData.find(party => party.partyId === 0);
+            let buyer = invoiceToCorrection.partiesData.find(party => party.partyId === 1);
+
+            if (seller.idName === "NIP") {
+                invoice.partiesData.seller = {
+                    name: seller.name,
+                    idType: 0,
+                    idName: "NIP",
+                    idValue: [seller.idValue, ""],
+                    street: seller.street,
+                    city: seller.city
+                }
+            } else {
+                invoice.partiesData.seller = {
+                    name: seller.name,
+                    idType: 1,
+                    idName: "REGON",
+                    idValue: ["", seller.idValue],
+                    street: seller.street,
+                    city: seller.city
+                }
+            }
+
+            if (buyer.idName === "NIP") {
+                invoice.partiesData.buyer = {
+                    name: buyer.name,
+                    idType: 0,
+                    idName: "NIP",
+                    idValue: [buyer.idValue, ""],
+                    street: buyer.street,
+                    city: buyer.city
+                }
+            } else {
+                invoice.partiesData.buyer = {
+                    name: buyer.name,
+                    idType: 1,
+                    idName: "REGON",
+                    idValue: ["", buyer.idValue],
+                    street: buyer.street,
+                    city: buyer.city
+                }
+            }
+
+            invoice.invoiceCommodities = invoiceToCorrection.invoiceCommodities;
+            invoice.summaryData = invoiceToCorrection.summaryData;
+        }
+        catch (error) { console.log(error) }
+    }
+
+    const [headerData, setHeaderData] = useState(invoice.headerData);
+    const [correctionData, setCorrectionData] = useState(invoice.correctionData);
+
+    const [partiesData, setPartiesData] = useState(invoice.partiesData);
+
+    const [invoiceCommodities, setInvoiceCommodities] = useState(invoice.invoiceCommodities);
+    const [correctionInvoiceCommodities, setCorrectionInvoiceCommodities] = useState({});
+
+    const [summaryData, setSummaryData] = useState(builders.setSummaryBeginState(props.invoicePaymnetStatusOptions[0]));
     let [invoicePaymentAmount, setInvoicePaymentAmount] = useState(0);
     const [redirect, setRedirect] = useState(false);
 
@@ -77,8 +181,6 @@ const InvoiceForm = (props) => {
             props.setMessage("Podstawa podatku VAT np jest niewpisana!", true);
         else if (summaryData.vatExemptionValueZw !== null && summaryData.vatExemptionLabelZw !== "" && summaryData.vatExemptionValueZw == "")
             props.setMessage("Podstawa zwlnienia podatku VAT zw jest niewpisana!", true);
-        else if (Number(summaryData.paid) > Number(invoicePaymentAmount))
-            props.setMessage("Nadpłaty obecnie nie są obsługiwane. Kwota \"Zapłacono\" musi być mniejsza bądź równa kwocie \"Do zapłaty\"", true);
         else
             return true;
 
@@ -174,17 +276,29 @@ const InvoiceForm = (props) => {
         }
     }
 
+    const invoiceCorrectionHeader = <InvoiceCorrectionHeader
+        correctionData={correctionData}
+        setCorrectionData={setCorrectionData} />
+
+    const submit = <div className="grid-3-invoice-submit">
+        <input type="submit" value="Podgląd" onClick={onPreviewClick} />
+        <input type="submit" value="Zapisz" onClick={onSaveClick} />
+        <input type="submit" value="Zapisz i pobierz" onClick={onSaveAndDownload} />
+    </div>
+
     return (
         <div className="width-95-white app-border-shadow">
-            {props.match.params.dbId!=="demo"? redirectTo:null}
+            {props.match.params.dbId !== "demo" ? redirectTo : null}
             <InvoiceHeader
                 headerData={headerData}
                 setHeaderData={setHeaderData}
             />
+            {newInvoice ? null : invoiceCorrectionHeader}
             <hr className="hr-margin" />
             <InvoiceParties
                 partiesData={partiesData}
                 setPartiesData={setPartiesData}
+                newInvoice={newInvoice}
             />
             <hr className="hr-margin" />
             <InvoiceCommodities
@@ -193,6 +307,9 @@ const InvoiceForm = (props) => {
                 summaryData={summaryData}
                 setSummaryData={setSummaryData}
                 setInvoicePaymentAmount={setInvoicePaymentAmount}
+                correctionInvoiceCommodities={correctionInvoiceCommodities}
+                setCorrectionInvoiceCommodities={setCorrectionInvoiceCommodities}
+                newInvoice={newInvoice}
             />
             <hr className="hr-margin" />
             <InvoiceSummary
@@ -201,11 +318,7 @@ const InvoiceForm = (props) => {
                 invoicePaymentAmount={invoicePaymentAmount} />
 
             <hr className="hr-margin" />
-            <div className="grid-3-invoice-submit">
-                <input type="submit" value="Podgląd" onClick={onPreviewClick} />
-                <input type="submit" value="Zapisz" onClick={onSaveClick} />
-                <input type="submit" value="Zapisz i pobierz" onClick={onSaveAndDownload} />
-            </div>
+            {newInvoice?submit:null}
         </div>
     )
 }
@@ -218,6 +331,7 @@ const mapStateToProps = (state) => {
         seller: state.customersReducer.customer,
         contractorIdOptions: state.contractorsReducer.contractorIdOptions,
         invoicePaymnetStatusOptions: state.invoiceReducer.invoicePaymnetStatusOptions,
+        invoices: state.invoiceReducer.invoices
     };
 };
 
@@ -230,7 +344,7 @@ const mapDispatchToProps = (dispatch) => {
         setMessage: (message, isError) => dispatch(setMessage(message, isError)),
         invoicePreview: (data) => dispatch(invoicePreview(data)),
         saveInvoiceAndDownload: (id, data) => dispatch(saveInvoiceAndDownload(id, data)),
-        getLastInvoices:(id)=>dispatch(getLastInvoices(id))
+        getLastInvoices: (id) => dispatch(getLastInvoices(id))
     };
 };
 

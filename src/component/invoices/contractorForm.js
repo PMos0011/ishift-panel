@@ -31,13 +31,14 @@ const ContractorForm = (props) => {
             {props.isTextArea ? textAreaForm : selectForm}
             <Select className="margin-all-1"
                 options={props.contractorIdOptions}
-                defaultValue={props.contractorIdOptions[0]}
+                value={props.contractorIdOptions[props.contractorData.idType]}
                 onChange={(data,name) => props.onSelectChange(data,name)}
                 styles={invoiceFormStyle}
                 isSearchable={false}
                 name={{[partySide]:{
                     name: 'contractorId'
-                }}} />
+                }}}
+                isDisabled={!props.newInvoice} />
             <input className="margin-all-1 text-x-large-input"
                 type="text"
                 name="idValue"
