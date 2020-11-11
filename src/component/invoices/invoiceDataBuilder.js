@@ -7,11 +7,17 @@ let emptyData = {
     city: ""
 }
 
-export const setHeaderBeginState = (selectOption, customer, invoiceType, lastInvoice, invoiceSellDate) => {
+export const setHeaderBeginState = (selectOption, customer, invoiceType, lastInvoice, invoiceSellDate, id) => {
 
     let newSellDate = new Date();
-    if(invoiceSellDate!==undefined)
-    newSellDate=new Date(invoiceSellDate);
+    if (invoiceSellDate !== undefined)
+        newSellDate = new Date(invoiceSellDate);
+
+        console.log(id);
+
+    let newId = null;
+    if (id !== undefined)
+        newId = id
 
     let newHeaderData = {
         invoiceTypeId: selectOption.value,
@@ -19,7 +25,9 @@ export const setHeaderBeginState = (selectOption, customer, invoiceType, lastInv
         invoiceNumber: invoiceNumberBuilder(invoiceType, selectOption.value, lastInvoice),
         placeOfIssue: invoicePlaceOfIssueBuilder(customer),
         issueDate: new Date(),
-        sellDate:  newSellDate
+        sellDate: newSellDate,
+        id: newId,
+        correctionReason: null
     }
 
     return newHeaderData;
@@ -40,7 +48,7 @@ export const invoiceNumberBuilder = (invoiceType, selectedTypeId, lastInvoice) =
             number++;
         }
 
-    } catch (error) {}
+    } catch (error) { }
 
     let prefix = ""
     if (object !== undefined)

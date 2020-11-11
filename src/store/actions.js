@@ -1,6 +1,6 @@
 //server address
-export const SERVER_ADDRESS = "https://ishift.pl:8080"
-//export const SERVER_ADDRESS = "http://localhost:8080"
+//export const SERVER_ADDRESS = "https://ishift.pl:8080"
+export const SERVER_ADDRESS = "http://localhost:8080"
 
 //authorization reducer actions
 export const AUTHORIZE_USER = "AUTHORIZE_USER";
@@ -8,7 +8,7 @@ export const LOGOUT_USER = "LOGOUT_USER";
 
 //alert actions
 export const SET_ERROR_ALERT = "SET_ERROR_MESSAGE";
-export const SET_SUCCESS_ALERT = "SET_SUCCESS_ALERT"
+export const SET_SUCCESS_ALERT = "SET_SUCCESS_ALERT";
 export const SET_LOADING_SPINNER = "SET_LOADING_SPINNER";
 export const SET_DELETE_ALERT = "SET_DELETE_ALERT";
 export const CLEAR_ALERT = "CLEAR_ALERT";

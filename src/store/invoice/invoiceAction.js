@@ -19,8 +19,17 @@ export const getInvoices = (id, beginDate, endDate) => {
                 }
             })
             .then((response) => {
-                response.data.sort((a, b) => b.id - a.id);
-                dispatch(setInvoices(response.data));
+                let newData = [];
+                response.data.map(invoice => {
+                    if (invoice.id !== undefined) {
+                        newData.push(invoice);
+                        if (invoice.correctionInvoice != null)
+                            newData.push(invoice.correctionInvoice);
+                    }
+                })
+                newData.sort((a, b) => b.issueDate - a.issueDate);
+
+                dispatch(setInvoices(newData));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
                 if (err.response !== undefined) {
@@ -134,53 +143,53 @@ const setInvoiceTypes = (data) => {
 export const saveInvoice = (id, data) => {
     return (dispatch) => {
         if (id !== "demo") {
-        dispatch(setLoadingSpinner(true));
-        axios.put(actionTypes.SERVER_ADDRESS + "/invoice/save/" + id,
-            data,
-            {
-                headers: {
-                    'Authorization': getToken()
-                }
-            })
-            .then((response) => {
-                dispatch(setMessage(messages.DATA_SAVED, false));
-                dispatch(setLoadingSpinner(false));
-            }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
-            })
+            dispatch(setLoadingSpinner(true));
+            axios.put(actionTypes.SERVER_ADDRESS + "/invoice/save/" + id,
+                data,
+                {
+                    headers: {
+                        'Authorization': getToken()
+                    }
+                })
+                .then((response) => {
+                    dispatch(setMessage(messages.DATA_SAVED, false));
+                    dispatch(setLoadingSpinner(false));
+                }).catch((err) => {
+                    if (err.response !== undefined) {
+                        dispatch(setMessage(messages.GENERAL_ERROR, true));
+                    }
+                    else
+                        dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                })
         } else
-        dispatch(setMessage(messages.DEMO_ALERT, true));
+            dispatch(setMessage(messages.DEMO_ALERT, true));
     }
 };
 
 export const saveInvoiceAndDownload = (id, data) => {
     return (dispatch) => {
         if (id !== "demo") {
-        dispatch(setLoadingSpinner(true));
-        axios.put(actionTypes.SERVER_ADDRESS + "/invoice/save/preview/" + id,
-            data,
-            {
-                responseType: 'blob',
-                headers: {
-                    'Authorization': getToken()
-                }
-            })
-            .then((response) => {
-                generate(response.data);
-                dispatch(setLoadingSpinner(false));
-            }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
-            })
+            dispatch(setLoadingSpinner(true));
+            axios.put(actionTypes.SERVER_ADDRESS + "/invoice/save/preview/" + id,
+                data,
+                {
+                    responseType: 'blob',
+                    headers: {
+                        'Authorization': getToken()
+                    }
+                })
+                .then((response) => {
+                    generate(response.data);
+                    dispatch(setLoadingSpinner(false));
+                }).catch((err) => {
+                    if (err.response !== undefined) {
+                        dispatch(setMessage(messages.GENERAL_ERROR, true));
+                    }
+                    else
+                        dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                })
         } else
-        dispatch(setMessage(messages.DEMO_ALERT, true));
+            dispatch(setMessage(messages.DEMO_ALERT, true));
     }
 }
 
@@ -213,10 +222,10 @@ const setVatTypes = (data) => {
     }
 }
 
-export const invoicePreview = (data) => {
+export const invoicePreview = (id, data) => {
     return (dispatch) => {
         dispatch(setLoadingSpinner(true));
-        axios.put(actionTypes.SERVER_ADDRESS + "/invoice/preview", data,
+        axios.post(actionTypes.SERVER_ADDRESS + "/invoice/preview/" + id, data,
             {
                 responseType: 'blob',
                 headers: {

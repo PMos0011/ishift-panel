@@ -48,11 +48,14 @@ const InvoiceForm = (props) => {
     useEffect(() => {
         let selectOption = 0;
         let sellDate;
+        let id;
         let lastInvoice = props.lastInvoice
         try {
             if (props.match.params.id != 0) {
                 selectOption = 1;
-                sellDate = props.invoices.find(inv => inv.id == props.match.params.id).sellDate
+                let selectedInvoice = props.invoices.find(inv => inv.id == props.match.params.id);
+                sellDate = selectedInvoice.sellDate;
+                id = selectedInvoice.id;
                 lastInvoice = null;
             }
 
@@ -61,7 +64,8 @@ const InvoiceForm = (props) => {
                 props.seller,
                 props.invoiceType,
                 lastInvoice,
-                sellDate))
+                sellDate,
+                id))
         }
         catch (error) { console.log(error) }
     }, [props.lastInvoice])
@@ -181,6 +185,8 @@ const InvoiceForm = (props) => {
             props.setMessage("Podstawa podatku VAT np jest niewpisana!", true);
         else if (summaryData.vatExemptionValueZw !== null && summaryData.vatExemptionLabelZw !== "" && summaryData.vatExemptionValueZw == "")
             props.setMessage("Podstawa zwlnienia podatku VAT zw jest niewpisana!", true);
+            else if (correctionData.correctionReason === "" && !newInvoice)
+            props.setMessage("Brak powodu korekty", true);
         else
             return true;
 
@@ -199,7 +205,7 @@ const InvoiceForm = (props) => {
                 props.setMessage("Gdzieś nie jest wybrana jednostka miary!", true);
                 return null;
             }
-            if (invoiceCommodities[key].amount <= 0) {
+            if (invoiceCommodities[key].amount <= 0 && newInvoice) {
                 props.setMessage("Chcesz sprzedać 0 towaru!", true);
                 return null;
             }
@@ -222,6 +228,8 @@ const InvoiceForm = (props) => {
             buyer.idName = ""
         }
 
+        if(!newInvoice)
+        header.correctionReason = correctionData.correctionReason;
         header.issueDate = builders.timeZoneCorrection(headerData.issueDate);
         header.sellDate = builders.timeZoneCorrection(headerData.sellDate);
 
@@ -247,7 +255,7 @@ const InvoiceForm = (props) => {
             const commodities = commoditiesCheck();
             if (commodities !== null) {
                 const data = createDataToSend(commodities);
-                props.invoicePreview(data);
+                props.invoicePreview(props.match.params.dbId, data);
             }
         }
     }
@@ -318,7 +326,7 @@ const InvoiceForm = (props) => {
                 invoicePaymentAmount={invoicePaymentAmount} />
 
             <hr className="hr-margin" />
-            {newInvoice?submit:null}
+            {newInvoice?submit:submit}
         </div>
     )
 }
@@ -342,7 +350,7 @@ const mapDispatchToProps = (dispatch) => {
         getBankAccounts: (id) => dispatch(getBankAccountsData(id)),
         saveInvoice: (id, data) => dispatch(saveInvoice(id, data)),
         setMessage: (message, isError) => dispatch(setMessage(message, isError)),
-        invoicePreview: (data) => dispatch(invoicePreview(data)),
+        invoicePreview: (id, data) => dispatch(invoicePreview(id, data)),
         saveInvoiceAndDownload: (id, data) => dispatch(saveInvoiceAndDownload(id, data)),
         getLastInvoices: (id) => dispatch(getLastInvoices(id))
     };

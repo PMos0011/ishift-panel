@@ -23,47 +23,47 @@ const InvoiceCommodities = (props) => {
     const [invoiceCorrectionSummary, setInvoiceCorrectionSummary] = useState({ ...summaryBeginState });
     const [invoiceSummary, setInvoiceSummary] = useState({ ...summaryBeginState });
 
-    useEffect(()=>{
-        if(props.newInvoice){
-        setVatRate({});
-        setCorrectionVatRate({});
-        setInvoiceCommoditySummary({ ...summaryBeginState });
-        setInvoiceCorrectionSummary({ ...summaryBeginState });
-        setInvoiceSummary({ ...summaryBeginState });}
-    },[props.correctionInvoiceCommodities])
-
+    useEffect(() => {
+        if (props.newInvoice) {
+            setVatRate({});
+            setCorrectionVatRate({});
+            setInvoiceCommoditySummary({ ...summaryBeginState });
+            setInvoiceCorrectionSummary({ ...summaryBeginState });
+            setInvoiceSummary({ ...summaryBeginState });
+        }
+    }, [props.correctionInvoiceCommodities]);
 
     useEffect(() => {
         try {
-                let newInvoiceCommodities = {};
-                const sortedCommodities = props.invoiceCommodities.sort((a, b) => a.name.localeCompare(b.name));
-                sortedCommodities.map((commodity) => {
-                    let invoiceCommodity = {};
-                    invoiceCommodity = calculations.commodityToCorrect(commodity);
-                    newInvoiceCommodities = Object.assign({ ...newInvoiceCommodities }, invoiceCommodity)
-                });
+            let newInvoiceCommodities = {};
+            const sortedCommodities = props.invoiceCommodities.sort((a, b) => a.name.localeCompare(b.name));
+            sortedCommodities.map((commodity) => {
+                let invoiceCommodity = {};
+                invoiceCommodity = calculations.commodityToCorrect(commodity);
+                newInvoiceCommodities = Object.assign({ ...newInvoiceCommodities }, invoiceCommodity)
+            });
 
-                let newCorrectionCommodities = {};
+            let newCorrectionCommodities = {};
 
-                for (let key in newInvoiceCommodities) {
-                    let newCorrection = {
-                        [key]: {
-                            ...newInvoiceCommodities[key]
-                        }
+            for (let key in newInvoiceCommodities) {
+                let newCorrection = {
+                    [key]: {
+                        ...newInvoiceCommodities[key]
                     }
-                    newCorrectionCommodities = Object.assign({ ...newCorrectionCommodities }, newCorrection);
                 }
+                newCorrectionCommodities = Object.assign({ ...newCorrectionCommodities }, newCorrection);
+            }
 
-                props.setCorrectionInvoiceCommodities(newCorrectionCommodities);
+            props.setCorrectionInvoiceCommodities(newCorrectionCommodities);
 
-                recalculateSummary(newInvoiceCommodities);
-                calcualteCorrectionSummary(newCorrectionCommodities);
+            recalculateSummary(newInvoiceCommodities);
+            calcualteCorrectionSummary(newCorrectionCommodities);
         } catch (error) { console.log(error) }
     }, []);
 
     useEffect(() => {
         setCommoditySelectOption(props.commoditySelectOptions[0])
-    }, [props.commoditySelectOptions])
+    }, [props.commoditySelectOptions]);
 
 
     useEffect(() => {
@@ -73,7 +73,7 @@ const InvoiceCommodities = (props) => {
             bruttoAmount: calculations.correctionCallculations(invoiceCorrectionSummary.bruttoAmount, invoiceCommoditySummary.bruttoAmount)
         });
         props.setInvoicePaymentAmount(calculations.correctionCallculations(invoiceCorrectionSummary.bruttoAmount, invoiceCommoditySummary.bruttoAmount));
-    }, [invoiceCommoditySummary])
+    }, [invoiceCommoditySummary]);
 
     const formArray = [];
     for (let key in props.invoiceCommodities) {
@@ -81,8 +81,8 @@ const InvoiceCommodities = (props) => {
             id: key,
             formConfig: props.invoiceCommodities[key],
             correctionFormConfig: props.correctionInvoiceCommodities[key]
-        })
-    }
+        });
+    };
 
     let allVatRates = [...Object.keys(vatRate)];
 
@@ -97,12 +97,10 @@ const InvoiceCommodities = (props) => {
             id: allVatRates[i],
             form: vatRate[allVatRates[i]],
             correctionForm: correctionVatRate[allVatRates[i]]
-        })
-    }
+        });
+    };
 
     const checkVatExemptions = (vatRateObj) => {
-
-        console.log(vatRateObj)
 
         let newSumaryData = { ...props.summaryData }
 
@@ -410,8 +408,8 @@ const InvoiceCommodities = (props) => {
                 {formArrayVatRate.map(vRate => displayVatRate(vRate.id, vRate, props.newInvoice))}
 
                 <div className="invoice-add-empty" />
-                <h3>Do zapłaty</h3>
-                <input className="margin-all-1 text-x-large-input border-none" type="number" name="SummaryBrutto" value={invoiceSummary.bruttoAmount} readOnly />
+                {invoiceSummary.bruttoAmount < 0 ? <h3>Do zwrotu</h3> : <h3>Do zapłaty</h3>}
+                <input className="margin-all-1 text-x-large-input border-none" type="number" name="SummaryBrutto" value={Math.abs(invoiceSummary.bruttoAmount).toFixed(2)} readOnly />
             </div>
         </Aux>
     )

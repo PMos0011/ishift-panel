@@ -7,10 +7,10 @@ export const convertToDinero = (num) => {
     return Dinero({ amount: n, currency: 'PLN' })
 }
 
-export const correctionCallculations = (before, after) =>{
+export const correctionCallculations = (before, after) => {
     before = parseFloat(before).toFixed(2);
     after = parseFloat(after).toFixed(2);
-    return (after- before).toFixed(2);
+    return (after - before).toFixed(2);
 }
 
 export const moneyCallculations = (invoiceCommodity, id) => {
@@ -102,7 +102,8 @@ export const addInvoiceCommodity = (commodityFromSelector) => {
                 nettoAmount: "",
                 vat: commodityFromSelector.vatAmount.toString(),
                 vatAmount: "",
-                brutto: ""
+                brutto: "",
+                id: null
             }
         }
     } else {
@@ -116,7 +117,8 @@ export const addInvoiceCommodity = (commodityFromSelector) => {
                 nettoAmount: "",
                 vat: 0,
                 vatAmount: "",
-                brutto: ""
+                brutto: "",
+                id: null
             }
         }
     }
@@ -126,7 +128,7 @@ export const addInvoiceCommodity = (commodityFromSelector) => {
     return invoiceCommodity;
 }
 
-export const commodityToCorrect = (commodity) =>{
+export const commodityToCorrect = (commodity) => {
 
     const newId = Math.random().toString(20).substr(2, 6);
     let invoiceCommodity = {
@@ -139,13 +141,14 @@ export const commodityToCorrect = (commodity) =>{
             nettoAmount: "",
             vat: commodity.vat,
             vatAmount: "",
-            brutto: ""
+            brutto: "",
+            id: commodity.id
         }
     };
 
     invoiceCommodity = moneyCallculations(invoiceCommodity, newId);
 
     return invoiceCommodity;
-    
+
 }
 
