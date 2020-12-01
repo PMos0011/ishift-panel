@@ -6,8 +6,10 @@ import { connect } from "react-redux";
 import addIcon from "../../images/add.svg";
 import removeIcon from "../../images/remove.svg";
 
+import { createDate } from "./invoicesConverters";
 import * as calculations from "./commoditiesCalculations";
 import { commoditiesSelectStyle } from "./selectCustomStyle";
+import { getAdvancedInvoices } from "../../store/invoice/invoiceAction";
 
 const InvoiceCommodities = (props) => {
     const summaryBeginState = {
@@ -23,6 +25,9 @@ const InvoiceCommodities = (props) => {
     const [invoiceCorrectionSummary, setInvoiceCorrectionSummary] = useState({ ...summaryBeginState });
     const [invoiceSummary, setInvoiceSummary] = useState({ ...summaryBeginState });
 
+    let [showAdvancedInvoiceslist, setShowAdvancedInvoiceslist] = useState(false);
+    const [advancedInvoiceSelectOption, setAdvancedInvoiceSelectOption] = useState();
+
     useEffect(() => {
         if (props.newInvoice) {
             setVatRate({});
@@ -31,7 +36,7 @@ const InvoiceCommodities = (props) => {
             setInvoiceCorrectionSummary({ ...summaryBeginState });
             setInvoiceSummary({ ...summaryBeginState });
         }
-    }, [props.correctionInvoiceCommodities]);
+    }, [props.correctionInvoiceCommodities, props.invoiceType]);
 
     useEffect(() => {
         try {
@@ -167,6 +172,29 @@ const InvoiceCommodities = (props) => {
         recalculateSummary(newInvoiceCommodities);
     }
 
+    const addAdvancedInvoiceCommodity = () => {
+
+        if (advancedInvoiceSelectOption !== undefined && props.usedAdvancedInvoices.indexOf(advancedInvoiceSelectOption.value) === -1) {
+            let commodity = advancedInvoiceSelectOption.commodity[0];
+            commodity.price = - Math.abs(commodity.price);
+            commodity.vatAmount = commodity.vat;
+            commodity.name = "Rozliczenie zaliczki " + advancedInvoiceSelectOption.number + " z dn.: " + createDate(advancedInvoiceSelectOption.issueDate);
+            commodity.value = advancedInvoiceSelectOption.value;
+
+            let invoiceCommodity = calculations.addInvoiceCommodity(commodity);
+
+            let newInvoiceCommodities = {};
+            newInvoiceCommodities = Object.assign({ ...props.invoiceCommodities }, invoiceCommodity);
+
+            const newUsedAdvancedInvoices = [...props.usedAdvancedInvoices];
+            newUsedAdvancedInvoices.push(advancedInvoiceSelectOption.value);
+            props.setUsedAdvancedInvoices(newUsedAdvancedInvoices);
+
+            recalculateSummary(newInvoiceCommodities);
+        }
+
+    }
+
     const recalculateForm = (event, id) => {
 
         let num = 0;
@@ -190,7 +218,19 @@ const InvoiceCommodities = (props) => {
     const removeInvoiceCommodity = (id) => {
 
         let { [id]: removed, ...newInvoiceCommodities } = props.invoiceCommodities;
+
+        if (removed.value) {
+            let newUsedAdvancedInvoices = [...props.usedAdvancedInvoices];
+            newUsedAdvancedInvoices.splice(newUsedAdvancedInvoices.indexOf(removed.value), 1);
+            props.setUsedAdvancedInvoices(newUsedAdvancedInvoices);
+        }
         recalculateSummary(newInvoiceCommodities);
+    }
+
+    const getAdvancedInvoicesList = () => {
+        props.getAdvancedInvoices(props.dbId);
+
+        setShowAdvancedInvoiceslist(true);
     }
 
     const setMeasure = (data, id) => {
@@ -265,7 +305,10 @@ const InvoiceCommodities = (props) => {
     }
     const displayCommodity = (commodity, counter) => {
         if (commodity.correctionFormConfig === undefined)
-            return commodityRow(commodity.id, commodity.formConfig, false, false, counter)
+            if (props.invoiceType === 1)
+                return commodityRow(commodity.id, commodity.formConfig, false, false, counter)
+            else
+                return commodityRow(commodity.id, commodity.formConfig, false, true, counter)
         else {
             return (
                 <Aux>
@@ -325,8 +368,8 @@ const InvoiceCommodities = (props) => {
         )
     }
 
-    const displayVatRate = (id, vRate, newInvoice) => {
-        if (newInvoice)
+    const displayVatRate = (id, vRate, invoiceType) => {
+        if (invoiceType !== 2)
             return (
                 <Aux key={id}> {vatRateRow(id, vRate.form, "")} </Aux>)
         return (
@@ -354,22 +397,24 @@ const InvoiceCommodities = (props) => {
 
     }
 
-    const displayInvoiceSummary = (commodityiesSummary, correctionSummary, invoiceSummary, newInvoice) => {
-        if (newInvoice)
-            return summaryRow(invoiceSummary, newInvoice, "RAZEM");
-
-        return (
-            <Aux>
-                {summaryRow(correctionSummary, newInvoice, "przed:")}
-                {summaryRow(commodityiesSummary, newInvoice, "po:")}
-                {summaryRow(invoiceSummary, newInvoice, "RAZEM")}
-                <hr className="hr-margin item-grid-7-11" />
-            </Aux>)
+    const displayInvoiceSummary = (commodityiesSummary, correctionSummary, invoiceSummary, invoiceType) => {
+        if (invoiceType === 1)
+            return summaryRow(invoiceSummary, true, "RAZEM");
+        else if (invoiceType === 3)
+            return summaryRow(invoiceSummary, false, "RAZEM");
+        else
+            return (
+                <Aux>
+                    {summaryRow(correctionSummary, false, "przed:")}
+                    {summaryRow(commodityiesSummary, false, "po:")}
+                    {summaryRow(invoiceSummary, false, "RAZEM")}
+                    <hr className="hr-margin item-grid-7-11" />
+                </Aux>)
 
     }
 
     const commodityFromDatabase = <div className="doc-grid-3-container-invoice">
-        <div>Dodaj z bazy: </div>
+        <div>Towary i usł: </div>
         <Select
             options={props.commoditySelectOptions}
             value={commoditySelectOption}
@@ -377,10 +422,25 @@ const InvoiceCommodities = (props) => {
         <img className="icon-size pointer-on-hover" src={addIcon} alt="add" onClick={() => addInvoiceCommodity(true)} />
     </div>
 
+    const advancedInvoices =
+        <div className="hr-margin"><h4 className="text-underline" onClick={getAdvancedInvoicesList}>Rozlicz zaliczkę</h4></div>
+
+    const advancedInvoiceSelect =
+        <div className="doc-grid-3-container-invoice hr-margin">
+            <div>Zaliczki:</div>
+            <Select
+                options={props.advancedInvoiceList}
+                onChange={setAdvancedInvoiceSelectOption} />
+            <img className="icon-size pointer-on-hover" src={addIcon} alt="add" onClick={addAdvancedInvoiceCommodity} />
+        </div>
+
     let counter = 0;
     return (
         <Aux>
-            {props.newInvoice ? commodityFromDatabase : null}
+            {props.invoiceType === 1 ? commodityFromDatabase : null}
+            {props.invoiceType === 1 && !showAdvancedInvoiceslist ? advancedInvoices : null}
+            {props.invoiceType === 1 && showAdvancedInvoiceslist ? advancedInvoiceSelect : null}
+
             <div className="grid-11-invoice">
                 <div>Lp</div>
                 <div />
@@ -403,9 +463,9 @@ const InvoiceCommodities = (props) => {
                 })}
                 <hr className="hr-margin invoice-sumary" />
 
-                {displayInvoiceSummary(invoiceCommoditySummary, invoiceCorrectionSummary, invoiceSummary, props.newInvoice)}
+                {displayInvoiceSummary(invoiceCommoditySummary, invoiceCorrectionSummary, invoiceSummary, props.invoiceType)}
 
-                {formArrayVatRate.map(vRate => displayVatRate(vRate.id, vRate, props.newInvoice))}
+                {formArrayVatRate.map(vRate => displayVatRate(vRate.id, vRate, props.invoiceType))}
 
                 <div className="invoice-add-empty" />
                 {invoiceSummary.bruttoAmount < 0 ? <h3>Do zwrotu</h3> : <h3>Do zapłaty</h3>}
@@ -420,8 +480,15 @@ const mapStateToProps = (state) => {
         commoditySelectOptions: state.commodityReducer.commoditySelectOpotions,
         commodities: state.commodityReducer.commodities,
         measureSelectOptions: state.commodityReducer.measures,
-        vatSelectOptions: state.invoiceReducer.vatTypes
+        vatSelectOptions: state.invoiceReducer.vatTypes,
+        advancedInvoiceList: state.invoiceReducer.advancedInvoiceList
     };
 };
 
-export default connect(mapStateToProps)(InvoiceCommodities);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getAdvancedInvoices: (id) => dispatch(getAdvancedInvoices(id)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceCommodities);

@@ -13,8 +13,7 @@ export const setHeaderBeginState = (selectOption, customer, invoiceType, lastInv
     if (invoiceSellDate !== undefined)
         newSellDate = new Date(invoiceSellDate);
 
-        console.log(id);
-
+     
     let newId = null;
     if (id !== undefined)
         newId = id
@@ -27,7 +26,8 @@ export const setHeaderBeginState = (selectOption, customer, invoiceType, lastInv
         issueDate: new Date(),
         sellDate: newSellDate,
         id: newId,
-        correctionReason: null
+        correctionReason: null,
+        billingInvoice:null
     }
 
     return newHeaderData;
@@ -37,11 +37,11 @@ export const setHeaderBeginState = (selectOption, customer, invoiceType, lastInv
 export const invoiceNumberBuilder = (invoiceType, selectedTypeId, lastInvoice) => {
 
     let object = invoiceType.find(type => type.id === selectedTypeId);
-
     let number = 1
 
     try {
-        const invoiceNumberArray = lastInvoice.invoiceNumber.split("/");
+        lastInvoice = lastInvoice.find(invoice=>object.id===invoice.id);
+        const invoiceNumberArray = lastInvoice.number.split("/");
         const month = Number(invoiceNumberArray[invoiceNumberArray.length - 2]);
         if (month == new Date().getMonth() + 1) {
             number = Number(invoiceNumberArray[invoiceNumberArray.length - 3]);
@@ -171,6 +171,23 @@ export const setSummaryBeginState = (invoicePaymnetStatusOption) => {
         vatExemptionValueZw: null
     }
 
+}
+
+export const setAdvancedPayment = () =>{
+    return  {
+        advPaym: {
+            name: "Zaliczka",
+            measure: "szt.",
+            amount: 1,
+            price: 0,
+            discount: 0,
+            nettoAmount: "",
+            vat: 0,
+            vatAmount: "",
+            brutto: "",
+            id: null
+        }
+    }
 }
 
 export const timeZoneCorrection = (time) => {

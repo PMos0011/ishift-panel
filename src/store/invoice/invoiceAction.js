@@ -19,16 +19,23 @@ export const getInvoices = (id, beginDate, endDate) => {
                 }
             })
             .then((response) => {
+
                 let newData = [];
                 response.data.map(invoice => {
                     if (invoice.id !== undefined) {
-                        newData.push(invoice);
-                        if (invoice.correctionInvoice != null)
-                            newData.push(invoice.correctionInvoice);
+                        let tmpInvoice = { ...invoice }
+                        tmpInvoice.correctionInvoice = null
+                        newData.push(tmpInvoice);
+                        let subinvoice = invoice.correctionInvoice;
+                        while (subinvoice !== null) {
+                            tmpInvoice = { ...subinvoice }
+                            tmpInvoice.correctionInvoice = null;
+                            newData.push(tmpInvoice);
+                            subinvoice = subinvoice.correctionInvoice;
+                        }
                     }
                 })
                 newData.sort((a, b) => b.issueDate - a.issueDate);
-
                 dispatch(setInvoices(newData));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
@@ -92,7 +99,36 @@ export const getLastInvoices = (id) => {
                 }
             })
             .then((response) => {
-                dispatch(setLastInvoice(response.data));
+                let lastInvoices = [];
+                for (let key in response.data) {
+                    if (response.data[key] !== null)
+                        if (!isNaN(response.data[key])) {
+                            for (let keyB in response.data) {
+                                if (response.data[keyB] !== null)
+                                    if (response.data[keyB].correctionId === response.data[key]) {
+                                        const lastInvoice = {
+                                            id: response.data[keyB].correctionInvoice.invoiceTypeId,
+                                            number: response.data[keyB].correctionInvoice.invoiceNumber
+                                        }
+                                        lastInvoices.push(lastInvoice);
+                                    } else if (response.data[keyB].invoiceToCorrect)
+                                        if (response.data[keyB].invoiceToCorrect.id === response.data[key]) {
+                                            const lastInvoice = {
+                                                id: response.data[keyB].invoiceToCorrect.invoiceTypeId,
+                                                number: response.data[keyB].invoiceToCorrect.invoiceNumber
+                                            }
+                                            lastInvoices.push(lastInvoice);
+                                        }
+                            }
+                        } else {
+                            const lastInvoice = {
+                                id: response.data[key].invoiceTypeId,
+                                number: response.data[key].invoiceNumber
+                            }
+                            lastInvoices.push(lastInvoice);
+                        }
+                }
+                dispatch(setLastInvoice(lastInvoices));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
                 if (err.response !== undefined) {
@@ -277,4 +313,59 @@ const generate = (data) => {
     );
     const fileURL = URL.createObjectURL(file);
     window.open(fileURL);
+}
+
+export const getAdvancedInvoices = (id) => {
+    return (dispatch) => {
+        dispatch(setLoadingSpinner(true));
+        axios.get(actionTypes.SERVER_ADDRESS + "/advancedInvoice/" + id,
+            {
+                headers: {
+                    'Authorization': getToken()
+                }
+            })
+            .then((response) => {
+                let advancedInvoicesData = [];
+                let number;
+                let buyer;
+                let commodity;
+                let issueDate;
+                response.data.map(invoice => {
+                    let subinvoice = invoice;
+                    const invoiceId = subinvoice.id;
+                    do {
+                        number = subinvoice.invoiceNumber;
+                        buyer = subinvoice.partiesData.find(data => data.partyId === 1)
+                        commodity = subinvoice.invoiceCommodities;
+                        issueDate = subinvoice.issueDate;
+                        subinvoice = subinvoice.correctionInvoice;
+                    }
+                    while (subinvoice !== null)
+                    const newAdvamcedInvoice = {
+                        value: invoiceId,
+                        label: number + " " + buyer.name + " " + commodity[0].bruttoAmount,
+                        number: number,
+                        issueDate: new Date(issueDate),
+                        commodity: commodity
+                    }
+                    advancedInvoicesData.push(newAdvamcedInvoice);
+                })
+
+                dispatch(setAdvancedInvoices(advancedInvoicesData));
+                dispatch(setLoadingSpinner(false));
+            }).catch((err) => {
+                if (err.response !== undefined) {
+                    dispatch(setMessage(messages.GENERAL_ERROR, true));
+                }
+                else
+                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+            })
+    }
+}
+
+const setAdvancedInvoices = (data) => {
+    return {
+        type: actionTypes.GET_ADVANCED_INVOICES,
+        data: data
+    }
 }

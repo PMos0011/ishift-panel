@@ -3,7 +3,7 @@ import * as actionTypes from '../actions';
 const initialState = {
     invoices: [],
     importedInvoices: [],
-    lastInvoice:{},
+    lastInvoice: {},
     invoiceSelectOptions: [{ value: 0, label: "" }],
     invoiceType: [{ value: 0, label: "" }],
     invoicePaymentOptions: [
@@ -22,7 +22,8 @@ const initialState = {
         { value: 1, label: "zapłacona" },
         { value: 2, label: "częściowo zapłacona" },
     ],
-    vatTypes: [{ value: 0, label: "" }]
+    vatTypes: [{ value: 0, label: "" }],
+    advancedInvoiceList: []
 }
 
 const reducer = (state = initialState, action) => {
@@ -32,12 +33,17 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 invoices: action.data
             };
+        case actionTypes.GET_ADVANCED_INVOICES:
+            return {
+                ...state,
+                advancedInvoiceList: action.data
+            };
         case actionTypes.GET_IMPORTED_INVOICES:
             return {
                 ...state,
                 importedInvoices: action.data
             };
-            case actionTypes.GET_LAST_INVOICE:
+        case actionTypes.GET_LAST_INVOICE:
             return {
                 ...state,
                 lastInvoice: action.data

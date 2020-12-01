@@ -47,8 +47,15 @@ const Invoice = (props) => {
 
                     {
                         props.invoices.map(invoice => {
+                            
                             const buyer = invoice.partiesData.find(data => data.partyId === 1)
                             counter++;
+                            let invoiceToCorrect = "";
+                            let correctedInvoiceNumber = ""
+                            if(invoice.invoiceToCorrect!==null)
+                            invoiceToCorrect = "dot. " + props.invoices.find(inv => inv.id===invoice.invoiceToCorrect).invoiceNumber;
+                            if(invoice.correctionId!==null)
+                            correctedInvoiceNumber=props.invoices.find(inv => inv.id===invoice.correctionId).invoiceNumber;
                             return (
                                 <Aux key={invoice.id}>
                                     <div className="doc-item-thin">{counter}</div>
@@ -57,16 +64,18 @@ const Invoice = (props) => {
                                     <div className="doc-item-thin">{invoice.invoiceNumber}</div>
                                     <div className="doc-item-thin">{buyer.name}</div>
                                     <div className="doc-item-thint">{converters.createDate(invoice.issueDate)}</div>
-                                    <div className="item-grid-6-full direction-rtl">
-                                    <Link to={"/auth/invoice/edit/" + props.match.params.id + "/" + invoice.id}>
-                                        <img className="icon-size " src={editIcon} alt="edit" />
-                                    </Link>
-                                    <img onClick={() =>
-                                        props.invoicePreview(props.match.params.id, invoice.id)}
-                                        className="icon-size pointer-on-hover"
-                                        src={downloadIcon} alt="preview" />
-                                        </div>
-                                        <hr className="hr-margin item-grid-6-full" />
+                                    <div className="item-grid-6-full direction-rtl flex">
+                                        <img onClick={() =>
+                                            props.invoicePreview(props.match.params.id, invoice.id)}
+                                            className="icon-size pointer-on-hover"
+                                            src={downloadIcon} alt="preview" />
+
+                                            {invoice.correctionId===null?<Link to={"/auth/invoice/edit/" + props.match.params.id + "/" + invoice.id}>
+                                            <img className="icon-size" src={editIcon} alt="edit" />
+                                        </Link>:<h4>{correctedInvoiceNumber}</h4>}
+                                        <h4 className="margin-right">{invoiceToCorrect}</h4>
+                                    </div>
+                                    <hr className="hr-margin item-grid-6-full" />
                                 </Aux>
                             )
                         })}

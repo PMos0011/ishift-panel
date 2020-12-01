@@ -92,6 +92,9 @@ export const addInvoiceCommodity = (commodityFromSelector) => {
     let invoiceCommodity = {};
 
     if (commodityFromSelector !== undefined) {
+        let value = null;
+        if (commodityFromSelector.value !== undefined)
+            value = commodityFromSelector.value
         invoiceCommodity = {
             [newId]: {
                 name: commodityFromSelector.name,
@@ -103,7 +106,8 @@ export const addInvoiceCommodity = (commodityFromSelector) => {
                 vat: commodityFromSelector.vatAmount.toString(),
                 vatAmount: "",
                 brutto: "",
-                id: null
+                id: null,
+                value: value
             }
         }
     } else {
@@ -118,7 +122,8 @@ export const addInvoiceCommodity = (commodityFromSelector) => {
                 vat: 0,
                 vatAmount: "",
                 brutto: "",
-                id: null
+                id: null,
+                value: null
             }
         }
     }

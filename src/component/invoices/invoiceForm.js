@@ -49,21 +49,19 @@ const InvoiceForm = (props) => {
         let selectOption = 0;
         let sellDate;
         let id;
-        let lastInvoice = props.lastInvoice
         try {
             if (props.match.params.id != 0) {
                 selectOption = 1;
                 let selectedInvoice = props.invoices.find(inv => inv.id == props.match.params.id);
                 sellDate = selectedInvoice.sellDate;
                 id = selectedInvoice.id;
-                lastInvoice = null;
             }
 
             setHeaderData(builders.setHeaderBeginState(
                 props.invoiceTypeSelectOptions[selectOption],
                 props.seller,
                 props.invoiceType,
-                lastInvoice,
+                props.lastInvoice,
                 sellDate,
                 id))
         }
@@ -148,11 +146,20 @@ const InvoiceForm = (props) => {
     const [partiesData, setPartiesData] = useState(invoice.partiesData);
 
     const [invoiceCommodities, setInvoiceCommodities] = useState(invoice.invoiceCommodities);
+    const [usedAdvancedInvoices, setUsedAdvancedInvoices] = useState([]);
     const [correctionInvoiceCommodities, setCorrectionInvoiceCommodities] = useState({});
 
     const [summaryData, setSummaryData] = useState(builders.setSummaryBeginState(props.invoicePaymnetStatusOptions[0]));
     let [invoicePaymentAmount, setInvoicePaymentAmount] = useState(0);
     const [redirect, setRedirect] = useState(false);
+
+    useEffect(() => {
+        if (headerData.invoiceTypeId === 1) {
+            setInvoiceCommodities({});
+        } else if (headerData.invoiceTypeId === 3) {
+            setInvoiceCommodities(builders.setAdvancedPayment());
+        }
+    }, [headerData.invoiceTypeId])
 
     let redirectTo = null;
     if (redirect)
@@ -185,7 +192,7 @@ const InvoiceForm = (props) => {
             props.setMessage("Podstawa podatku VAT np jest niewpisana!", true);
         else if (summaryData.vatExemptionValueZw !== null && summaryData.vatExemptionLabelZw !== "" && summaryData.vatExemptionValueZw == "")
             props.setMessage("Podstawa zwlnienia podatku VAT zw jest niewpisana!", true);
-            else if (correctionData.correctionReason === "" && !newInvoice)
+        else if (correctionData.correctionReason === "" && !newInvoice)
             props.setMessage("Brak powodu korekty", true);
         else
             return true;
@@ -220,6 +227,7 @@ const InvoiceForm = (props) => {
         let buyer = { ...partiesData.buyer };
         let header = { ...headerData };
         let summary = { ...summaryData }
+        let usedAdvInvoices = [...usedAdvancedInvoices]
 
         seller.idValue = partiesData.seller.idValue[partiesData.seller.idType];
         buyer.idValue = partiesData.buyer.idValue[partiesData.buyer.idType];
@@ -228,8 +236,8 @@ const InvoiceForm = (props) => {
             buyer.idName = ""
         }
 
-        if(!newInvoice)
-        header.correctionReason = correctionData.correctionReason;
+        if (!newInvoice)
+            header.correctionReason = correctionData.correctionReason;
         header.issueDate = builders.timeZoneCorrection(headerData.issueDate);
         header.sellDate = builders.timeZoneCorrection(headerData.sellDate);
 
@@ -243,7 +251,8 @@ const InvoiceForm = (props) => {
             seller,
             buyer,
             commodities,
-            summary
+            summary,
+            usedAdvInvoices
         }
 
         return data;
@@ -256,6 +265,7 @@ const InvoiceForm = (props) => {
             if (commodities !== null) {
                 const data = createDataToSend(commodities);
                 props.invoicePreview(props.match.params.dbId, data);
+                console.log(data);
             }
         }
     }
@@ -300,6 +310,7 @@ const InvoiceForm = (props) => {
             <InvoiceHeader
                 headerData={headerData}
                 setHeaderData={setHeaderData}
+                newInvoice={newInvoice}
             />
             {newInvoice ? null : invoiceCorrectionHeader}
             <hr className="hr-margin" />
@@ -312,12 +323,16 @@ const InvoiceForm = (props) => {
             <InvoiceCommodities
                 invoiceCommodities={invoiceCommodities}
                 setInvoiceCommodities={setInvoiceCommodities}
+                usedAdvancedInvoices={usedAdvancedInvoices}
+                setUsedAdvancedInvoices={setUsedAdvancedInvoices}
                 summaryData={summaryData}
                 setSummaryData={setSummaryData}
                 setInvoicePaymentAmount={setInvoicePaymentAmount}
                 correctionInvoiceCommodities={correctionInvoiceCommodities}
                 setCorrectionInvoiceCommodities={setCorrectionInvoiceCommodities}
                 newInvoice={newInvoice}
+                invoiceType={headerData.invoiceTypeId}
+                dbId={props.match.params.dbId}
             />
             <hr className="hr-margin" />
             <InvoiceSummary
@@ -326,7 +341,7 @@ const InvoiceForm = (props) => {
                 invoicePaymentAmount={invoicePaymentAmount} />
 
             <hr className="hr-margin" />
-            {newInvoice?submit:submit}
+            {newInvoice ? submit : submit}
         </div>
     )
 }
