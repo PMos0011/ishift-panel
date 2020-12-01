@@ -63,7 +63,7 @@ const InvoiceCommodities = (props) => {
 
             recalculateSummary(newInvoiceCommodities);
             calcualteCorrectionSummary(newCorrectionCommodities);
-        } catch (error) { console.log(error) }
+        } catch (error) { }
     }, []);
 
     useEffect(() => {
@@ -94,7 +94,7 @@ const InvoiceCommodities = (props) => {
     try {
         allVatRates = [... new Set([...Object.keys(vatRate), ...Object.keys(correctionVatRate)])];
         allVatRates = allVatRates.sort();
-    } catch (error) { console.log(error) }
+    } catch (error) {  }
 
     const formArrayVatRate = [];
     for (let i in allVatRates) {

@@ -65,7 +65,7 @@ const InvoiceForm = (props) => {
                 sellDate,
                 id))
         }
-        catch (error) { console.log(error) }
+        catch (error) {  }
     }, [props.lastInvoice])
 
     let newInvoice = true;
@@ -137,7 +137,7 @@ const InvoiceForm = (props) => {
             invoice.invoiceCommodities = invoiceToCorrection.invoiceCommodities;
             invoice.summaryData = invoiceToCorrection.summaryData;
         }
-        catch (error) { console.log(error) }
+        catch (error) {  }
     }
 
     const [headerData, setHeaderData] = useState(invoice.headerData);
@@ -265,7 +265,6 @@ const InvoiceForm = (props) => {
             if (commodities !== null) {
                 const data = createDataToSend(commodities);
                 props.invoicePreview(props.match.params.dbId, data);
-                console.log(data);
             }
         }
     }

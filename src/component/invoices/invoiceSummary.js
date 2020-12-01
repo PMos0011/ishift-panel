@@ -28,6 +28,8 @@ const InvoiceSummary = (props) => {
         vatExemptionLabelZw: false
     });
 
+    const [paydWaycurrentSelect, setPaydWaycurrentSelect] = useState(null);
+
     const checkboxChange = (event) => {
         let newState = { ...checkboxState };
         newState[event.target.name] = !checkboxState[event.target.name]
@@ -58,7 +60,13 @@ const InvoiceSummary = (props) => {
                     newSummaryData.vatExemptionLabelNp = "Rodzaj dokonywanej sprzedaży (w związku ze stawką VAT np.)";
                 else
                     newSummaryData.vatExemptionLabelZw = "Podstawa zwolnienia z podatku VAT (w związku ze stawką VAT zw.)";
-        } else
+        } else if (event.target.name === "paid" && newState[event.target.name]) {
+            newSummaryData[event.target.name] = props.invoicePaymentAmount;
+        } else if (event.target.name === "paidWay" && !newState[event.target.name]) {
+            newSummaryData.paymentOptionIdValue = null;
+            setPaydWaycurrentSelect(null);
+        }
+        else
             if (!newState[event.target.name])
                 newSummaryData[event.target.name] = null
             else
@@ -89,32 +97,10 @@ const InvoiceSummary = (props) => {
         let newSummaryData = { ...props.summaryData }
 
         switch (name.name) {
-            case "paymentStatus":
-                newSummaryData.statusId = data.value;
-                newSummaryData.statusIdValue = data.label;
-                let newState = { ...checkboxState };
-                if (data.value === 0) {
-                    newState.paid = false;
-                    newState.paidDay = false;
-                    newSummaryData.paid = null;
-                    newSummaryData.paidDay = null;
-                }
-                else {
-                    newState.paid = true;
-                    newState.paidDay = true;
-                    if (newSummaryData.paidDay === null)
-                        newSummaryData.paidDay = "";
-                    if (newSummaryData.paid === null)
-                        newSummaryData.paid = "";
-                    if (data.value === 1)
-                        newSummaryData.paid = props.invoicePaymentAmount;
-
-                }
-                setCheckboxState(newState);
-                break;
             case "paymentOption":
                 newSummaryData.paidWay = data.value;
                 newSummaryData.paymentOptionIdValue = data.label;
+                setPaydWaycurrentSelect(props.invoicePaymentOptions[data.label]);
                 break
             case "bankAcc":
                 newSummaryData.bankAcc = data.label;
@@ -191,15 +177,7 @@ const InvoiceSummary = (props) => {
                 {vatExemptionNp}
                 {vatExemptionZw}
             </div>
-            <div className="grid-4-invoice-summary">
-                <div className="margin-all-1">Status
-            <Select
-                        className="margin-top-1"
-                        options={props.invoicePaymnetStatusOptions}
-                        name="paymentStatus"
-                        onChange={(data, name) => selectChage(data, name)}
-                        defaultValue={props.invoicePaymnetStatusOptions[0]} />
-                </div>
+            <div className="grid-3-invoice-summary">
                 <div className="margin-all-1">
                     <input type="checkbox"
                         name="paid"
@@ -237,7 +215,7 @@ const InvoiceSummary = (props) => {
             <Select
                         className="margin-top-1"
                         options={props.invoicePaymentOptions}
-                        defaultValue={props.invoicePaymentOptions[props.summaryData.paidWay]}
+                        value={paydWaycurrentSelect}
                         name="paymentOption"
                         onChange={(data, name) => selectChage(data, name)}
                         isDisabled={!checkboxState.paidWay} />

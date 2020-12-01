@@ -156,8 +156,6 @@ export const setPartiesDatatBeginState = (sellerData, id) => {
 export const setSummaryBeginState = (invoicePaymnetStatusOption) => {
 
     return {
-        statusId: invoicePaymnetStatusOption.value,
-        statusIdValue: invoicePaymnetStatusOption.label,
         paidWay: null,
         paymentOptionIdValue: null,
         paid: null,
