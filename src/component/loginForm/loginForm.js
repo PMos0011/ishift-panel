@@ -2,11 +2,8 @@ import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { connect } from "react-redux";
-import Aux from '../../hoc/auxiliary';
 import * as actions from '../../store/authorization/authAction';
-import {setMessage} from '../../store/alerts/alertsActions';
-
-import "../../style/demo-login-style.css";
+import { setMessage } from '../../store/alerts/alertsActions';
 
 import form from './loginFormBuild';
 
@@ -52,6 +49,11 @@ const LoginForm = (props) => {
     const submitForm = (event) => {
         event.preventDefault();
 
+        if(event.target.name==="demo"){
+            formComponents.userName.value="demo";
+            formComponents.password.value="demo";
+        }
+
         if (formComponents.userName.value === "")
             props.setMessage("Nazwa użytkownika nie może byc pusta!", true);
         else if (formComponents.password.value === "")
@@ -62,12 +64,6 @@ const LoginForm = (props) => {
     }
 
     return (
-        <Aux>
-            <div className="demo-div app-border-shadow">
-                <h3>Demo</h3>
-                <h5>Login: demo</h5>
-                <h5>Hasło: demo</h5>
-            </div>
             <div className="gray-card flex-center app-border-shadow">
                 {redirectToBasicsInfo}
                 <form className="text-x-large-input" onSubmit={submitForm}>
@@ -75,9 +71,10 @@ const LoginForm = (props) => {
                         {formArray.map((component) => {
                             return (
                                 <label key={component.id}>{component.formConfig.labelDesc}
-                                    <input  className="text-x-large-input" {...component.formConfig.elemConf}
+                                    <input {...component.formConfig.elemConf}
                                         value={component.formConfig.value}
-                                        onChange={(event) => inputChangeHandler(event, component.id)} />
+                                        onClick={component.formConfig.submit ? submitForm : null}
+                                        onChange={component.formConfig.submit ? null : event => inputChangeHandler(event, component.id)} />
                                 </label>
                             )
                         })
@@ -85,7 +82,6 @@ const LoginForm = (props) => {
                     </div>
                 </form>
             </div>
-        </Aux>
     )
 }
 

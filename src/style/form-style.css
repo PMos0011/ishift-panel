@@ -43,7 +43,6 @@ input[type="tel"]:focus {
 
 input[type="submit"] {
   font-size: x-large;
-  margin-top: 5vh;
   border-radius: 5px;
   border-width: 1px;
   width: 100%;

@@ -36,12 +36,15 @@ const AllDocuments = (props) => {
 
     let counter = 0;
     const document = (doc) => {
+        let jpk = "";
+        if(doc.version===21)
+        jpk = " (JPK)";
         counter++;
         return (
             <Aux key={doc.id}>
                 <div className="doc-item">{counter}</div>
                 <div className="doc-item">{converters.convertAmount(doc.kwota)}</div>
-                <div className="doc-item">{supportedDocuments.get(doc.typDeklaracji)}</div>
+                <div className="doc-item">{supportedDocuments.get(doc.typDeklaracji)+ jpk}</div>
                 <div className="doc-item">{converters.displayDate(doc.rokMiesiac)}</div>
                 <div className="item-grid-2 doc-margin-right"><Document
                     dbId={props.match.params.id}

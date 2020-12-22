@@ -1,27 +1,41 @@
-const form ={
+const form = {
     userName: {
         labelDesc: 'Login',
         elemConf: {
             type: 'text',
-            name: 'userName'
+            name: 'userName',
+            className: 'text-x-large-input'
         },
-        value: ''
+        value: '',
+        submit: false
     },
     password: {
         labelDesc: 'Hasło',
         elemConf: {
             type: 'password',
-            name: 'password'
+            name: 'password',
+            className: 'text-x-large-input'
         },
-        value: ''
+        value: '',
+        submit: false
     },
     submit: {
         labelDesc: '',
         elemConf: {
             type: 'submit',
-            name: 'Login'
+            name: 'login'
         },
-        value: 'Login'
+        value: 'Login',
+        submit: true
+    },
+    submitDemo: {
+        labelDesc: '',
+        elemConf: {
+            type: 'submit',
+            name: 'demo'
+        },
+        value: 'Demo',
+        submit: true,
     }
 }
 

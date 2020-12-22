@@ -19,7 +19,6 @@ export const getInvoices = (id, beginDate, endDate) => {
                 }
             })
             .then((response) => {
-
                 let newData = [];
                 response.data.map(invoice => {
                     if (invoice.id !== undefined) {

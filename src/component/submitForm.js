@@ -92,7 +92,7 @@ const MyBankAccounts = (props) => {
                         )
                     })}
                     {selector}
-                    <label /><input type="submit" value="wyślij" />
+                    <label /><input type="submit" value="wyślij" className="margin-top-5" />
                 </div>
             </form>
         </div>
