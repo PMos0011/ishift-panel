@@ -7,6 +7,7 @@ import InvoiceParties from "./invoiceParties";
 import InvoiceCommodities from "./invoiceCommodities";
 import InvoiceSummary from "./invoiceSummary";
 import InvoiceCorrectionHeader from "./invoiceCorrectionHeader";
+import Currency from "./currency";
 
 import * as builders from "./invoiceDataBuilder";
 import { isBankAccountNumberIncorrect } from "../bankAccounts/converters";
@@ -65,7 +66,7 @@ const InvoiceForm = (props) => {
                 sellDate,
                 id))
         }
-        catch (error) {  }
+        catch (error) { }
     }, [props.lastInvoice])
 
     let newInvoice = true;
@@ -137,7 +138,7 @@ const InvoiceForm = (props) => {
             invoice.invoiceCommodities = invoiceToCorrection.invoiceCommodities;
             invoice.summaryData = invoiceToCorrection.summaryData;
         }
-        catch (error) {  }
+        catch (error) { }
     }
 
     const [headerData, setHeaderData] = useState(invoice.headerData);
@@ -148,6 +149,12 @@ const InvoiceForm = (props) => {
     const [invoiceCommodities, setInvoiceCommodities] = useState(invoice.invoiceCommodities);
     const [usedAdvancedInvoices, setUsedAdvancedInvoices] = useState([]);
     const [correctionInvoiceCommodities, setCorrectionInvoiceCommodities] = useState({});
+    const [currencyData, setCurrencyData] = useState({
+        currentCurrency: "PLN",
+        exchangeDate: null,
+        exchangeRate: null,
+        exchangeBasis: null
+    })
 
     const [summaryData, setSummaryData] = useState(builders.setSummaryBeginState(props.invoicePaymnetStatusOptions[0]));
     let [invoicePaymentAmount, setInvoicePaymentAmount] = useState(0);
@@ -332,7 +339,16 @@ const InvoiceForm = (props) => {
                 newInvoice={newInvoice}
                 invoiceType={headerData.invoiceTypeId}
                 dbId={props.match.params.dbId}
+                currencyData={currencyData}
             />
+
+            <hr className="hr-margin" />
+            <Currency
+                currencyData={currencyData}
+                setCurrencyData={setCurrencyData}
+                headerData={headerData}
+            />
+
             <hr className="hr-margin" />
             <InvoiceSummary
                 summaryData={summaryData}

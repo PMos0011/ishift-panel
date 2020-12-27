@@ -18,6 +18,7 @@ import bankReducer from "./store/bankAccounts/bankReducer";
 import contractorsReducer from "./store/contractors/contractorsReducer";
 import commodityReducer from "./store/commodity/commodityReducer";
 import invoiceReducer from "./store/invoice/invoiceReducer";
+import currencyReducer from "./store/currency/currencyReducer";
 
 
 const rootReducer = combineReducers({
@@ -30,7 +31,8 @@ const rootReducer = combineReducers({
   bankReducer,
   contractorsReducer,
   commodityReducer,
-  invoiceReducer
+  invoiceReducer,
+  currencyReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

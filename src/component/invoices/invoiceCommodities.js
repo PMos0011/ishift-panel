@@ -94,7 +94,7 @@ const InvoiceCommodities = (props) => {
     try {
         allVatRates = [... new Set([...Object.keys(vatRate), ...Object.keys(correctionVatRate)])];
         allVatRates = allVatRates.sort();
-    } catch (error) {  }
+    } catch (error) { }
 
     const formArrayVatRate = [];
     for (let i in allVatRates) {
@@ -434,6 +434,26 @@ const InvoiceCommodities = (props) => {
             <img className="icon-size pointer-on-hover" src={addIcon} alt="add" onClick={addAdvancedInvoiceCommodity} />
         </div>
 
+    const exchangeValue = (invoiceSummary) => {
+
+        try {
+            if (props.currencyData.exchangeRate !== null) {
+
+                let exchangeVal = {
+                    nettoAmount: calculations.currencyExchangeCalculations(invoiceSummary.nettoAmount, props.currencyData.exchangeRate),
+                    vatAmount: calculations.currencyExchangeCalculations(invoiceSummary.vatAmount, props.currencyData.exchangeRate),
+                    bruttoAmount: calculations.currencyExchangeCalculations(invoiceSummary.bruttoAmount, props.currencyData.exchangeRate)
+                }
+
+                return (<Aux>
+                    <hr className="hr-margin item-grid-7-11" />
+                    {summaryRow(exchangeVal, false, "Po przeliczniu (PLN)")}
+                </Aux>)
+            }
+        }
+        catch (e) { }
+    }
+
     let counter = 0;
     return (
         <Aux>
@@ -468,9 +488,13 @@ const InvoiceCommodities = (props) => {
                 {formArrayVatRate.map(vRate => displayVatRate(vRate.id, vRate, props.invoiceType))}
 
                 <div className="invoice-add-empty" />
-                {invoiceSummary.bruttoAmount < 0 ? <h3>Do zwrotu</h3> : <h3>Do zapłaty</h3>}
+                {invoiceSummary.bruttoAmount < 0 ? <h3>Do zwrotu ({props.currencyData.currentCurrency})</h3> : <h3>Do zapłaty ({props.currencyData.currentCurrency})</h3>}
+
                 <input className="margin-all-1 text-x-large-input border-none" type="number" name="SummaryBrutto" value={Math.abs(invoiceSummary.bruttoAmount).toFixed(2)} readOnly />
+
+                {exchangeValue(invoiceSummary)}
             </div>
+
         </Aux>
     )
 }

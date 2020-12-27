@@ -24,6 +24,18 @@
   grid-template-rows: auto;
 }
 
+.doc-grid-3-container-currency {
+  display: grid;
+  grid-template-columns: 10% 50% 15%;
+  grid-template-rows: auto;
+}
+
+.doc-grid-5-container-currency {
+  display: grid;
+  grid-template-columns: 15% 25% 20% 20% 20%;
+  grid-template-rows: auto;
+}
+
 .doc-grid-4-container-commomdity {
   display: grid;
   grid-template-columns: 15% auto 15% 20%;

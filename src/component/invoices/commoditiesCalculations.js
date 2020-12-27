@@ -157,3 +157,12 @@ export const commodityToCorrect = (commodity) => {
 
 }
 
+export const currencyExchangeCalculations = (amount, multiply) =>{
+
+    const value = convertToDinero(amount);
+    let multiplyValue = value.multiply(multiply, "HALF_UP");
+    return multiplyValue.toFormat('0.00');
+
+
+}
+

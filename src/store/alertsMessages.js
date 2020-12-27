@@ -5,7 +5,8 @@ export const GENERAL_ERROR = "Coś poszło nie tak.";
 export const WRONG_PASSWORD = "Nieprawidłowe hasło.";
 export const WRONG_USERNAME = "Użytkownik nieznaleziony.";
 export const USERNAME_TAKEN = "Nazwa użytkownika jest już zajęta.";
-export const DEMO_ALERT = "Z użytkownikem demo to się niestety nie uda."
+export const DEMO_ALERT = "Z użytkownikem demo to się niestety nie uda.";
+export const EXCHANGE_ERROR ="Kurs wymiany nie został odnaleziony w bazie danych. Kurs średni walut obcych aktualizowana jest w każdy dzień roboczy, między godziną 11:45 a 12:15";
 
 
 //Success
