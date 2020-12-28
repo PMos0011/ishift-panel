@@ -61,8 +61,8 @@ const Invoice = (props) => {
                             return (
                                 <Aux key={invoice.id}>
                                     <div className="doc-item-thin">{counter}</div>
-                                    <div className="doc-item-thin">{convertAmount(invoice.summaryData.bruttoAmount)}</div>
-                                    <div className="doc-item-thin">{convertAmount(invoice.summaryData.vatAmount)}</div>
+                                    <div className="doc-item-thin">{convertAmount(invoice.summaryData.bruttoAmount, invoice.currency)}</div>
+                                    <div className="doc-item-thin">{convertAmount(invoice.summaryData.vatAmount, invoice.currency)}</div>
                                     <div className="doc-item-thin">{invoice.invoiceNumber}</div>
                                     <div className="doc-item-thin">{buyer.name}</div>
                                     <div className="doc-item-thint">{converters.createDate(invoice.issueDate)}</div>

@@ -7,7 +7,11 @@ export const displayDate = (date) => {
         return date.getMonth() + 1 + "." + date.getFullYear();
 };
 
-export const convertAmount = (amount) => {
+export const convertAmount = (amount, currency) => {
 
-    return new Intl.NumberFormat('pl-PL',{style:'currency', currency:'PLN'}).format(amount)
+    let currencyToDispaly = "PLN";
+    if(currency)
+        currencyToDispaly = currency
+
+    return new Intl.NumberFormat('pl-PL',{style:'currency', currency: currencyToDispaly}).format(amount)
 }

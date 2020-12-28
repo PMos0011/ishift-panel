@@ -82,6 +82,13 @@ const InvoiceForm = (props) => {
         invoiceCommodities: {},
         summaryData: builders.setSummaryBeginState(props.invoicePaymnetStatusOptions[0])
     }
+
+    let newCurrencyData = {
+        currentCurrency: "PLN",
+        exchangeDate: null,
+        exchangeRate: null,
+        exchangeBasis: null
+    }
     if (!newInvoice) {
         try {
             let invoiceToCorrection = props.invoices.find(inv => inv.id == props.match.params.id);
@@ -137,6 +144,14 @@ const InvoiceForm = (props) => {
 
             invoice.invoiceCommodities = invoiceToCorrection.invoiceCommodities;
             invoice.summaryData = invoiceToCorrection.summaryData;
+            newCurrencyData.currentCurrency = invoiceToCorrection.currency;
+
+            if (invoiceToCorrection.invoiceExchangeRate) {
+                newCurrencyData.exchangeDate = new Date(invoiceToCorrection.invoiceExchangeRate.exchangeDate);
+                newCurrencyData.exchangeRate = invoiceToCorrection.invoiceExchangeRate.exchangeRate;
+                newCurrencyData.exchangeBasis = invoiceToCorrection.invoiceExchangeRate.exchangeBasis;
+            }
+
         }
         catch (error) { }
     }
@@ -149,12 +164,7 @@ const InvoiceForm = (props) => {
     const [invoiceCommodities, setInvoiceCommodities] = useState(invoice.invoiceCommodities);
     const [usedAdvancedInvoices, setUsedAdvancedInvoices] = useState([]);
     const [correctionInvoiceCommodities, setCorrectionInvoiceCommodities] = useState({});
-    const [currencyData, setCurrencyData] = useState({
-        currentCurrency: "PLN",
-        exchangeDate: null,
-        exchangeRate: null,
-        exchangeBasis: null
-    })
+    const [currencyData, setCurrencyData] = useState(newCurrencyData);
 
     const [summaryData, setSummaryData] = useState(builders.setSummaryBeginState(props.invoicePaymnetStatusOptions[0]));
     let [invoicePaymentAmount, setInvoicePaymentAmount] = useState(0);
@@ -233,8 +243,9 @@ const InvoiceForm = (props) => {
         let seller = { ...partiesData.seller };
         let buyer = { ...partiesData.buyer };
         let header = { ...headerData };
-        let summary = { ...summaryData }
-        let usedAdvInvoices = [...usedAdvancedInvoices]
+        let summary = { ...summaryData };
+        let usedAdvInvoices = [...usedAdvancedInvoices];
+        let invoiceExchangeRate = null;
 
         seller.idValue = partiesData.seller.idValue[partiesData.seller.idType];
         buyer.idValue = partiesData.buyer.idValue[partiesData.buyer.idType];
@@ -247,11 +258,17 @@ const InvoiceForm = (props) => {
             header.correctionReason = correctionData.correctionReason;
         header.issueDate = builders.timeZoneCorrection(headerData.issueDate);
         header.sellDate = builders.timeZoneCorrection(headerData.sellDate);
+        header.currency = currencyData.currentCurrency;
 
         if (summary.paidDay !== null)
             summary.paidDay = builders.timeZoneCorrection(summaryData.paidDay);
         if (summary.paymentDay !== null)
             summary.paymentDay = builders.timeZoneCorrection(summaryData.paymentDay);
+
+        if (currencyData.exchangeRate) {
+            invoiceExchangeRate = { ...currencyData }
+            invoiceExchangeRate.exchangeDate = builders.timeZoneCorrection(invoiceExchangeRate.exchangeDate);
+        }
 
         const data = {
             header,
@@ -259,8 +276,10 @@ const InvoiceForm = (props) => {
             buyer,
             commodities,
             summary,
-            usedAdvInvoices
+            usedAdvInvoices,
+            invoiceExchangeRate
         }
+
 
         return data;
     }

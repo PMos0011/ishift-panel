@@ -23,10 +23,20 @@ const Currency = (props) => {
 
     }, [NBPExchangeRate])
 
+
+    let enableCurrencyExchangeBoolean = false;
+    let enableNBPExchangeBoolean = true;
+
+        if (props.currencyData.exchangeRate) {
+            enableCurrencyExchangeBoolean = true;
+            if (props.currencyData.exchangeBasis === "własny kurs")
+                enableNBPExchangeBoolean = false;
+        }
+
     let [currencyExchangeProps, setCurrencyExchangeProps] = useState(
         {
-            enableCurrencyExchange: false,
-            enableNBPExchange: true
+            enableCurrencyExchange: enableCurrencyExchangeBoolean,
+            enableNBPExchange: enableNBPExchangeBoolean
         }
     );
 
@@ -74,14 +84,13 @@ const Currency = (props) => {
     const enableNBPExchangeChange = (event) => {
         let newCurrencyData = { ...props.currencyData };
         if (currencyExchangeProps.enableNBPExchange) {
+            newCurrencyData.exchangeBasis = "własny kurs";
+            setNBPExchangeRate({});
+        }
+        else {
             newCurrencyData.exchangeRate = null;
             newCurrencyData.exchangeBasis = null;
         }
-        else { 
-            newCurrencyData.exchangeBasis = "własny kurs";
-            setNBPExchangeRate({}); 
-        }
-
 
         props.setCurrencyData(newCurrencyData);
 
@@ -112,9 +121,9 @@ const Currency = (props) => {
             return (
                 <Aux>
                     <div> <div>tabela: </div>
-                        <input type="text" value={NBPExchangeRate.rates[0].no} readOnly /></div>
+                        <input type="text" value={props.currencyData.exchangeBasis} readOnly /></div>
                     <div><div>kurs:</div>
-                        <input type="text" value={NBPExchangeRate.rates[0].mid} readOnly /></div>
+                        <input type="text" value={props.currencyData.exchangeRate} readOnly /></div>
                 </Aux>)
         } catch (e) { };
     }
