@@ -13,26 +13,35 @@ export const correctionCallculations = (before, after) => {
     return (after - before).toFixed(2);
 }
 
-export const moneyCallculations = (invoiceCommodity, id) => {
+export const moneyCallculations = (invoiceCommodity, id, fromBrutto) => {
 
-    const price = convertToDinero(invoiceCommodity[id].price);
+    let price = convertToDinero(invoiceCommodity[id].price);
+    const amount = parseFloat(invoiceCommodity[id].amount);
+    const discount = parseFloat(invoiceCommodity[id].discount);
 
     let vat = 0;
     if (!isNaN(parseFloat(invoiceCommodity[id].vat)))
         vat = parseFloat(invoiceCommodity[id].vat);
 
-    const amount = parseFloat(invoiceCommodity[id].amount);
-    const discount = parseFloat(invoiceCommodity[id].discount);
+    if (fromBrutto) {
 
-    let nettoAmount = price.multiply(amount, "HALF_UP");
-    nettoAmount = nettoAmount.multiply((100 - discount) / 100, "HALF_UP");
+        price = convertToDinero(invoiceCommodity[id].singleBrutto);
+        price = price.multiply(100);
+        price = price.divide(vat + 100, "HALF_UP");
+        price = price.divide((100 - discount) / 100, "HALF_UP");
+    }
+
+    const discountNetto = price.multiply((100 - discount) / 100, "HALF_UP");
+    const nettoAmount = discountNetto.multiply(amount, "HALF_UP");
     const vatAmount = nettoAmount.multiply(vat / 100, "HALF_UP");
     const brutto = nettoAmount.add(vatAmount);
+    const bruttoValue = discountNetto.multiply((vat+100) / 100, "HALF_UP");
 
     invoiceCommodity[id].price = price.toFormat('0.00');
     invoiceCommodity[id].nettoAmount = nettoAmount.toFormat('0.00');
     invoiceCommodity[id].vatAmount = vatAmount.toFormat('0.00');
     invoiceCommodity[id].brutto = brutto.toFormat('0.00');
+    invoiceCommodity[id].singleBrutto = bruttoValue.toFormat('0.00');
 
     return { ...invoiceCommodity };
 }
@@ -95,12 +104,14 @@ export const addInvoiceCommodity = (commodityFromSelector) => {
         let value = null;
         if (commodityFromSelector.value !== undefined)
             value = commodityFromSelector.value
+
         invoiceCommodity = {
             [newId]: {
                 name: commodityFromSelector.name,
                 measure: commodityFromSelector.measure,
                 amount: "1",
                 price: commodityFromSelector.price.toString(),
+                singleBrutto: "",
                 discount: "0",
                 nettoAmount: "",
                 vat: commodityFromSelector.vatAmount.toString(),
@@ -117,6 +128,7 @@ export const addInvoiceCommodity = (commodityFromSelector) => {
                 measure: "",
                 amount: 1,
                 price: 0,
+                singleBrutto: "",
                 discount: 0,
                 nettoAmount: "",
                 vat: 0,
@@ -157,7 +169,7 @@ export const commodityToCorrect = (commodity) => {
 
 }
 
-export const currencyExchangeCalculations = (amount, multiply) =>{
+export const currencyExchangeCalculations = (amount, multiply) => {
 
     const value = convertToDinero(amount);
     let multiplyValue = value.multiply(multiply, "HALF_UP");

@@ -24,11 +24,12 @@ const InvoiceSummary = (props) => {
         bankAccfromDb: false,
         ownBankAcc: false,
         comments: false,
-        vatExemptionLabelNp: false,
-        vatExemptionLabelZw: false
+        vatExemptionValueNp: false,
+        vatExemptionValueZw: false
     });
 
     const [paydWaycurrentSelect, setPaydWaycurrentSelect] = useState(null);
+    const [bankAccSelectOption, setBankAccSelectOption] = useState(null);
 
     const checkboxChange = (event) => {
         let newState = { ...checkboxState };
@@ -44,9 +45,11 @@ const InvoiceSummary = (props) => {
         let newSummaryData = { ...props.summaryData }
 
         if (event.target.name === "bankAccfromDb" || event.target.name === "ownBankAcc") {
-            if (!newState.ownBankAcc && !newState.bankAccfromDb)
-                newSummaryData.bankAcc = null;
-            else
+            if (!newState.bankAccfromDb) {
+                setBankAccSelectOption(null);
+                if (!newState.ownBankAcc)
+                    newSummaryData.bankAcc = null;
+            } else
                 newSummaryData.bankAcc = "";
         } else if (event.target.name === "vatExemptionLabelNp" || event.target.name === "vatExemptionLabelZw") {
             if (!newState[event.target.name]) {
@@ -64,6 +67,8 @@ const InvoiceSummary = (props) => {
             newSummaryData[event.target.name] = props.invoicePaymentAmount;
         } else if (event.target.name === "paidWay" && !newState[event.target.name]) {
             newSummaryData.paymentOptionIdValue = null;
+
+
             setPaydWaycurrentSelect(null);
         }
         else
@@ -75,19 +80,30 @@ const InvoiceSummary = (props) => {
         props.setSummaryData(newSummaryData);
     }
 
+    const setCheckboxStateFromUnputChange = (name) => {
+        let newState = { ...checkboxState };
+        newState[name] = true;
+        setCheckboxState(newState);
+    }
+
     const setPaidDay = (data) => {
+        setCheckboxStateFromUnputChange("paidDay");
         let newData = { ...props.summaryData }
         newData.paidDay = data;
         props.setSummaryData(newData);
     }
 
     const setPaymentDay = (data) => {
+        setCheckboxStateFromUnputChange("paymentDay");
         let newData = { ...props.summaryData }
         newData.paymentDay = data;
         props.setSummaryData(newData);
     }
 
     const inputChange = (event) => {
+
+        setCheckboxStateFromUnputChange(event.target.name);
+
         let newData = { ...props.summaryData }
         newData[event.target.name] = event.target.value;
         props.setSummaryData(newData);
@@ -96,14 +112,17 @@ const InvoiceSummary = (props) => {
     const selectChage = (data, name) => {
         let newSummaryData = { ...props.summaryData }
 
+        setCheckboxStateFromUnputChange(name.name);
+
         switch (name.name) {
-            case "paymentOption":
+            case "paidWay":
                 newSummaryData.paidWay = data.value;
                 newSummaryData.paymentOptionIdValue = data.label;
                 setPaydWaycurrentSelect(props.invoicePaymentOptions[data.label]);
                 break
-            case "bankAcc":
+            case "bankAccfromDb":
                 newSummaryData.bankAcc = data.label;
+                setBankAccSelectOption(props.bankAccountsSelectOptions[data.label]);
                 break;
         }
         props.setSummaryData(newSummaryData);
@@ -111,20 +130,22 @@ const InvoiceSummary = (props) => {
 
     const bankAccountNumberValidation = () => {
         let number = props.summaryData.bankAcc.replaceAll(" ", "");
-
-        if (isBankAccountNumberIncorrect(number))
-            props.setMessage("Coś jest nie tak z numerem konta", true);
-        else {
-            let newSummaryData = { ...props.summaryData };
-            newSummaryData.bankAcc = number;
-            props.setSummaryData(newSummaryData);
+        if (number > 0) {
+            if (isBankAccountNumberIncorrect(number))
+                props.setMessage("Coś jest nie tak z numerem konta", true);
+            else {
+                let newSummaryData = { ...props.summaryData };
+                newSummaryData.bankAcc = number;
+                props.setSummaryData(newSummaryData);
+            }
         }
     }
 
     const bankAccSelect = <Select className="margin-top-1"
-        name="bankAcc"
+        name="bankAccfromDb"
         options={props.bankAccountsSelectOptions}
-        onChange={(data, name) => selectChage(data, name)} />
+        onChange={(data, name) => selectChage(data, name)}
+        value={bankAccSelectOption} />
 
     const bankAccInput = <input
         className="text-x-large-input full-width"
@@ -140,16 +161,15 @@ const InvoiceSummary = (props) => {
         vatExemptionNp = <Aux>
             <div className="margin-all-1">
                 <input type="checkbox"
-                    name="vatExemptionLabelNp"
-                    checked={checkboxState.vatExemptionLabelNp}
+                    name="vatExemptionValueNp"
+                    checked={checkboxState.vatExemptionValueNp}
                     onChange={checkboxChange} />
                     Rodzaj dokonywanej sprzedaży (w związku ze stawką VAT np.)
                 <textarea
                     className="full-width margin-top-1"
                     value={preventNull(props.summaryData.vatExemptionValueNp)}
                     onChange={inputChange}
-                    name="vatExemptionValueNp"
-                    disabled={!checkboxState.vatExemptionLabelNp} />
+                    name="vatExemptionValueNp" />
             </div>
         </Aux>
 
@@ -158,16 +178,15 @@ const InvoiceSummary = (props) => {
         vatExemptionZw = <Aux>
             <div className="margin-all-1">
                 <input type="checkbox"
-                    name="vatExemptionLabelZw"
-                    checked={checkboxState.vatExemptionLabelZw}
+                    name="vatExemptionValueZw"
+                    checked={checkboxState.vatExemptionValueZw}
                     onChange={checkboxChange} />
                Podstawa zwolnienia z podatku VAT (w związku ze stawką VAT zw.)
                 <textarea
                     className="full-width margin-top-1"
                     value={preventNull(props.summaryData.vatExemptionValueZw)}
                     onChange={inputChange}
-                    name="vatExemptionValueZw"
-                    disabled={!checkboxState.vatExemptionLabelZw} />
+                    name="vatExemptionValueZw" />
             </div>
         </Aux>
 
@@ -187,8 +206,7 @@ const InvoiceSummary = (props) => {
                         type="number"
                         name="paid"
                         value={preventNull(props.summaryData.paid)}
-                        onChange={inputChange}
-                        disabled={!checkboxState.paid} />
+                        onChange={inputChange} />
 
                 </div>
                 <div className="margin-all-1">
@@ -201,7 +219,6 @@ const InvoiceSummary = (props) => {
                         className="text-x-large-input"
                         closeOnScroll={true}
                         selected={preventNull(props.summaryData.paidDay)}
-                        disabled={!checkboxState.paidDay}
                         onChange={date => setPaidDay(date)}
                         dateFormat="dd.MM.yyyy"
                         locale={pl}
@@ -216,9 +233,8 @@ const InvoiceSummary = (props) => {
                         className="margin-top-1"
                         options={props.invoicePaymentOptions}
                         value={paydWaycurrentSelect}
-                        name="paymentOption"
-                        onChange={(data, name) => selectChage(data, name)}
-                        isDisabled={!checkboxState.paidWay} />
+                        name="paidWay"
+                        onChange={(data, name) => selectChage(data, name)} />
                 </div></div>
             <div className="grid-3-invoice-summary">
                 <div className="margin-all-1">
@@ -231,7 +247,6 @@ const InvoiceSummary = (props) => {
                         closeOnScroll={true}
                         selected={preventNull(props.summaryData.paymentDay)}
                         onChange={date => setPaymentDay(date)}
-                        disabled={!checkboxState.paymentDay}
                         dateFormat="dd.MM.yyyy"
                         locale={pl} />
 
@@ -245,19 +260,18 @@ const InvoiceSummary = (props) => {
                         name="ownBankAcc"
                         checked={checkboxState.ownBankAcc}
                         onChange={checkboxChange} />Własny numer konta<br />
-                    {checkboxState.bankAccfromDb ? bankAccSelect : bankAccInput}
+                    {checkboxState.ownBankAcc ? bankAccInput : bankAccSelect}
                 </div>
                 <div className="margin-all-1">
                     <input type="checkbox"
                         name="comments"
                         checked={checkboxState.comments}
-                        onChange={checkboxChange} />Uawgi <br />
+                        onChange={checkboxChange} />Uwagi <br />
                     <textarea
                         className="full-width margin-top-1"
                         value={preventNull(props.summaryData.comments)}
                         onChange={inputChange}
-                        name="comments"
-                        disabled={!checkboxState.comments} />
+                        name="comments" />
                 </div>
             </div>
         </Aux>

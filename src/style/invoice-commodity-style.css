@@ -1,6 +1,6 @@
 .grid-11-invoice{
     display: grid;
-    grid-template-columns: 3% 3% auto 8% 6% 10% 8% 10% 8% 10% 10%; 
+    grid-template-columns: 3% 3% auto 8% 6% 10% 8% 8% 10% 8% 10% 10%; 
     grid-template-rows: auto;
 }
 
@@ -68,11 +68,11 @@
 }
 
 .invoice-add-empty{
-    grid-column: 1/7;
+    grid-column: 1/8;
 }
 
 .invoice-sumary{
-    grid-column: 7/12;
+    grid-column: 8/13;
 }
 
 .border-none{
@@ -80,11 +80,11 @@
 }
 
 .item-grid-11-full {
-  grid-column: 1/12;
+  grid-column: 1/13;
 }
 
 .item-grid-7-11 {
-  grid-column: 7/12;
+  grid-column: 8/13;
 }
 
 .item-grid-6-full {

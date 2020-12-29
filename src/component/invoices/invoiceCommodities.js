@@ -198,14 +198,20 @@ const InvoiceCommodities = (props) => {
     const recalculateForm = (event, id) => {
 
         let num = 0;
+        let fromBrutto = false;
+
         if (!isNaN(parseFloat(event.target.value)))
             num = parseFloat(event.target.value)
 
+        if (event.target.name === "singleBrutto")
+            fromBrutto = true;
+
         props.invoiceCommodities[id][event.target.name] = num.toString();
 
-        let newInvoiceCommodities = calculations.moneyCallculations(props.invoiceCommodities, id);
+        let newInvoiceCommodities = calculations.moneyCallculations(props.invoiceCommodities, id, fromBrutto);
         recalculateSummary(newInvoiceCommodities);
     }
+
 
     const inputchangehandler = (event, id) => {
 
@@ -275,6 +281,7 @@ const InvoiceCommodities = (props) => {
                 <input className="input-invoice" type="number" name="amount" min="0" step="0.01" value={commodity.amount} onChange={event => inputchangehandler(event, id)} onBlur={event => recalculateForm(event, id)} readOnly={isReadOnly} />
                 <input className="input-invoice" type="number" name="price" min="0" step="0.01" value={commodity.price} onChange={event => inputchangehandler(event, id)} onBlur={event => recalculateForm(event, id)} readOnly={isReadOnly} />
                 <input className="input-invoice" type="number" name="discount" min="0" step="0.01" value={commodity.discount} onChange={event => inputchangehandler(event, id)} onBlur={event => recalculateForm(event, id)} readOnly={isReadOnly} />
+                <input className="input-invoice" type="number" name="singleBrutto" min="0" step="0.01" value={commodity.singleBrutto} onChange={event => inputchangehandler(event, id)} onBlur={event => recalculateForm(event, id)} readOnly={isReadOnly} />
                 <input className="input-invoice" type="number" name="nettoAmount" value={commodity.nettoAmount} readOnly />
                 <Select
                     styles={commoditiesSelectStyle}
@@ -295,6 +302,7 @@ const InvoiceCommodities = (props) => {
                 <input className="input-invoice" type="number" value={calculations.correctionCallculations(commodityBeforeCorrection.amount, commodityAfterCorrection.amount)} readOnly />
                 <input className="input-invoice" type="number" value={calculations.correctionCallculations(commodityBeforeCorrection.price, commodityAfterCorrection.price)} readOnly />
                 <input className="input-invoice" type="number" value={calculations.correctionCallculations(commodityBeforeCorrection.discount, commodityAfterCorrection.discount)} readOnly />
+                <input className="input-invoice" type="number" value={calculations.correctionCallculations(commodityBeforeCorrection.singleBrutto, commodityAfterCorrection.singleBrutto)} readOnly />
                 <input className="input-invoice" type="number" value={calculations.correctionCallculations(commodityBeforeCorrection.nettoAmount, commodityAfterCorrection.nettoAmount)} readOnly />
                 <div />
                 <input className="input-invoice" type="number" value={calculations.correctionCallculations(commodityBeforeCorrection.vatAmount, commodityAfterCorrection.vatAmount)} readOnly />
@@ -466,13 +474,14 @@ const InvoiceCommodities = (props) => {
                 <div />
                 <div>Nazwa towaru lub usługi</div>
                 <div>J.m.</div>
-                <div>ilość</div>
+                <div>Ilość</div>
                 <div>Cena netto</div>
                 <div>Rabat %</div>
+                <div>Cena brutto</div>
                 <div>Wartość netto</div>
                 <div>Stawka VAT %</div>
                 <div>Kwota VAT</div>
-                <div>wartość brutto</div>
+                <div>Wartość brutto</div>
                 {formArray.map(commodity => {
                     counter++;
                     return (
