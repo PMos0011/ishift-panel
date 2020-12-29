@@ -121,9 +121,9 @@ const Currency = (props) => {
             return (
                 <Aux>
                     <div> <div>tabela: </div>
-                        <input type="text" value={props.currencyData.exchangeBasis} readOnly /></div>
+                        <input type="text" value={props.currencyData.exchangeBasis?props.currencyData.exchangeBasis:""} readOnly /></div>
                     <div><div>kurs:</div>
-                        <input type="text" value={props.currencyData.exchangeRate} readOnly /></div>
+                        <input type="text" value={props.currencyData.exchangeRate?props.currencyData.exchangeRate:""} readOnly /></div>
                 </Aux>)
         } catch (e) { };
     }

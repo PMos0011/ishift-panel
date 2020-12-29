@@ -31,9 +31,34 @@ const InvoiceSummary = (props) => {
     const [paydWaycurrentSelect, setPaydWaycurrentSelect] = useState(null);
     const [bankAccSelectOption, setBankAccSelectOption] = useState(null);
 
-    const checkboxChange = (event) => {
+    const vatExemptionsHandling = (name, checkboxState, summaryData) => {
+
+        const exemption = name.slice(name.length - 2);
+        const labelName = "vatExemptionLabel" + exemption;
+
+        if (!checkboxState[name]) {
+            summaryData[name] = "";
+            summaryData[labelName] = "";
+        }
+        else {
+            let labelValue = "Rodzaj dokonywanej sprzedaży (w związku ze stawką VAT np.)";
+            if (exemption === "Zw")
+                labelValue = "Podstawa zwolnienia z podatku VAT (w związku ze stawką VAT zw.)";
+
+            summaryData[labelName] = labelValue;
+        }
+
+        return summaryData;
+    }
+
+    const checkboxChange = (event, fromInput) => {
+
         let newState = { ...checkboxState };
         newState[event.target.name] = !checkboxState[event.target.name]
+
+        if (fromInput) {
+            newState[event.target.name] = true;
+        }
 
         if (event.target.name === "bankAccfromDb" && newState.bankAccfromDb)
             newState.ownBankAcc = false
@@ -51,24 +76,12 @@ const InvoiceSummary = (props) => {
                     newSummaryData.bankAcc = null;
             } else
                 newSummaryData.bankAcc = "";
-        } else if (event.target.name === "vatExemptionLabelNp" || event.target.name === "vatExemptionLabelZw") {
-            if (!newState[event.target.name]) {
-                newSummaryData[event.target.name] = ""
-                if (event.target.name === "vatExemptionLabelNp")
-                    newSummaryData.vatExemptionValueNp = "";
-                else
-                    newSummaryData.vatExemptionValueZw = "";
-            } else
-                if (event.target.name === "vatExemptionLabelNp")
-                    newSummaryData.vatExemptionLabelNp = "Rodzaj dokonywanej sprzedaży (w związku ze stawką VAT np.)";
-                else
-                    newSummaryData.vatExemptionLabelZw = "Podstawa zwolnienia z podatku VAT (w związku ze stawką VAT zw.)";
+        } else if (event.target.name === "vatExemptionValueNp" || event.target.name === "vatExemptionValueZw") {
+            vatExemptionsHandling(event.target.name, newState, newSummaryData);
         } else if (event.target.name === "paid" && newState[event.target.name]) {
             newSummaryData[event.target.name] = props.invoicePaymentAmount;
         } else if (event.target.name === "paidWay" && !newState[event.target.name]) {
             newSummaryData.paymentOptionIdValue = null;
-
-
             setPaydWaycurrentSelect(null);
         }
         else
@@ -77,42 +90,49 @@ const InvoiceSummary = (props) => {
             else
                 newSummaryData[event.target.name] = ""
 
+        if (fromInput)
+            newSummaryData[event.target.name] = event.target.value;
+
         props.setSummaryData(newSummaryData);
     }
 
-    const setCheckboxStateFromUnputChange = (name) => {
-        let newState = { ...checkboxState };
-        newState[name] = true;
-        setCheckboxState(newState);
-    }
-
     const setPaidDay = (data) => {
-        setCheckboxStateFromUnputChange("paidDay");
+        const event = {
+            target: {
+                name: "paidDay"
+            }
+        }
+        checkboxChange(event, true);
         let newData = { ...props.summaryData }
         newData.paidDay = data;
         props.setSummaryData(newData);
     }
 
     const setPaymentDay = (data) => {
-        setCheckboxStateFromUnputChange("paymentDay");
+        const event = {
+            target: {
+                name: "paymentDay"
+            }
+        }
+        checkboxChange(event, true);
         let newData = { ...props.summaryData }
         newData.paymentDay = data;
         props.setSummaryData(newData);
     }
 
     const inputChange = (event) => {
-
-        setCheckboxStateFromUnputChange(event.target.name);
-
-        let newData = { ...props.summaryData }
-        newData[event.target.name] = event.target.value;
-        props.setSummaryData(newData);
+        checkboxChange(event, true);
     }
 
     const selectChage = (data, name) => {
         let newSummaryData = { ...props.summaryData }
 
-        setCheckboxStateFromUnputChange(name.name);
+        const event = {
+            target: {
+                name: name.name
+            }
+        }
+        checkboxChange(event, true);
 
         switch (name.name) {
             case "paidWay":
@@ -164,8 +184,8 @@ const InvoiceSummary = (props) => {
                     name="vatExemptionValueNp"
                     checked={checkboxState.vatExemptionValueNp}
                     onChange={checkboxChange} />
-                    Rodzaj dokonywanej sprzedaży (w związku ze stawką VAT np.)
-                <textarea
+                        Rodzaj dokonywanej sprzedaży (w związku ze stawką VAT np.)
+                    <textarea
                     className="full-width margin-top-1"
                     value={preventNull(props.summaryData.vatExemptionValueNp)}
                     onChange={inputChange}
@@ -181,8 +201,8 @@ const InvoiceSummary = (props) => {
                     name="vatExemptionValueZw"
                     checked={checkboxState.vatExemptionValueZw}
                     onChange={checkboxChange} />
-               Podstawa zwolnienia z podatku VAT (w związku ze stawką VAT zw.)
-                <textarea
+                   Podstawa zwolnienia z podatku VAT (w związku ze stawką VAT zw.)
+                    <textarea
                     className="full-width margin-top-1"
                     value={preventNull(props.summaryData.vatExemptionValueZw)}
                     onChange={inputChange}

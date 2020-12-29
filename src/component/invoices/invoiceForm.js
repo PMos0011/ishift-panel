@@ -290,8 +290,7 @@ const InvoiceForm = (props) => {
             const commodities = commoditiesCheck();
             if (commodities !== null) {
                 const data = createDataToSend(commodities);
-                console.log(data);
-                //props.invoicePreview(props.match.params.dbId, data);
+                props.invoicePreview(props.match.params.dbId, data);
             }
         }
     }
