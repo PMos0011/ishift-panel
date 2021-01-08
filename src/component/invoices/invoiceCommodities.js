@@ -260,7 +260,7 @@ const InvoiceCommodities = (props) => {
         let vatOption = props.vatSelectOptions.find(v => v.label == commodity.vat);
 
         let tableFirst2Columns = <Aux>
-            {counter === undefined ? <div /> : <div>{counter}</div>}
+            {counter === undefined ? <div /> : <div id="counterRow">{counter}</div>}
             {isCorrection ? <div /> : <img className="icon-size-mini pointer-on-hover" src={removeIcon} alt="remove" onClick={() => removeInvoiceCommodity(id)} />}
         </Aux>
 
@@ -273,6 +273,7 @@ const InvoiceCommodities = (props) => {
                 {tableFirst2Columns}
                 <input className="input-invoice" type="text" name="name" value={commodity.name} onChange={event => inputchangehandler(event, id)} readOnly={isReadOnly} />
                 <Select
+                    id="measureSelect"
                     styles={commoditiesSelectStyle}
                     options={props.measureSelectOptions}
                     value={measureOption}
@@ -284,6 +285,7 @@ const InvoiceCommodities = (props) => {
                 <input className="input-invoice" type="number" name="singleBrutto" min="0" step="0.01" value={commodity.singleBrutto} onChange={event => inputchangehandler(event, id)} onBlur={event => recalculateForm(event, id)} readOnly={isReadOnly} />
                 <input className="input-invoice" type="number" name="nettoAmount" value={commodity.nettoAmount} readOnly />
                 <Select
+                id="vatSelectOptions"
                     styles={commoditiesSelectStyle}
                     options={props.vatSelectOptions}
                     value={vatOption}
@@ -393,7 +395,7 @@ const InvoiceCommodities = (props) => {
         return (
             <Aux>
                 <div className="invoice-add-empty">
-                    {newInvoice ? <img className="icon-size pointer-on-hover" src={addIcon} alt="add" onClick={() => addInvoiceCommodity(false)} /> : null}
+                    {newInvoice ? <img className="icon-size pointer-on-hover" src={addIcon} alt="add" id="addEmptyCommodity" onClick={() => addInvoiceCommodity(false)} /> : null}
                 </div>
                 <div className="flex-center">{rowDescription}</div>
                 <input className="input-invoice" type="number" name="invoiceSummaryNetto" value={summary.nettoAmount} readOnly />
@@ -424,10 +426,11 @@ const InvoiceCommodities = (props) => {
     const commodityFromDatabase = <div className="doc-grid-3-container-invoice">
         <div>Towary i usł: </div>
         <Select
+            id="commoditySelect"
             options={props.commoditySelectOptions}
             value={commoditySelectOption}
             onChange={setCommoditySelectOption} />
-        <img className="icon-size pointer-on-hover" src={addIcon} alt="add" onClick={() => addInvoiceCommodity(true)} />
+        <img className="icon-size pointer-on-hover" src={addIcon} alt="add" id="addFromSelectOption" onClick={() => addInvoiceCommodity(true)} />
     </div>
 
     const advancedInvoices =
@@ -469,7 +472,7 @@ const InvoiceCommodities = (props) => {
             {props.invoiceType === 1 && !showAdvancedInvoiceslist ? advancedInvoices : null}
             {props.invoiceType === 1 && showAdvancedInvoiceslist ? advancedInvoiceSelect : null}
 
-            <div className="grid-11-invoice">
+            <div className="grid-11-invoice" id="commodityContainer">
                 <div>Lp</div>
                 <div />
                 <div>Nazwa towaru lub usługi</div>

@@ -35,7 +35,7 @@ const rootReducer = combineReducers({
   currencyReducer
 })
 
-const store = createStore(rootReducer, applyMiddleware(thunk));
+export const store = createStore(rootReducer, applyMiddleware(thunk));
 
 ReactDOM.render(
   <Provider store={store}>

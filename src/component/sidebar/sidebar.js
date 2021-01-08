@@ -5,11 +5,12 @@ import links from "./sidebarLinkBuilder";
 
 const Sidebar = (props) => {
 
-   return (
+    return (
         <div className="sidebar-container app-border-shadow">
             {links(props).map(elem => {
                 return (
                     <Link key={elem.id}
+                        id={elem.id}
                         {...elem.elemconf}>
                         {elem.label}
                     </Link>
