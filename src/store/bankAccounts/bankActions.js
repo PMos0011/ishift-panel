@@ -4,6 +4,7 @@ import axios from 'axios'
 import * as messages from "../alertsMessages";
 import { setMessage, setLoadingSpinner } from '../alerts/alertsActions';
 import { getToken } from '../authorization/authAction';
+import httpErrorHandling from "../errorHandling";
 
 export const getBankAccountsData = (id) => {
     return (dispatch) => {
@@ -23,11 +24,7 @@ export const getBankAccountsData = (id) => {
                 dispatch(setBankAccountsSelectOptions(options));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
     }
 }
@@ -61,11 +58,7 @@ export const saveBankAccount = (data, dataAccess) => {
                     dispatch(setBankAccounts(response.data));
                     dispatch(setLoadingSpinner(false));
                 }).catch((err) => {
-                    if (err.response !== undefined) {
-                        dispatch(setMessage(messages.GENERAL_ERROR, true));
-                    }
-                    else
-                        dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                    httpErrorHandling(err, dispatch);
                 })
         } else
             dispatch(setMessage(messages.DEMO_ALERT, true));
@@ -87,11 +80,7 @@ export const deleteBankAccount = (dataAccess, id) => {
                     dispatch(setBankAccounts(response.data));
                     dispatch(setLoadingSpinner(false));
                 }).catch((err) => {
-                    if (err.response !== undefined) {
-                        dispatch(setMessage(messages.GENERAL_ERROR, true));
-                    }
-                    else
-                        dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                    httpErrorHandling(err, dispatch);
                 })
         } else
             dispatch(setMessage(messages.DEMO_ALERT, true));

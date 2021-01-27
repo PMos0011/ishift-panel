@@ -1,9 +1,9 @@
 import * as actionTypes from '../actions';
-import * as messages from "../alertsMessages";
-import { setMessage, setLoadingSpinner } from '../alerts/alertsActions';
+import { setLoadingSpinner } from '../alerts/alertsActions';
 import axios from 'axios'
 
 import { getToken } from '../authorization/authAction';
+import httpErrorHandling from "../errorHandling";
 
 export const getAccOfficeData = (id) => {
     return (dispatch) => {
@@ -18,11 +18,7 @@ export const getAccOfficeData = (id) => {
                 dispatch(setAccOfficeData(response.data));
                 dispatch(setLoadingSpinner(false))
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
     }
 }

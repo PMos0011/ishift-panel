@@ -3,9 +3,9 @@ import axios from 'axios'
 import { convertToDate } from '../../component/documents/documentConverters';
 import map from "../../component/documents/supportedDocuments";
 
-import * as messages from "../alertsMessages";
-import { setMessage, setLoadingSpinner } from '../alerts/alertsActions';
+import { setLoadingSpinner } from '../alerts/alertsActions';
 import { getToken } from '../authorization/authAction';
+import httpErrorHandling from "../errorHandling";
 
 export const getAllDocuments = (id) => {
     return (dispatch) => {
@@ -22,11 +22,7 @@ export const getAllDocuments = (id) => {
                 dispatch(setDocuments(response.data, options));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
     }
 }
@@ -55,7 +51,6 @@ const createOptions = (response) => {
     return newObject;
 }
 
-
 const setDocuments = (documents, options) => {
     return {
         type: actionTypes.GET_ALL_DOCUMENTS,
@@ -78,11 +73,7 @@ export const getDocumentDetails = (dbId, id) => {
                 dispatch(setDocumentdetails(response.data));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
     }
 }

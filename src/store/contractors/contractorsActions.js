@@ -4,6 +4,7 @@ import axios from 'axios'
 import * as messages from "../alertsMessages";
 import { setMessage, setLoadingSpinner } from '../alerts/alertsActions';
 import { getToken } from '../authorization/authAction';
+import httpErrorHandling from "../errorHandling";
 
 export const getContractors = (id) => {
     return (dispatch) => {
@@ -18,11 +19,7 @@ export const getContractors = (id) => {
                 dispatch(setContractors(response.data));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
     }
 }
@@ -60,11 +57,7 @@ export const saveContractor = (data, dataAccess) => {
                 dispatch(setContractors(response.data));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
         } else
         dispatch(setMessage(messages.DEMO_ALERT, true));
@@ -85,11 +78,7 @@ export const deleteContractor = (dataAccess, id) => {
                 dispatch(setContractors(response.data));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             }) 
         } else
             dispatch(setMessage(messages.DEMO_ALERT, true));

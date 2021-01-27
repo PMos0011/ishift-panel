@@ -4,6 +4,8 @@ import axios from 'axios'
 import * as messages from "../alertsMessages";
 import { setMessage, setLoadingSpinner } from '../alerts/alertsActions';
 import { getToken } from '../authorization/authAction';
+import httpErrorHandling from "../errorHandling";
+
 
 export const getInvoices = (id, beginDate, endDate) => {
     return (dispatch) => {
@@ -38,11 +40,7 @@ export const getInvoices = (id, beginDate, endDate) => {
                 dispatch(setInvoices(newData));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
     }
 }
@@ -72,11 +70,7 @@ export const getImportedInvoices = (id, beginDate, endDate) => {
                 dispatch(setImportedInvoices(response.data));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
     }
 }
@@ -130,11 +124,7 @@ export const getLastInvoices = (id) => {
                 dispatch(setLastInvoice(lastInvoices));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
     }
 }
@@ -159,11 +149,7 @@ export const getInvoiceTypes = (id) => {
                 dispatch(setInvoiceTypes(response.data))
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
     }
 }
@@ -190,11 +176,7 @@ export const saveInvoice = (id, data) => {
                     dispatch(setMessage(messages.DATA_SAVED, false));
                     dispatch(setLoadingSpinner(false));
                 }).catch((err) => {
-                    if (err.response !== undefined) {
-                        dispatch(setMessage(messages.GENERAL_ERROR, true));
-                    }
-                    else
-                        dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                    httpErrorHandling(err, dispatch);
                 })
         } else
             dispatch(setMessage(messages.DEMO_ALERT, true));
@@ -217,11 +199,7 @@ export const saveInvoiceAndDownload = (id, data) => {
                     generate(response.data);
                     dispatch(setLoadingSpinner(false));
                 }).catch((err) => {
-                    if (err.response !== undefined) {
-                        dispatch(setMessage(messages.GENERAL_ERROR, true));
-                    }
-                    else
-                        dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                    httpErrorHandling(err, dispatch);
                 })
         } else
             dispatch(setMessage(messages.DEMO_ALERT, true));
@@ -241,11 +219,7 @@ export const getVatTypes = (id) => {
                 dispatch(setVatTypes(response.data));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
     }
 }
@@ -272,11 +246,7 @@ export const invoicePreview = (id, data) => {
                 dispatch(setLoadingSpinner(false));
 
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
     }
 }
@@ -296,11 +266,7 @@ export const invoicePreviewFromDataBase = (dbId, id) => {
                 dispatch(setLoadingSpinner(false));
 
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
     }
 }
@@ -353,11 +319,7 @@ export const getAdvancedInvoices = (id) => {
                 dispatch(setAdvancedInvoices(advancedInvoicesData));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
     }
 }

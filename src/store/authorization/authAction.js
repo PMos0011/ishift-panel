@@ -1,7 +1,8 @@
 import * as actionTypes from '../actions';
-import * as messages from "../alertsMessages";
-import { setMessage, setLoadingSpinner } from '../alerts/alertsActions';
+import { setLoadingSpinner } from '../alerts/alertsActions';
 import jwt_decode from "jwt-decode";
+
+import httpErrorHandling from "../errorHandling";
 
 import axios from 'axios';
 
@@ -17,14 +18,8 @@ export const authorizeUser = (userName, password) => {
                 dispatch(setToken(response.headers.authorization, response.headers.expires));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    if (err.response.status === 403)
-                        dispatch(setMessage(messages.WRONG_USERNAME_OR_PASSWORD, true));
-                    else
-                        dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
+
             })
     }
 }

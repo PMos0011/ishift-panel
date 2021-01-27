@@ -6,6 +6,7 @@ import * as messages from "../alertsMessages";
 import { setMessage, setLoadingSpinner } from '../alerts/alertsActions';
 import { getToken, logoutUser } from '../authorization/authAction';
 import { getCustomerData } from "../customers/customersActions";
+import httpErrorHandling from "../errorHandling";
 
 
 export const getUsersList = () => {
@@ -21,11 +22,7 @@ export const getUsersList = () => {
                 dispatch(setLoginList(response.data));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
     }
 }
@@ -59,18 +56,7 @@ export const changeAccessData = (newlogin, newPassword, oldPassword) => {
                 setTimeout(() => dispatch(logoutUser()), 5000);
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    if (err.response.status === 400)
-                        dispatch(setMessage(messages.WRONG_PASSWORD, true));
-
-                    else if (err.response.status === 404)
-                        dispatch(setMessage(messages.WRONG_USERNAME, true));
-
-                    else if (err.response.status === 409)
-                        dispatch(setMessage(messages.USERNAME_TAKEN, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
         } else
         dispatch(setMessage(messages.DEMO_ALERT, true));
@@ -93,11 +79,7 @@ export const changeMyData = (data, dataAccess) => {
                 dispatch(getCustomerData(dataAccess));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
         } else
         dispatch(setMessage(messages.DEMO_ALERT, true));

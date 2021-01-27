@@ -4,6 +4,7 @@ import axios from 'axios'
 import * as messages from "../alertsMessages";
 import { setMessage, setLoadingSpinner } from '../alerts/alertsActions';
 import { getToken } from '../authorization/authAction';
+import httpErrorHandling from "../errorHandling";
 
 export const getAllCustomers = (id) => {
     return (dispatch) => {
@@ -18,11 +19,7 @@ export const getAllCustomers = (id) => {
                 dispatch(setCompanyNames(response.data));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
     }
 }
@@ -41,11 +38,7 @@ export const getCustomerData = (id) => {
                 dispatch(setCustomerData(response.data));
                 dispatch(setLoadingSpinner(false));
             }).catch((err) => {
-                if (err.response !== undefined) {
-                    dispatch(setMessage(messages.GENERAL_ERROR, true));
-                }
-                else
-                    dispatch(setMessage(messages.COMMUNICATION_ERROR, true));
+                httpErrorHandling(err, dispatch);
             })
     }
 }

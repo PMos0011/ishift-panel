@@ -7,7 +7,9 @@ export const WRONG_USERNAME = "Użytkownik nieznaleziony.";
 export const USERNAME_TAKEN = "Nazwa użytkownika jest już zajęta.";
 export const DEMO_ALERT = "Z użytkownikem demo to się niestety nie uda.";
 export const EXCHANGE_ERROR ="Kurs wymiany nie został odnaleziony w bazie danych. Kurs średni walut obcych aktualizowana jest w każdy dzień roboczy, między godziną 11:45 a 12:15";
-
+export const TOKEN_EXPIRED= "Token utracił ważność. Zostałeś automatyczne wylogowany";
+export const TOKEN_INVALID= "Niezaufany token. Zostałeś automatyczne wylogowany";
+export const TOKEN_MISSING= "Brak tokenu. Zostałeś automatyczne wylogowany";
 
 //Success
 export const SUCCESS_LOGIN_CHANGE = "Udało się! Za chwilę zostaniesz wylogowany.";

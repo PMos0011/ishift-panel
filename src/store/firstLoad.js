@@ -1,6 +1,6 @@
 import { getCustomerData } from "./customers/customersActions";
 
-import {newAuthData, setToken} from "./authorization/authAction";
+import { newAuthData, setToken } from "./authorization/authAction";
 
 export const firstLoad = () => {
 
@@ -9,21 +9,23 @@ export const firstLoad = () => {
 
     if (token !== null
         && expiratinDate !== null) {
-        const authData = newAuthData(token, expiratinDate);
+        if (expiratinDate < new Date()) {
+            const authData = newAuthData(token, expiratinDate);
 
-        const getData = () => {
-            if (!authData.isAdmin)
-                return getCustomerData(authData.dataAccess);
-            else
-                return { type: null }
+            const getData = () => {
+                if (!authData.isAdmin)
+                    return getCustomerData(authData.dataAccess);
+                else
+                    return { type: null }
+            }
 
+            return (dispatch) => {
+                dispatch(setToken(token, expiratinDate),
+                    dispatch(getData())
+                );
+            }
         }
-
-        return (dispatch) => {
-            dispatch(setToken(token, expiratinDate),
-            dispatch(getData())
-            );
-        }
+        console.count("out of time");
     }
 
     return { type: null }

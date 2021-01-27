@@ -16,8 +16,6 @@ export const getExchangeRate = (code, date, action) => {
                     dispatch(setMessage(messages.EXCHANGE_ERROR, true))
                 else
                     dispatch(setMessage(messages.GENERAL_ERROR, true));
-
-                dispatch(setLoadingSpinner(false));
             })
     }
 }
